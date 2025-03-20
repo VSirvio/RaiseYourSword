@@ -2,7 +2,9 @@ from invoke import task
 
 @task
 def start(ctx):
-    ctx.run("python3 src/index.py", pty=True)
+    # Setting 'PYGAME_HIDE_SUPPORT_PROMPT' hides the welcome message that
+    # pygame normally prints in the terminal when the application is started
+    ctx.run("PYGAME_HIDE_SUPPORT_PROMPT=1 python3 src/index.py", pty=True)
 
 @task
 def test(ctx):
