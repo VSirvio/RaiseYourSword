@@ -15,7 +15,7 @@ def main():
     pygame.display.set_caption("Raise Your Sword")
 
     bg = pygame.image.load(os.path.join(dirname, "assets", "background_tile_grass.png")).convert()
-    bg = pygame.transform.scale(bg, (GRAPHICS_SCALING_FACTOR * bg.get_width(), GRAPHICS_SCALING_FACTOR * bg.get_height()))
+    bg = pygame.transform.scale_by(bg, GRAPHICS_SCALING_FACTOR)
 
     pygame.init()
 
