@@ -1,7 +1,8 @@
-import math
 import os
 
 import pygame
+
+from utils import fill_with_tile
 
 DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 600
@@ -19,9 +20,7 @@ def main():
     bg_tile = pygame.transform.scale_by(bg_tile, GRAPHICS_SCALING_FACTOR)
 
     bg = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT))
-    for x in range(math.ceil(DISPLAY_WIDTH / bg_tile.get_width())):
-        for y in range(math.ceil(DISPLAY_HEIGHT / bg_tile.get_height())):
-            bg.blit(bg_tile, (x * bg_tile.get_width(), y * bg_tile.get_height()))
+    fill_with_tile(bg, bg_tile)
 
     pygame.init()
 
