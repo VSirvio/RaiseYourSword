@@ -16,6 +16,9 @@ def main():
 
     pygame.display.set_caption("Raise Your Sword")
 
+    win_icon = pygame.image.load(os.path.join(dirname, "assets", "icon_skull.png"))
+    pygame.display.set_icon(win_icon)
+
     bg_tile = pygame.image.load(os.path.join(dirname, "assets", "background_tile_grass.png"))
     bg_tile = pygame.transform.scale_by(bg_tile, GRAPHICS_SCALING_FACTOR)
 
