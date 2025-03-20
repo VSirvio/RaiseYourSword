@@ -5,6 +5,8 @@ import pygame
 DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 600
 
+GRAPHICS_SCALING_FACTOR = 3
+
 dirname = os.path.dirname(__file__)
 
 def main():
@@ -13,6 +15,7 @@ def main():
     pygame.display.set_caption("Raise Your Sword")
 
     bg = pygame.image.load(os.path.join(dirname, "assets", "background_tile_grass.png")).convert()
+    bg = pygame.transform.scale(bg, (GRAPHICS_SCALING_FACTOR * bg.get_width(), GRAPHICS_SCALING_FACTOR * bg.get_height()))
 
     pygame.init()
 
