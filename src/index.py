@@ -2,8 +2,8 @@ import os
 
 import pygame
 
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, GRAPHICS_SCALING_FACTOR
-from utils import fill_with_tile
+from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
+from game import Game
 
 dirname = os.path.dirname(__file__)
 
@@ -15,13 +15,11 @@ def main():
     win_icon = pygame.image.load(os.path.join(dirname, "assets", "icon_skull.png"))
     pygame.display.set_icon(win_icon)
 
-    bg_tile = pygame.image.load(os.path.join(dirname, "assets", "background_tile_grass.png"))
-    bg_tile = pygame.transform.scale_by(bg_tile, GRAPHICS_SCALING_FACTOR)
-
-    bg = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT))
-    fill_with_tile(bg, bg_tile)
+    game = Game()
 
     pygame.init()
+
+    game.draw(display)
 
     running = True
 
@@ -29,8 +27,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
-        display.blit(bg, (0, 0))
 
         pygame.display.update()
 
