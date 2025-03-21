@@ -15,20 +15,27 @@ def main():
     win_icon = pygame.image.load(os.path.join(dirname, "assets", "icon_skull.png"))
     pygame.display.set_icon(win_icon)
 
+    clock = pygame.time.Clock()
+
     game = Game()
 
     pygame.init()
 
-    game.draw(display)
-
     running = True
+    dt = 0
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
+        game.update(dt)
+
+        game.draw(display)
+
         pygame.display.update()
+
+        dt = clock.tick(60)
 
     pygame.quit()
 
