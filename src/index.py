@@ -2,12 +2,11 @@ import os
 
 import pygame
 
+from config import GRAPHICS_SCALING_FACTOR
 from utils import fill_with_tile
 
 DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 600
-
-GRAPHICS_SCALING_FACTOR = 3
 
 dirname = os.path.dirname(__file__)
 
