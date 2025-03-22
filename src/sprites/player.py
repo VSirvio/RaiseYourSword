@@ -3,7 +3,7 @@ import pygame
 from config import GRAPHICS_SCALING_FACTOR
 from utils import load_animation
 
-WALKING_SPEED = 60
+WALKING_SPEED = 75
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
