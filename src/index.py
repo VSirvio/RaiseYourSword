@@ -26,7 +26,16 @@ def main():
 
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    game.turn_player("down")
+                elif event.key == pygame.K_UP:
+                    game.turn_player("up")
+                elif event.key == pygame.K_LEFT:
+                    game.turn_player("left")
+                elif event.key == pygame.K_RIGHT:
+                    game.turn_player("right")
+            elif event.type == pygame.QUIT:
                 running = False
 
         game.update(dt)
