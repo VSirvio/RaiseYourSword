@@ -1,42 +1,52 @@
-import os
-
 import pygame
 
-from config import GRAPHICS_SCALING_FACTOR
-
-FRAMETIME = 250
-SPRITE_WIDTH = 48
-SPRITE_HEIGHT = 48
-
-dirname = os.path.dirname(__file__)
+from utils import load_animation
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
-        sprite_sheet = pygame.image.load(os.path.join(dirname, "..", "assets", "char_warrior_idle_down.png"))
-        sprite_sheet = pygame.transform.scale_by(sprite_sheet, GRAPHICS_SCALING_FACTOR)
+        self.__direction = "down"
+        self.__state = "idle"
 
-        self.images = []
-        for i in range(5):
-            self.images.append(
-                pygame.Surface((GRAPHICS_SCALING_FACTOR * SPRITE_WIDTH, GRAPHICS_SCALING_FACTOR * SPRITE_HEIGHT), pygame.SRCALPHA)
-            )
-            self.images[-1].blit(sprite_sheet, (-i * GRAPHICS_SCALING_FACTOR * SPRITE_WIDTH, 0))
+        self.__animations = {
+            "idle": {
+                "framerate": 4,
+                "down": load_animation("warrior", 0, 5),
+                "up": load_animation("warrior", 1, 5),
+                "left": load_animation("warrior", 2, 5),
+                "right": load_animation("warrior", 3, 5)
+            },
+            "walk": {
+                "framerate": 4,
+                "down": load_animation("warrior", 4, 8),
+                "up": load_animation("warrior", 5, 8),
+                "left": load_animation("warrior", 6, 8),
+                "right": load_animation("warrior", 7, 8)
+            },
+            "attack": {
+                "framerate": 4,
+                "down": load_animation("warrior", 8, 6),
+                "up": load_animation("warrior", 9, 6),
+                "left": load_animation("warrior", 10, 6),
+                "right": load_animation("warrior", 11, 6)
+            }
+        }
 
-        self.index = 0
+        self.__index = 0
 
-        self.image = self.images[self.index]
+        self.image = self.__animations[self.__state][self.__direction][self.__index]
 
         self.rect = self.image.get_rect()
 
-        self.timer = 0
+        self.__timer = 0
 
     def update(self, dt):
-        self.timer += dt
+        self.__timer += dt
 
-        while self.timer >= FRAMETIME:
-            self.index = (self.index + 1) % 5
-            self.timer -= FRAMETIME
+        frametime = 1000 / self.__animations[self.__state]["framerate"]
+        while self.__timer >= frametime:
+            self.__index = (self.__index + 1) % len(self.__animations[self.__state][self.__direction])
+            self.__timer -= frametime
 
-        self.image = self.images[self.index]
+        self.image = self.__animations[self.__state][self.__direction][self.__index]
