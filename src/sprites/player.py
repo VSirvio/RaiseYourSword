@@ -50,3 +50,14 @@ class Player(pygame.sprite.Sprite):
             self.__timer -= frametime
 
         self.image = self.__animations[self.__state][self.__direction][self.__index]
+
+    @property
+    def direction(self):
+        return self.__direction
+
+    @direction.setter
+    def direction(self, direction):
+        self.__direction = direction
+        self.__index = 0
+        self.image = self.__animations[self.__state][self.__direction][self.__index]
+        self.__time = 0
