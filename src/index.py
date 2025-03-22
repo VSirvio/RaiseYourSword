@@ -28,13 +28,15 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    game.turn_player("down")
+                    game.walk("down")
                 elif event.key == pygame.K_UP:
-                    game.turn_player("up")
+                    game.walk("up")
                 elif event.key == pygame.K_LEFT:
-                    game.turn_player("left")
+                    game.walk("left")
                 elif event.key == pygame.K_RIGHT:
-                    game.turn_player("right")
+                    game.walk("right")
+            elif event.type == pygame.KEYUP:
+                game.stop_player()
             elif event.type == pygame.QUIT:
                 running = False
 

@@ -15,5 +15,8 @@ class Game:
     def update(self, dt):
         self.__all_sprites.update(dt)
 
-    def turn_player(self, direction):
-        self.__player.direction = direction
+    def walk(self, direction):
+        self.__player.walk(direction)
+
+    def stop_player(self):
+        self.__player.stop()

@@ -1,6 +1,9 @@
 import pygame
 
+from config import GRAPHICS_SCALING_FACTOR
 from utils import load_animation
+
+WALKING_SPEED = 60
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -18,7 +21,7 @@ class Player(pygame.sprite.Sprite):
                 "right": load_animation("warrior", 3, 5)
             },
             "walk": {
-                "framerate": 4,
+                "framerate": 12,
                 "down": load_animation("warrior", 4, 8),
                 "up": load_animation("warrior", 5, 8),
                 "left": load_animation("warrior", 6, 8),
@@ -41,8 +44,11 @@ class Player(pygame.sprite.Sprite):
 
         self.__timer = 0
 
+        self.__walk_timer = 0
+
     def update(self, dt):
         self.__timer += dt
+        self.__walk_timer += dt
 
         frametime = 1000 / self.__animations[self.__state]["framerate"]
         while self.__timer >= frametime:
@@ -51,13 +57,33 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.__animations[self.__state][self.__direction][self.__index]
 
-    @property
-    def direction(self):
-        return self.__direction
+        dx = dy = 0
+        if self.__state == "walk":
+            if self.__direction == "down":
+                dy = 1
+            elif self.__direction == "up":
+                dy = -1
+            elif self.__direction == "left":
+                dx = -1
+            elif self.__direction == "right":
+                dx = 1
 
-    @direction.setter
-    def direction(self, direction):
+            time_per_px = 1000 / WALKING_SPEED
+            while self.__walk_timer >= time_per_px:
+                self.rect.x += GRAPHICS_SCALING_FACTOR * dx
+                self.rect.y += GRAPHICS_SCALING_FACTOR * dy
+                self.__walk_timer -= time_per_px
+
+    def walk(self, direction):
+        self.__state = "walk"
         self.__direction = direction
         self.__index = 0
         self.image = self.__animations[self.__state][self.__direction][self.__index]
-        self.__time = 0
+        self.__timer = 0
+        self.__walk_timer = 0
+
+    def stop(self):
+        self.__state = "idle"
+        self.__index = 0
+        self.image = self.__animations[self.__state][self.__direction][self.__index]
+        self.__timer = 0
