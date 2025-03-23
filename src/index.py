@@ -28,22 +28,22 @@ def main():
     while running:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_DOWN:
+                if event.key in (pygame.K_DOWN, pygame.K_s):
                     key_pressed["down"] = True
-                elif event.key == pygame.K_UP:
+                elif event.key in (pygame.K_UP, pygame.K_w):
                     key_pressed["up"] = True
-                elif event.key == pygame.K_LEFT:
+                elif event.key in (pygame.K_LEFT, pygame.K_a):
                     key_pressed["left"] = True
-                elif event.key == pygame.K_RIGHT:
+                elif event.key in (pygame.K_RIGHT, pygame.K_d):
                     key_pressed["right"] = True
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_DOWN:
+                if event.key in (pygame.K_DOWN, pygame.K_s):
                     key_pressed["down"] = False
-                elif event.key == pygame.K_UP:
+                elif event.key in (pygame.K_UP, pygame.K_w):
                     key_pressed["up"] = False
-                elif event.key == pygame.K_LEFT:
+                elif event.key in (pygame.K_LEFT, pygame.K_a):
                     key_pressed["left"] = False
-                elif event.key == pygame.K_RIGHT:
+                elif event.key in (pygame.K_RIGHT, pygame.K_d):
                     key_pressed["right"] = False
             elif event.type == pygame.QUIT:
                 running = False
