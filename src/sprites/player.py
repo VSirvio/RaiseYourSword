@@ -56,7 +56,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = centered(image_rect, canvas_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
 
         # Set starting position a bit off the center (it looks nicer that way)
-        self.rect.y -= 20
+        self.rect.y -= 21
 
         self.__timer = 0
 
