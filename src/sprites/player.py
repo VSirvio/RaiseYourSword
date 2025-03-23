@@ -2,8 +2,8 @@ from math import sqrt
 
 import pygame
 
-from config import GRAPHICS_SCALING_FACTOR
-from utils import load_animation
+from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, GRAPHICS_SCALING_FACTOR
+from utils import centered, load_animation
 
 WALKING_SPEED = 75
 
@@ -44,7 +44,11 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.__animations[self.__state][self.__direction][self.__index]
 
-        self.rect = self.image.get_rect()
+        image_rect = self.image.get_rect()
+        self.rect = centered(image_rect, canvas_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
+
+        # Set starting position a bit off the center (it looks nicer that way)
+        self.rect.y -= 20
 
         self.__timer = 0
 
