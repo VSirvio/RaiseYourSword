@@ -96,12 +96,13 @@ class Player(pygame.sprite.Sprite):
 
     def walk(self, vert_direction, horiz_direction):
         if vert_direction == None and horiz_direction == None:
-            self.__state = "idle"
-            self.__dx = 0
-            self.__dy = 0
-            self.__index = 0
-            self.image = self.__animations[self.__state][self.__direction][self.__index]
-            self.__timer = 0
+            if self.__state != "idle":
+                self.__state = "idle"
+                self.__dx = 0
+                self.__dy = 0
+                self.__index = 0
+                self.image = self.__animations[self.__state][self.__direction][self.__index]
+                self.__timer = 0
             return
 
         self.__state = "walk"
