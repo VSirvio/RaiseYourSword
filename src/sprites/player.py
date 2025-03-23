@@ -7,7 +7,7 @@ from utils import centered, load_animation
 
 WALKING_SPEED = 75
 
-BOUNDING_BOX = pygame.Rect((10, 4), (28, 41))
+BOUNDING_BOX = pygame.Rect((11, 6), (26, 37))
 
 MIN_X = -GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.x
 MAX_X = DISPLAY_WIDTH - GRAPHICS_SCALING_FACTOR * (BOUNDING_BOX.x + BOUNDING_BOX.width)
