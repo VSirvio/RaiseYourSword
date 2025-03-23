@@ -1,3 +1,5 @@
+from math import sqrt
+
 import pygame
 
 from config import GRAPHICS_SCALING_FACTOR
@@ -10,6 +12,8 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         self.__direction = "down"
+        self.__dx = 0
+        self.__dy = 0
         self.__state = "idle"
 
         self.__animations = {
@@ -57,33 +61,48 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.__animations[self.__state][self.__direction][self.__index]
 
-        dx = dy = 0
-        if self.__state == "walk":
-            if self.__direction == "down":
-                dy = 1
-            elif self.__direction == "up":
-                dy = -1
-            elif self.__direction == "left":
-                dx = -1
-            elif self.__direction == "right":
-                dx = 1
+        time_per_px = 1000 / WALKING_SPEED
 
-            time_per_px = 1000 / WALKING_SPEED
-            while self.__walk_timer >= time_per_px:
-                self.rect.x += GRAPHICS_SCALING_FACTOR * dx
-                self.rect.y += GRAPHICS_SCALING_FACTOR * dy
-                self.__walk_timer -= time_per_px
+        # When the walking direction is diagonal, we have to multiply the time
+        # it takes to walk 1 pixel (time_per_px) by sqrt(2) = ~1.1,
+        # because the distance moved on the screen per pixel is that much
+        # longer (compare the diagonal length of a pixel to the width/height of
+        # a pixel)
+        if self.__dx != 0 and self.__dy != 0:
+            time_per_px *= sqrt(2)
 
-    def walk(self, direction):
+        while self.__walk_timer >= time_per_px:
+            self.rect.x += GRAPHICS_SCALING_FACTOR * self.__dx
+            self.rect.y += GRAPHICS_SCALING_FACTOR * self.__dy
+            self.__walk_timer -= time_per_px
+
+    def walk(self, vert_direction, horiz_direction):
+        if vert_direction == None and horiz_direction == None:
+            self.__state = "idle"
+            self.__dx = 0
+            self.__dy = 0
+            self.__index = 0
+            self.image = self.__animations[self.__state][self.__direction][self.__index]
+            self.__timer = 0
+            return
+
         self.__state = "walk"
-        self.__direction = direction
-        self.__index = 0
-        self.image = self.__animations[self.__state][self.__direction][self.__index]
-        self.__timer = 0
-        self.__walk_timer = 0
+        new_direction = horiz_direction if horiz_direction else vert_direction
+        if self.__direction != new_direction:
+            self.__direction = new_direction
+            self.__index = 0
+            self.image = self.__animations[self.__state][self.__direction][self.__index]
+            self.__timer = 0
+            self.__walk_timer = 0
 
-    def stop(self):
-        self.__state = "idle"
-        self.__index = 0
-        self.image = self.__animations[self.__state][self.__direction][self.__index]
-        self.__timer = 0
+        self.__dx = 0
+        if horiz_direction == "left":
+            self.__dx = -1
+        elif horiz_direction == "right":
+            self.__dx = 1
+
+        self.__dy = 0
+        if vert_direction == "up":
+            self.__dy = -1
+        elif vert_direction == "down":
+            self.__dy = 1

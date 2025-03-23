@@ -23,22 +23,50 @@ def main():
 
     running = True
     dt = 0
+    key_pressed = {"down": False, "up": False, "left": False, "right": False}
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    game.walk("down")
+                    key_pressed["down"] = True
                 elif event.key == pygame.K_UP:
-                    game.walk("up")
+                    key_pressed["up"] = True
                 elif event.key == pygame.K_LEFT:
-                    game.walk("left")
+                    key_pressed["left"] = True
                 elif event.key == pygame.K_RIGHT:
-                    game.walk("right")
+                    key_pressed["right"] = True
             elif event.type == pygame.KEYUP:
-                game.stop_player()
+                if event.key == pygame.K_DOWN:
+                    key_pressed["down"] = False
+                elif event.key == pygame.K_UP:
+                    key_pressed["up"] = False
+                elif event.key == pygame.K_LEFT:
+                    key_pressed["left"] = False
+                elif event.key == pygame.K_RIGHT:
+                    key_pressed["right"] = False
             elif event.type == pygame.QUIT:
                 running = False
+
+        vert_direction = None
+        if key_pressed["up"]:
+            if key_pressed["down"]:
+                vert_direction = None
+            else:
+                vert_direction = "up"
+        elif key_pressed["down"]:
+            vert_direction = "down"
+
+        horiz_direction = None
+        if key_pressed["left"]:
+            if key_pressed["right"]:
+                horiz_direction = None
+            else:
+                horiz_direction = "left"
+        elif key_pressed["right"]:
+            horiz_direction = "right"
+
+        game.walk(vert_direction, horiz_direction)
 
         game.update(dt)
 
