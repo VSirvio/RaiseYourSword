@@ -7,6 +7,14 @@ from utils import centered, load_animation
 
 WALKING_SPEED = 75
 
+BOUNDING_BOX = pygame.Rect((10, 4), (28, 41))
+
+MIN_X = -GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.x
+MAX_X = DISPLAY_WIDTH - GRAPHICS_SCALING_FACTOR * (BOUNDING_BOX.x + BOUNDING_BOX.width)
+
+MIN_Y = -GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y
+MAX_Y = DISPLAY_HEIGHT - GRAPHICS_SCALING_FACTOR * (BOUNDING_BOX.y + BOUNDING_BOX.height)
+
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -76,8 +84,14 @@ class Player(pygame.sprite.Sprite):
             time_per_px *= sqrt(2)
 
         while self.__walk_timer >= time_per_px:
-            self.rect.x += GRAPHICS_SCALING_FACTOR * self.__dx
-            self.rect.y += GRAPHICS_SCALING_FACTOR * self.__dy
+            if ((self.__dx < 0 and self.rect.x > MIN_X) or
+                    (self.__dx > 0 and self.rect.x < MAX_X)):
+                self.rect.x += GRAPHICS_SCALING_FACTOR * self.__dx
+
+            if ((self.__dy < 0 and self.rect.y > MIN_Y) or
+                    (self.__dy > 0 and self.rect.y < MAX_Y)):
+                self.rect.y += GRAPHICS_SCALING_FACTOR * self.__dy
+
             self.__walk_timer -= time_per_px
 
     def walk(self, vert_direction, horiz_direction):
