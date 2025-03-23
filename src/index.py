@@ -36,6 +36,8 @@ def main():
                     key_pressed["left"] = True
                 elif event.key in (pygame.K_RIGHT, pygame.K_d):
                     key_pressed["right"] = True
+                elif event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT):
+                    game.attack()
             elif event.type == pygame.KEYUP:
                 if event.key in (pygame.K_DOWN, pygame.K_s):
                     key_pressed["down"] = False

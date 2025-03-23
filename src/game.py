@@ -17,3 +17,6 @@ class Game:
 
     def walk(self, vert_direction, horiz_direction):
         self.__player.walk(vert_direction, horiz_direction)
+
+    def attack(self):
+        self.__player.attack()

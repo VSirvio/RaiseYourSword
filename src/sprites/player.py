@@ -40,7 +40,7 @@ class Player(pygame.sprite.Sprite):
                 "right": load_animation("warrior", 7, 8)
             },
             "attack": {
-                "framerate": 4,
+                "framerate": 15,
                 "down": load_animation("warrior", 8, 6),
                 "up": load_animation("warrior", 9, 6),
                 "left": load_animation("warrior", 10, 6),
@@ -71,6 +71,12 @@ class Player(pygame.sprite.Sprite):
             self.__index = (self.__index + 1) % len(self.__animations[self.__state][self.__direction])
             self.__timer -= frametime
 
+            if self.__state == "attack" and self.__index == 0:
+                self.__state = "idle"
+                self.__dx = 0
+                self.__dy = 0
+                self.__timer = 0
+
         self.image = self.__animations[self.__state][self.__direction][self.__index]
 
         time_per_px = 1000 / WALKING_SPEED
@@ -83,36 +89,40 @@ class Player(pygame.sprite.Sprite):
         if self.__dx != 0 and self.__dy != 0:
             time_per_px *= sqrt(2)
 
-        while self.__walk_timer >= time_per_px:
-            if ((self.__dx < 0 and self.rect.x > MIN_X) or
-                    (self.__dx > 0 and self.rect.x < MAX_X)):
-                self.rect.x += GRAPHICS_SCALING_FACTOR * self.__dx
+        if self.__state != "attack":
+            while self.__walk_timer >= time_per_px:
+                if ((self.__dx < 0 and self.rect.x > MIN_X) or
+                        (self.__dx > 0 and self.rect.x < MAX_X)):
+                    self.rect.x += GRAPHICS_SCALING_FACTOR * self.__dx
 
-            if ((self.__dy < 0 and self.rect.y > MIN_Y) or
-                    (self.__dy > 0 and self.rect.y < MAX_Y)):
-                self.rect.y += GRAPHICS_SCALING_FACTOR * self.__dy
+                if ((self.__dy < 0 and self.rect.y > MIN_Y) or
+                        (self.__dy > 0 and self.rect.y < MAX_Y)):
+                    self.rect.y += GRAPHICS_SCALING_FACTOR * self.__dy
 
-            self.__walk_timer -= time_per_px
+                self.__walk_timer -= time_per_px
 
     def walk(self, vert_direction, horiz_direction):
         if vert_direction == None and horiz_direction == None:
             if self.__state != "idle":
-                self.__state = "idle"
                 self.__dx = 0
                 self.__dy = 0
+
+                if self.__state != "attack":
+                    self.__state = "idle"
+                    self.__index = 0
+                    self.image = self.__animations[self.__state][self.__direction][self.__index]
+                    self.__timer = 0
+            return
+
+        if self.__state != "attack":
+            self.__state = "walk"
+            new_direction = horiz_direction if horiz_direction else vert_direction
+            if self.__direction != new_direction:
+                self.__direction = new_direction
                 self.__index = 0
                 self.image = self.__animations[self.__state][self.__direction][self.__index]
                 self.__timer = 0
-            return
-
-        self.__state = "walk"
-        new_direction = horiz_direction if horiz_direction else vert_direction
-        if self.__direction != new_direction:
-            self.__direction = new_direction
-            self.__index = 0
-            self.image = self.__animations[self.__state][self.__direction][self.__index]
-            self.__timer = 0
-            self.__walk_timer = 0
+                self.__walk_timer = 0
 
         self.__dx = 0
         if horiz_direction == "left":
@@ -125,3 +135,12 @@ class Player(pygame.sprite.Sprite):
             self.__dy = -1
         elif vert_direction == "down":
             self.__dy = 1
+
+    def attack(self):
+        if self.__state != "attack":
+            self.__state = "attack"
+            self.__dx = 0
+            self.__dy = 0
+            self.__index = 0
+            self.image = self.__animations[self.__state][self.__direction][self.__index]
+            self.__timer = 0
