@@ -1,10 +1,11 @@
 import pygame
 
 class GameLoop:
-    def __init__(self, game, display):
+    def __init__(self, game, renderer, event_queue, clock):
         self.__game = game
-        self.__clock = pygame.time.Clock()
-        self.__display = display
+        self.__renderer = renderer
+        self.__event_queue = event_queue
+        self.__clock = clock
 
         self.__dt = 0
 
@@ -20,12 +21,12 @@ class GameLoop:
 
             self.__update()
 
-            self.__render()
+            self.__renderer.render()
 
             self.__dt = self.__clock.tick(60)
 
     def __handle_events(self):
-        for event in pygame.event.get():
+        for event in self.__event_queue.get():
             if event.type == pygame.KEYDOWN:
                 if event.key in (pygame.K_DOWN, pygame.K_s):
                     self.__key_pressed["down"] = True
@@ -73,8 +74,3 @@ class GameLoop:
         self.__game.walk(self.__vert_direction, self.__horiz_direction)
 
         self.__game.update(self.__dt)
-
-    def __render(self):
-        self.__game.draw(self.__display)
-
-        pygame.display.update()
