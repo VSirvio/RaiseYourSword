@@ -68,7 +68,8 @@ class Player(pygame.sprite.Sprite):
 
         frametime = 1000 / self.__animations[self.__state]["framerate"]
         while self.__timer >= frametime:
-            self.__index = (self.__index + 1) % len(self.__animations[self.__state][self.__direction])
+            num_of_frames = len(self.__animations[self.__state][self.__direction])
+            self.__index = (self.__index + 1) % num_of_frames
             self.__timer -= frametime
 
             if self.__state == "attack" and self.__index == 0:
@@ -102,7 +103,7 @@ class Player(pygame.sprite.Sprite):
                 self.__walk_timer -= time_per_px
 
     def walk(self, vert_direction, horiz_direction):
-        if vert_direction == None and horiz_direction == None:
+        if vert_direction is None and horiz_direction is None:
             if self.__state != "idle":
                 self.__dx = 0
                 self.__dy = 0

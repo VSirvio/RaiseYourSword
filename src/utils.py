@@ -27,7 +27,9 @@ def floor_with_precision(number, precision):
     return number - number % precision
 
 def load_animation(character, row, num_of_frames):
-    sprite_sheet = pygame.image.load(os.path.join(dirname, "assets", f"character_{character}_animations.png"))
+    sprite_sheet = pygame.image.load(
+        os.path.join(dirname, "assets", f"character_{character}_animations.png")
+    )
     sprite_sheet = pygame.transform.scale_by(sprite_sheet, GRAPHICS_SCALING_FACTOR)
 
     frames = []
