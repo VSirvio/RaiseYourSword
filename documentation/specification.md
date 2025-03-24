@@ -1,4 +1,3 @@
-
 # Specification
 
 ## Purpose
