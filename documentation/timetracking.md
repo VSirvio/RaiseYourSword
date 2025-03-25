@@ -15,4 +15,10 @@
 |       | 1.5          | fixing the player being able to walk outside the game area                   |
 |       | 0.5          | fixing the character being off pixel                                         |
 |       | 1            | implementing attacking for the player character                              |
-| total | 16           |                                                                              |
+| 24.3. | 1            | reading about game programming                                               |
+|       | 0.5          | designing the AI that controls the enemies                                   |
+|       | 1            | updating specification and changelog                                         |
+|       | 0.5          | setting up pylint                                                            |
+|       | 1            | fixing issues reported by pylint                                             |
+|       | 1            | refactoring the game loop                                                    |
+| total | 21           |                                                                              |
