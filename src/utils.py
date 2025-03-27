@@ -26,6 +26,21 @@ def fill_with_tile(canvas, tile):
 def floor_with_precision(number, precision):
     return number - number % precision
 
+def get_direction(key_pressed):
+    vert_direction = None
+    if key_pressed["up"] and not key_pressed["down"]:
+        vert_direction = "up"
+    elif key_pressed["down"] and not key_pressed["up"]:
+        vert_direction = "down"
+
+    horiz_direction = None
+    if key_pressed["left"] and not key_pressed["right"]:
+        horiz_direction = "left"
+    elif key_pressed["right"] and not key_pressed["left"]:
+        horiz_direction = "right"
+
+    return vert_direction, horiz_direction
+
 def load_animation(character, row, num_of_frames):
     sprite_sheet = pygame.image.load(
         os.path.join(dirname, "assets", f"character_{character}_animations.png")

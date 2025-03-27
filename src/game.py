@@ -32,6 +32,9 @@ class Game:
         })
         self.__all_sprites = pygame.sprite.Group(self.__background, self.__player)
 
+    def handle_input(self, event, key_pressed):
+        self.__player.handle_input(event, key_pressed)
+
     def draw(self, surface):
         self.__all_sprites.draw(surface)
 

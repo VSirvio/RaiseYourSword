@@ -3,6 +3,7 @@ from math import sqrt
 import pygame
 
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, GRAPHICS_SCALING_FACTOR
+from states.idle_state import IdleState
 from utils import centered
 
 WALKING_SPEED = 75
@@ -22,13 +23,13 @@ class Player(pygame.sprite.Sprite):
         self.__direction = "down"
         self.__dx = 0
         self.__dy = 0
-        self.__state = "idle"
+        self.__state = IdleState()
 
         self.__animations = animations
 
         self.__index = 0
 
-        self.image = self.__animations[self.__state][self.__direction][self.__index]
+        self.image = self.__animations[str(self.__state)][self.__direction][self.__index]
 
         image_rect = self.image.get_rect()
         self.rect = centered(image_rect, canvas_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
@@ -40,23 +41,29 @@ class Player(pygame.sprite.Sprite):
 
         self.__walk_timer = 0
 
+    def handle_input(self, event, key_pressed):
+        state = self.__state.handle_input(event, key_pressed)
+        if state is not None:
+            self.__state = state
+            self.__state.enter(self)
+
     def update(self, dt):
         self.__timer += dt
         self.__walk_timer += dt
 
-        frametime = 1000 / self.__animations[self.__state]["framerate"]
+        frametime = 1000 / self.__animations[str(self.__state)]["framerate"]
         while self.__timer >= frametime:
-            num_of_frames = len(self.__animations[self.__state][self.__direction])
+            num_of_frames = len(self.__animations[str(self.__state)][self.__direction])
             self.__index = (self.__index + 1) % num_of_frames
             self.__timer -= frametime
 
-            if self.__state == "attack" and self.__index == 0:
-                self.__state = "idle"
-                self.__dx = 0
-                self.__dy = 0
-                self.__timer = 0
+            if self.__index == 0:
+                state = self.__state.animation_finished()
+                if state is not None:
+                    self.__state = state
+                    self.__state.enter(self)
 
-        self.image = self.__animations[self.__state][self.__direction][self.__index]
+        self.image = self.__animations[str(self.__state)][self.__direction][self.__index]
 
         time_per_px = 1000 / WALKING_SPEED
 
@@ -68,7 +75,7 @@ class Player(pygame.sprite.Sprite):
         if self.__dx != 0 and self.__dy != 0:
             time_per_px *= sqrt(2)
 
-        if self.__state != "attack":
+        if str(self.__state) != "attack":
             while self.__walk_timer >= time_per_px:
                 if ((self.__dx < 0 and self.rect.x > MIN_X) or
                         (self.__dx > 0 and self.rect.x < MAX_X)):
@@ -82,26 +89,18 @@ class Player(pygame.sprite.Sprite):
 
     def walk(self, vert_direction, horiz_direction):
         if vert_direction is None and horiz_direction is None:
-            if self.__state != "idle":
-                self.__dx = 0
-                self.__dy = 0
-
-                if self.__state != "attack":
-                    self.__state = "idle"
-                    self.__index = 0
-                    self.image = self.__animations[self.__state][self.__direction][self.__index]
-                    self.__timer = 0
+            self.__dx = 0
+            self.__dy = 0
+            self.__index = 0
+            self.image = self.__animations[str(self.__state)][self.__direction][self.__index]
+            self.__timer = 0
             return
 
-        if self.__state != "attack":
-            self.__state = "walk"
-            new_direction = horiz_direction if horiz_direction else vert_direction
-            if self.__direction != new_direction:
-                self.__direction = new_direction
-                self.__index = 0
-                self.image = self.__animations[self.__state][self.__direction][self.__index]
-                self.__timer = 0
-                self.__walk_timer = 0
+        self.__direction = horiz_direction if horiz_direction else vert_direction
+        self.__index = 0
+        self.image = self.__animations[str(self.__state)][self.__direction][self.__index]
+        self.__timer = 0
+        self.__walk_timer = 0
 
         self.__dx = 0
         if horiz_direction == "left":
@@ -116,10 +115,8 @@ class Player(pygame.sprite.Sprite):
             self.__dy = 1
 
     def attack(self):
-        if self.__state != "attack":
-            self.__state = "attack"
-            self.__dx = 0
-            self.__dy = 0
-            self.__index = 0
-            self.image = self.__animations[self.__state][self.__direction][self.__index]
-            self.__timer = 0
+        self.__dx = 0
+        self.__dy = 0
+        self.__index = 0
+        self.image = self.__animations[str(self.__state)][self.__direction][self.__index]
+        self.__timer = 0

@@ -11,9 +11,6 @@ class GameLoop:
 
         self.__key_pressed = {"down": False, "up": False, "left": False, "right": False}
 
-        self.__vert_direction = None
-        self.__horiz_direction = None
-
     def start(self):
         while True:
             if not self.__handle_events():
@@ -42,24 +39,10 @@ class GameLoop:
                     self.__key_pressed["left"] = event.type == pygame.KEYDOWN
                 case pygame.K_RIGHT | pygame.K_d:
                     self.__key_pressed["right"] = event.type == pygame.KEYDOWN
-                case pygame.K_RSHIFT | pygame.K_LSHIFT if event.type == pygame.KEYDOWN:
-                    self.__game.attack()
 
-        self.__vert_direction = None
-        if self.__key_pressed["up"] and not self.__key_pressed["down"]:
-            self.__vert_direction = "up"
-        elif self.__key_pressed["down"] and not self.__key_pressed["up"]:
-            self.__vert_direction = "down"
-
-        self.__horiz_direction = None
-        if self.__key_pressed["left"] and not self.__key_pressed["right"]:
-            self.__horiz_direction = "left"
-        elif self.__key_pressed["right"] and not self.__key_pressed["left"]:
-            self.__horiz_direction = "right"
+            self.__game.handle_input(event, self.__key_pressed)
 
         return True
 
     def __update(self):
-        self.__game.walk(self.__vert_direction, self.__horiz_direction)
-
         self.__game.update(self.__dt)
