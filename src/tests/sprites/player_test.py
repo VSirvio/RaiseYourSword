@@ -1,12 +1,38 @@
 import unittest
 
 from sprites.player import Player
+from utils import load_animation
 
 class TestPlayer(unittest.TestCase):
+    def setUp(self):
+        self.animations = {
+            "idle": {
+                "framerate": 4,
+                "down": load_animation("warrior", 0, 5),
+                "up": load_animation("warrior", 1, 5),
+                "left": load_animation("warrior", 2, 5),
+                "right": load_animation("warrior", 3, 5)
+            },
+            "walk": {
+                "framerate": 12,
+                "down": load_animation("warrior", 4, 8),
+                "up": load_animation("warrior", 5, 8),
+                "left": load_animation("warrior", 6, 8),
+                "right": load_animation("warrior", 7, 8)
+            },
+            "attack": {
+                "framerate": 15,
+                "down": load_animation("warrior", 8, 6),
+                "up": load_animation("warrior", 9, 6),
+                "left": load_animation("warrior", 10, 6),
+                "right": load_animation("warrior", 11, 6)
+            }
+        }
+
     def test_walking_moves_player_to_the_correct_direction(self):
         for vert_direction in (None, "up", "down"):
             for horiz_direction in (None, "left", "right"):
-                player = Player()
+                player = Player(self.animations)
                 starting_position = {"x": player.rect.x, "y": player.rect.y}
 
                 player.walk(vert_direction, horiz_direction)

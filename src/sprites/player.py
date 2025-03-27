@@ -3,7 +3,7 @@ from math import sqrt
 import pygame
 
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, GRAPHICS_SCALING_FACTOR
-from utils import centered, load_animation
+from utils import centered
 
 WALKING_SPEED = 75
 
@@ -16,7 +16,7 @@ MIN_Y = -GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y
 MAX_Y = DISPLAY_HEIGHT - GRAPHICS_SCALING_FACTOR * (BOUNDING_BOX.y + BOUNDING_BOX.height)
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, animations):
         super().__init__()
 
         self.__direction = "down"
@@ -24,29 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.__dy = 0
         self.__state = "idle"
 
-        self.__animations = {
-            "idle": {
-                "framerate": 4,
-                "down": load_animation("warrior", 0, 5),
-                "up": load_animation("warrior", 1, 5),
-                "left": load_animation("warrior", 2, 5),
-                "right": load_animation("warrior", 3, 5)
-            },
-            "walk": {
-                "framerate": 12,
-                "down": load_animation("warrior", 4, 8),
-                "up": load_animation("warrior", 5, 8),
-                "left": load_animation("warrior", 6, 8),
-                "right": load_animation("warrior", 7, 8)
-            },
-            "attack": {
-                "framerate": 15,
-                "down": load_animation("warrior", 8, 6),
-                "up": load_animation("warrior", 9, 6),
-                "left": load_animation("warrior", 10, 6),
-                "right": load_animation("warrior", 11, 6)
-            }
-        }
+        self.__animations = animations
 
         self.__index = 0
 
