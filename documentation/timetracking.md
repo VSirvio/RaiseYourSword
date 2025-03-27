@@ -21,4 +21,6 @@
 |       | 0.5          | setting up pylint                                                            |
 |       | 1            | fixing issues reported by pylint                                             |
 |       | 1            | refactoring the game loop                                                    |
-| total | 21           |                                                                              |
+| 25.3. | 0.5          | fixing issues reported by pylint                                             |
+|       | 1            | writing unit tests for Player class                                          |
+| total | 22.5         |                                                                              |
