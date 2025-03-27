@@ -29,6 +29,24 @@ class TestPlayer(unittest.TestCase):
             }
         }
 
+    def test_idle_animation_is_played_when_player_is_idle(self):
+        for direction in ("down", "up", "left", "right"):
+            player = Player(self.animations)
+
+            # First, turn player to the correct direction by activating walking to that direction
+            # and then stopping walking
+            if direction in ("down", "up"):
+                player.walk(vert_direction=direction, horiz_direction=None)
+            else:
+                player.walk(vert_direction=None, horiz_direction=direction)
+            player.walk(vert_direction=None, horiz_direction=None)
+
+            # Test frame 0 again in the end to check that the animation loops correctly
+            for frame in list(range(len(self.animations["idle"][direction]))) + [0]:
+                with self.subTest(direction=direction, frame=frame):
+                    self.assertEqual(player.image, self.animations["idle"][direction][frame])
+                player.update(dt=1000/self.animations["idle"]["framerate"])
+
     def test_walking_moves_player_to_the_correct_direction(self):
         for vert_direction in (None, "up", "down"):
             for horiz_direction in (None, "left", "right"):
