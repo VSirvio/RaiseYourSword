@@ -70,3 +70,20 @@ class TestPlayer(unittest.TestCase):
                         self.assertGreater(player.rect.x, starting_position["x"])
                     else:
                         self.assertEqual(player.rect.x, starting_position["x"])
+
+    def test_attack_animation_is_played_when_player_attacks(self):
+        player = Player(self.animations)
+        player.attack()
+        for frame in range(len(self.animations["attack"]["down"])):
+            with self.subTest(frame=frame):
+                self.assertEqual(player.image, self.animations["attack"]["down"][frame])
+            player.update(dt=1000/self.animations["attack"]["framerate"])
+
+    def test_player_cannot_move_while_attacking(self):
+        player = Player(self.animations)
+        starting_position = {"x": player.rect.x, "y": player.rect.y}
+        player.attack()
+        player.walk(vert_direction="down", horiz_direction=None)
+        player.update(dt=1000/self.animations["attack"]["framerate"]*len(self.animations["attack"]["down"])-1)
+        self.assertEqual(player.rect.x, starting_position["x"])
+        self.assertEqual(player.rect.y, starting_position["y"])
