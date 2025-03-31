@@ -54,9 +54,21 @@ class Game:
                 "right": load_animation("skeleton", 11, 8)
             }
         })
-        self.__all_sprites = pygame.sprite.Group(self.__background, self.__player, self.__enemy)
+
+        self.__characters = pygame.sprite.Group(self.__player, self.__enemy)
+
+        self.__all_sprites = pygame.sprite.LayeredUpdates(self.__background, self.__characters)
+
+        # Move background to layer -1000 to make sure that it is behind all other sprites
+        self.__all_sprites.change_layer(self.__background, -1000)
 
     def draw(self, surface):
+        # Set each character sprite's layer value to be the same as its Y position so that the
+        # sprites further away (the sprites that have a lower Y value) are shown behind the sprites
+        # closer (i.e. the sprites further away have a lower layer value than the sprites closer)
+        for sprite in self.__characters:
+            self.__all_sprites.change_layer(sprite, sprite.rect.y)
+
         self.__all_sprites.draw(surface)
 
     def update(self, dt):
