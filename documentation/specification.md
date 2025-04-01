@@ -22,7 +22,7 @@ The application is a 2D fantasy action game viewed from a top-down perspective. 
     - Try to hit the player with their attacks
   - Have graphics:
     - Animations for standing idle, walking and attacking (all animations have variations for each of the four main directions)
-  - When the player has defeated all the enemies in the horde, the player wins the game (the text "Victory" appears on the screen)
+  - When the player has defeated all the enemies in the horde, the player wins the game (the text "You have won" appears on the screen)
 
 ## Extension ideas
 
