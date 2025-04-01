@@ -12,6 +12,7 @@ from renderer import Renderer
 dirname = os.path.dirname(__file__)
 
 def main():
+    pygame.init()
     display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 
     pygame.display.set_caption("Raise Your Sword")
@@ -25,7 +26,6 @@ def main():
     clock = Clock()
     game_loop = GameLoop(game, renderer, event_queue, clock)
 
-    pygame.init()
     game_loop.start()
 
 if __name__ == "__main__":
