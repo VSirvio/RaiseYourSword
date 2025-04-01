@@ -10,6 +10,16 @@
 - [Time tracking sheet](https://github.com/VSirvio/RaiseYourSword/tree/main/documentation/timetracking.md)
 - [Changelog](https://github.com/VSirvio/RaiseYourSword/tree/main/documentation/changelog.md)
 
+## How to play
+
+- Controls:
+  - Walk: <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+  - Attack: <kbd>Shift</kbd>
+- Current functionality:
+  - There is only one enemy that does nothing
+  - You win the game by attacking the enemy
+  - The game can be started again from the beginning by closing the game window and then starting the game again
+
 ## Installation
 
 1. Make sure you have [Python](https://www.python.org/downloads) (3.10 or newer) and [Poetry](https://python-poetry.org/docs/#installation) (1.8 or newer) installed
