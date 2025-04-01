@@ -20,3 +20,39 @@
 4. Then you can start the game by running the command:
 
         poetry run invoke start
+
+## Command-line actions
+
+### Starting the game
+
+The game can be started using the command:
+
+```
+poetry run invoke start
+```
+
+### Testing
+
+Tests can be run using the command:
+
+```
+poetry run invoke test
+```
+
+### Test coverage
+
+A test coverage report can be generated using the command:
+
+```
+poetry run invoke coverage-report
+```
+
+The report will be generated to the *htmlcov* directory.
+
+### Pylint
+
+The checks defined in the [.pylintrc](https://github.com/VSirvio/RaiseYourSword/blob/main/.pylintrc) file can be run using the command:
+
+```
+poetry run invoke lint
+```
