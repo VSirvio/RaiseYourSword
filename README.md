@@ -1,6 +1,8 @@
-# Ohjelmistotekniikka, harjoitustyö
+# Raise Your Sword
 
-Sovellus on **ylhäältä päin kuvattu 2D-fantasiatoimintapeli**, jossa pelaaja taistelee *toistuvia aaltoja hirviöitä vastaan*.
+*Raise Your Sword* is a 2D fantasy action game viewed from a top-down perspective. Its gameplay consists of fighting a horde of monsters emerging from off-screen.
+
+*Made for the software development methods project course at the University of Helsinki*
 
 - [Specification](https://github.com/VSirvio/RaiseYourSword/tree/main/documentation/specification.md)
 - [Time tracking sheet](https://github.com/VSirvio/RaiseYourSword/tree/main/documentation/timetracking.md)
