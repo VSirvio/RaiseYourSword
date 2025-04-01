@@ -72,7 +72,7 @@ class Game:
         self.__all_sprites.draw(surface)
 
     def update(self, dt):
-        self.__all_sprites.update(dt)
+        self.__all_sprites.update(dt, self.__enemy)
 
     def walk(self, vert_direction, horiz_direction):
         self.__player.walk(vert_direction, horiz_direction)

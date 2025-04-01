@@ -1,7 +1,18 @@
+import pygame
 import unittest
 
 from sprites.player import Player
 from utils import load_animation
+
+
+class StubEnemy:
+    def __init__(self, bounding_box):
+        self.__bounding_box = bounding_box
+
+    @property
+    def bounding_box(self):
+        return self.__bounding_box
+
 
 class TestPlayer(unittest.TestCase):
     def setUp(self):
@@ -28,6 +39,7 @@ class TestPlayer(unittest.TestCase):
                 "right": load_animation("warrior", 11, 6)
             }
         }
+        self.enemy = StubEnemy(bounding_box=pygame.Rect(0, 0, 0, 0))
 
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction in ("down", "up", "left", "right"):
@@ -45,7 +57,7 @@ class TestPlayer(unittest.TestCase):
             for frame in list(range(len(self.animations["idle"][direction]))) + [0]:
                 with self.subTest(direction=direction, frame=frame):
                     self.assertEqual(player.image, self.animations["idle"][direction][frame])
-                player.update(dt=1000/self.animations["idle"]["framerate"])
+                player.update(dt=1000/self.animations["idle"]["framerate"], enemy=self.enemy)
 
     def test_walking_moves_player_to_the_correct_direction(self):
         for vert_direction in (None, "up", "down"):
@@ -54,7 +66,7 @@ class TestPlayer(unittest.TestCase):
                 starting_position = {"x": player.rect.x, "y": player.rect.y}
 
                 player.walk(vert_direction, horiz_direction)
-                player.update(dt=1000)
+                player.update(dt=1000, enemy=self.enemy)
 
                 with self.subTest(vert_direction=vert_direction, horiz_direction=horiz_direction):
                     if vert_direction == "up":

@@ -40,7 +40,7 @@ class Player(pygame.sprite.Sprite):
 
         self.__walk_timer = 0
 
-    def update(self, dt):
+    def update(self, dt, enemy):
         self.__timer += dt
         self.__walk_timer += dt
 
@@ -70,15 +70,41 @@ class Player(pygame.sprite.Sprite):
 
         if self.__state != "attack":
             while self.__walk_timer >= time_per_px:
-                if ((self.__dx < 0 and self.rect.x > MIN_X) or
-                        (self.__dx > 0 and self.rect.x < MAX_X)):
+                self.__walk_timer -= time_per_px
+
+                bounding_box_positioned_relative_to_screen = pygame.Rect(
+                    self.rect.x + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.x,
+                    self.rect.y + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y,
+                    GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.width,
+                    GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.height
+                )
+
+                bbox_moved_horizontally = bounding_box_positioned_relative_to_screen.copy()
+                bbox_moved_horizontally.x += GRAPHICS_SCALING_FACTOR * self.__dx
+                collides_horizontally = bbox_moved_horizontally.colliderect(enemy.bounding_box)
+
+                bbox_moved_vertically = bounding_box_positioned_relative_to_screen.copy()
+                bbox_moved_vertically.y += GRAPHICS_SCALING_FACTOR * self.__dy
+                collides_vertically = bbox_moved_vertically.colliderect(enemy.bounding_box)
+
+                bbox_moved_diagonally = bounding_box_positioned_relative_to_screen.copy()
+                bbox_moved_diagonally.x += GRAPHICS_SCALING_FACTOR * self.__dx
+                bbox_moved_diagonally.y += GRAPHICS_SCALING_FACTOR * self.__dy
+                collides_diagonally = bbox_moved_diagonally.colliderect(enemy.bounding_box)
+
+                # If diagonal movement causes a collision but horizontal and vertical movement
+                # don't (i.e. the corner of the bounding box collides exactly to the corner of the
+                # other bounding box), then don't move the player character
+                if collides_diagonally and not collides_horizontally and not collides_vertically:
+	                continue
+
+                if (not collides_horizontally and (self.__dx < 0 and self.rect.x > MIN_X or
+                        self.__dx > 0 and self.rect.x < MAX_X)):
                     self.rect.x += GRAPHICS_SCALING_FACTOR * self.__dx
 
-                if ((self.__dy < 0 and self.rect.y > MIN_Y) or
-                        (self.__dy > 0 and self.rect.y < MAX_Y)):
+                if (not collides_vertically and (self.__dy < 0 and self.rect.y > MIN_Y or
+                        self.__dy > 0 and self.rect.y < MAX_Y)):
                     self.rect.y += GRAPHICS_SCALING_FACTOR * self.__dy
-
-                self.__walk_timer -= time_per_px
 
     def walk(self, vert_direction, horiz_direction):
         if vert_direction is None and horiz_direction is None:
