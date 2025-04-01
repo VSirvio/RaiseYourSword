@@ -27,4 +27,7 @@
 | 31.3. | 1            | implementing simple enemy character with idle animation                      |
 |       | 1            | fixing player sprite always showing behind enemy                             |
 |       | 0.5          | fixing the player being able to walk through the enemy                       |
-| total | 26           |                                                                              |
+| 1.4.  | 2            | fixing the player being able to walk through the enemy                       |
+|       | 1.5          | implementing a victory screen                                                |
+|       | 1            | updating specification, changelog and readme                                 |
+| total | 30.5         |                                                                              |
