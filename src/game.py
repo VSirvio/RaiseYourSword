@@ -1,5 +1,6 @@
 import pygame
 
+from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 from sprites.background import Background
 from sprites.enemy import Enemy
 from sprites.player import Player
@@ -62,6 +63,13 @@ class Game:
         # Move background to layer -1000 to make sure that it is behind all other sprites
         self.__all_sprites.change_layer(self.__background, -1000)
 
+        self.__finished = False
+
+        self.__victory_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
+        self.__victory_screen.fill(pygame.Color(0, 0, 0, 190))
+        font = pygame.font.SysFont(name="Sans", size=50, bold=True)
+        self.__victory_screen.blit(font.render("YOU HAVE WON", True, pygame.Color(255, 255, 255)), (210, 270))
+
     def draw(self, surface):
         # Set each character sprite's layer value to be the same as its Y position so that the
         # sprites further away (the sprites that have a lower Y value) are shown behind the sprites
@@ -71,6 +79,9 @@ class Game:
 
         self.__all_sprites.draw(surface)
 
+        if self.__finished:
+            surface.blit(self.__victory_screen, (0, 0))
+
     def update(self, dt):
         self.__all_sprites.update(dt, self.__enemy)
 
@@ -78,4 +89,12 @@ class Game:
         self.__player.walk(vert_direction, horiz_direction)
 
     def attack(self):
-        self.__player.attack()
+        enemy_was_hit = self.__player.attack(self.__enemy)
+        if enemy_was_hit:
+            self.__characters.remove(self.__enemy)
+            self.__all_sprites.remove(self.__enemy)
+            self.__finished = True
+
+    @property
+    def finished(self):
+        return self.__finished

@@ -26,6 +26,13 @@ class GameLoop:
             self.__dt = self.__clock.tick(60)
 
     def __handle_events(self):
+        if self.__game.finished:
+            for event in self.__event_queue.get():
+                if event.type == pygame.QUIT:
+                    return False
+
+            return True
+
         for event in self.__event_queue.get():
             if event.type == pygame.QUIT:
                 return False

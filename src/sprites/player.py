@@ -15,6 +15,13 @@ MAX_X = DISPLAY_WIDTH - GRAPHICS_SCALING_FACTOR * (BOUNDING_BOX.x + BOUNDING_BOX
 MIN_Y = -GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y
 MAX_Y = DISPLAY_HEIGHT - GRAPHICS_SCALING_FACTOR * (BOUNDING_BOX.y + BOUNDING_BOX.height)
 
+WEAPON_HITBOX = {
+    "down": pygame.Rect((0, 24), (48, 24)),
+    "up": pygame.Rect((0, 0), (48, 24)),
+    "left": pygame.Rect((0, 0), (24, 48)),
+    "right": pygame.Rect((24, 0), (24, 48))
+}
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, animations):
         super().__init__()
@@ -141,7 +148,7 @@ class Player(pygame.sprite.Sprite):
         elif vert_direction == "down":
             self.__dy = 1
 
-    def attack(self):
+    def attack(self, enemy):
         if self.__state != "attack":
             self.__state = "attack"
             self.__dx = 0
@@ -149,3 +156,11 @@ class Player(pygame.sprite.Sprite):
             self.__index = 0
             self.image = self.__animations[self.__state][self.__direction][self.__index]
             self.__timer = 0
+
+            weapon_hitbox_relative_to_screen = pygame.Rect(
+                self.rect.x + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].x,
+                self.rect.y + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].y,
+                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].width,
+                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].height
+            )
+            return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
