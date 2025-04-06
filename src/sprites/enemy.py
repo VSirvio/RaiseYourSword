@@ -32,6 +32,12 @@ class Enemy(pygame.sprite.Sprite):
             self.__index = (self.__index + 1) % num_of_frames
             self.__timer -= frametime
 
+            if self.__index == 0:
+                if self.__state == "attack":
+                    self.__state = "idle"
+                else:
+                    self.__state = "attack"
+
         self.image = self.__animations[self.__state][self.__direction][self.__index]
 
     @property
