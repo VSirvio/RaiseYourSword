@@ -83,7 +83,7 @@ class Game:
             surface.blit(self.__victory_screen, (0, 0))
 
     def update(self, dt):
-        self.__all_sprites.update(dt, self.__enemy)
+        self.__all_sprites.update(dt, enemy=self.__enemy)
 
     def walk(self, vert_direction, horiz_direction):
         self.__player.walk(vert_direction, horiz_direction)

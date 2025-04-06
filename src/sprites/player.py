@@ -47,7 +47,9 @@ class Player(pygame.sprite.Sprite):
 
         self.__walk_timer = 0
 
-    def update(self, dt, enemy):
+    def update(self, dt, **kwargs):
+        enemy = kwargs["enemy"]
+
         self.__timer += dt
         self.__walk_timer += dt
 

@@ -23,7 +23,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self.__timer = 0
 
-    def update(self, dt, enemy):
+    def update(self, dt, **kwargs):
         self.__timer += dt
 
         frametime = 1000 / self.__animations[self.__state]["framerate"]
