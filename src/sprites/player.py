@@ -166,3 +166,5 @@ class Player(pygame.sprite.Sprite):
                 GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].height
             )
             return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
+
+        return False
