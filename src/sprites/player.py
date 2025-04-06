@@ -168,3 +168,12 @@ class Player(pygame.sprite.Sprite):
             return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
 
         return False
+
+    @property
+    def bounding_box(self):
+        return pygame.Rect(
+            self.rect.x + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.x,
+            self.rect.y + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y,
+            GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.width,
+            GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.height
+        )
