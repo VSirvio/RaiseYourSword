@@ -4,6 +4,13 @@ from config import GRAPHICS_SCALING_FACTOR
 
 BOUNDING_BOX = pygame.Rect((20, 22), (8, 11))
 
+WEAPON_HITBOX = {
+    "down": pygame.Rect((0, 24), (48, 24)),
+    "up": pygame.Rect((0, 0), (48, 24)),
+    "left": pygame.Rect((0, 0), (24, 48)),
+    "right": pygame.Rect((24, 0), (24, 48))
+}
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, animations):
         super().__init__()
@@ -24,6 +31,8 @@ class Enemy(pygame.sprite.Sprite):
         self.__timer = 0
 
     def update(self, dt, **kwargs):
+        player = kwargs["player"]
+
         self.__timer += dt
 
         frametime = 1000 / self.__animations[self.__state]["framerate"]
@@ -37,6 +46,16 @@ class Enemy(pygame.sprite.Sprite):
                     self.__state = "idle"
                 else:
                     self.__state = "attack"
+
+            weapon_hitbox_relative_to_screen = pygame.Rect(
+                self.rect.x + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].x,
+                self.rect.y + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].y,
+                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].width,
+                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].height
+            )
+            if (self.__state == "attack" and self.__index == num_of_frames - 1
+                    and weapon_hitbox_relative_to_screen.colliderect(player.bounding_box)):
+                print("Player was hit!")
 
         self.image = self.__animations[self.__state][self.__direction][self.__index]
 
