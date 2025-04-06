@@ -105,7 +105,7 @@ class Player(pygame.sprite.Sprite):
                 # don't (i.e. the corner of the bounding box collides exactly to the corner of the
                 # other bounding box), then don't move the player character
                 if collides_diagonally and not collides_horizontally and not collides_vertically:
-	                continue
+                    continue
 
                 if (not collides_horizontally and (self.__dx < 0 and self.rect.x > MIN_X or
                         self.__dx > 0 and self.rect.x < MAX_X)):
