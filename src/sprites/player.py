@@ -26,6 +26,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, animations):
         super().__init__()
 
+        self.__has_been_defeated = False
+
         self.__direction = "down"
         self.__dx = 0
         self.__dy = 0
@@ -177,3 +179,10 @@ class Player(pygame.sprite.Sprite):
             GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.width,
             GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.height
         )
+
+    @property
+    def has_been_defeated(self):
+        return self.__has_been_defeated
+
+    def lose(self):
+        self.__has_been_defeated = True
