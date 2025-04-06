@@ -49,7 +49,7 @@ class Game:
                 "right": load_animation("skeleton", 7, 6)
             },
             "attack": {
-                "framerate": 15,
+                "framerate": 10,
                 "down": load_animation("skeleton", 8, 8),
                 "up": load_animation("skeleton", 9, 8),
                 "left": load_animation("skeleton", 10, 8),
