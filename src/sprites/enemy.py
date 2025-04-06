@@ -45,7 +45,8 @@ class Enemy(pygame.sprite.Sprite):
                 if self.__state == "attack":
                     self.__state = "idle"
                 else:
-                    self.__state = "attack"
+                    if not player.has_been_defeated:
+                        self.__state = "attack"
 
             weapon_hitbox_relative_to_screen = pygame.Rect(
                 self.rect.x + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].x,
@@ -55,7 +56,7 @@ class Enemy(pygame.sprite.Sprite):
             )
             if (self.__state == "attack" and self.__index == num_of_frames - 1
                     and weapon_hitbox_relative_to_screen.colliderect(player.bounding_box)):
-                print("Player was hit!")
+                player.lose()
 
         self.image = self.__animations[self.__state][self.__direction][self.__index]
 

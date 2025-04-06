@@ -66,12 +66,18 @@ class Game:
 
         self.__finished = False
 
-        self.__victory_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
         transparent_black = Color(0, 0, 0, 190)
+        result_screen_font = pygame.font.SysFont(name="Sans", size=50, bold=True)
+
+        self.__victory_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
         self.__victory_screen.fill(transparent_black)
-        victory_screen_font = pygame.font.SysFont(name="Sans", size=50, bold=True)
-        victory_screen_text = victory_screen_font.render("YOU HAVE WON", True, Color("white"))
+        victory_screen_text = result_screen_font.render("YOU HAVE WON", True, Color("white"))
         self.__victory_screen.blit(victory_screen_text, (210, 270))
+
+        self.__game_over_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
+        self.__game_over_screen.fill(transparent_black)
+        game_over_screen_text = result_screen_font.render("GAME OVER", True, Color("white"))
+        self.__game_over_screen.blit(game_over_screen_text, (250, 270))
 
     def draw(self, surface):
         # Set each character sprite's layer value to be the same as its Y position so that the
@@ -83,10 +89,16 @@ class Game:
         self.__all_sprites.draw(surface)
 
         if self.__finished:
-            surface.blit(self.__victory_screen, (0, 0))
+            if self.__player.has_been_defeated:
+                surface.blit(self.__game_over_screen, (0, 0))
+            else:
+                surface.blit(self.__victory_screen, (0, 0))
 
     def update(self, dt):
         self.__all_sprites.update(dt, player=self.__player, enemy=self.__enemy)
+
+        if self.__player.has_been_defeated:
+            self.__finished = True
 
     def walk(self, vert_direction, horiz_direction):
         self.__player.walk(vert_direction, horiz_direction)
