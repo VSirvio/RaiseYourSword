@@ -82,3 +82,22 @@ class TestPlayer(unittest.TestCase):
                         self.assertGreater(player.rect.x, starting_position["x"])
                     else:
                         self.assertEqual(player.rect.x, starting_position["x"])
+
+    def test_attack_animation_is_played_when_player_attacks(self):
+        for direction in ("down", "up", "left", "right"):
+            player = Player(self.animations)
+
+            # First, turn player to the correct direction by activating walking to that direction
+            # and then stopping walking
+            if direction in ("down", "up"):
+                player.walk(vert_direction=direction, horiz_direction=None)
+            else:
+                player.walk(vert_direction=None, horiz_direction=direction)
+            player.walk(vert_direction=None, horiz_direction=None)
+
+            player.attack(self.enemy)
+
+            for frame in range(len(self.animations["attack"][direction])):
+                with self.subTest(direction=direction, frame=frame):
+                    self.assertEqual(player.image, self.animations["attack"][direction][frame])
+                player.update(dt=1000/self.animations["attack"]["framerate"], enemy=self.enemy)
