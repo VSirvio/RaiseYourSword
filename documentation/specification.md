@@ -7,22 +7,22 @@ The application is a 2D fantasy action game viewed from a top-down perspective. 
 ## Core functionality
 
 - Player character:
-  - Can move to eight directions (up, right, down, left, and the diagonal directions between them)
-  - Can swing their sword, which will defeat any enemy in front of them with one hit
-  - Has graphics:
-    - Animations for standing idle, walking and attacking (all animations have variations for each of the four main directions: up, down, left, right)
+  - [**done**] Can move to eight directions (up, right, down, left, and the diagonal directions between them)
+  - [**done**] Can swing their sword, which will defeat any enemy in front of them with one hit
+  - [**done**] Has graphics:
+    - [**done**] Animations for standing idle, walking and attacking (all animations have variations for each of the four main directions: up, down, left, right)
 - Game area:
-  - Is exactly of the size of the game window
-  - Has a grass texture as a background
+  - [**done**] Is exactly of the size of the game window
+  - [**done**] Has a grass texture as a background
 - Enemies:
   - Emerge from off-screen
   - Can move to eight directions
-  - Can attack, which will defeat the player with one hit, if the player is in front of them (the text "Game over" appears on the screen, when the player is defeated)
+  - [**done**] Can attack, which will defeat the player with one hit, if the player is in front of them (the text "Game over" appears on the screen, when the player is defeated)
   - Are controlled by the game:
     - Try to hit the player with their attacks
   - Have graphics:
-    - Animations for standing idle, walking and attacking (all animations have variations for each of the four main directions)
-  - When the player has defeated all the enemies in the horde, the player wins the game (the text "You have won" appears on the screen)
+    - [**partially done**] Animations for standing idle, walking and attacking (all animations have variations for each of the four main directions)
+  - [**done**] When the player has defeated all the enemies in the horde, the player wins the game (the text "You have won" appears on the screen)
 
 ## Extension ideas
 
