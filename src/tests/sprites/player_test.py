@@ -2,7 +2,7 @@ import pygame
 import unittest
 
 from sprites.player import Player
-from utils import load_animation
+from utils import load_animation, vert_and_horiz_components_from
 
 
 class StubEnemy:
@@ -15,6 +15,12 @@ class StubEnemy:
 
 
 class TestPlayer(unittest.TestCase):
+    def __turn_to_direction(self, player, direction):
+        # Turn player to the given direction by activating walking to that direction and then
+        # stopping walking
+        player.walk(*vert_and_horiz_components_from(direction))
+        player.walk(vert_direction=None, horiz_direction=None)
+
     def setUp(self):
         self.animations = {
             "idle": {
@@ -44,14 +50,7 @@ class TestPlayer(unittest.TestCase):
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction in ("down", "up", "left", "right"):
             player = Player(self.animations)
-
-            # First, turn player to the correct direction by activating walking to that direction
-            # and then stopping walking
-            if direction in ("down", "up"):
-                player.walk(vert_direction=direction, horiz_direction=None)
-            else:
-                player.walk(vert_direction=None, horiz_direction=direction)
-            player.walk(vert_direction=None, horiz_direction=None)
+            self.__turn_to_direction(player, direction)
 
             # Test frame 0 again in the end to check that the animation loops correctly
             for frame in list(range(len(self.animations["idle"][direction]))) + [0]:
@@ -86,14 +85,7 @@ class TestPlayer(unittest.TestCase):
     def test_attack_animation_is_played_when_player_attacks(self):
         for direction in ("down", "up", "left", "right"):
             player = Player(self.animations)
-
-            # First, turn player to the correct direction by activating walking to that direction
-            # and then stopping walking
-            if direction in ("down", "up"):
-                player.walk(vert_direction=direction, horiz_direction=None)
-            else:
-                player.walk(vert_direction=None, horiz_direction=direction)
-            player.walk(vert_direction=None, horiz_direction=None)
+            self.__turn_to_direction(player, direction)
 
             player.attack(self.enemy)
 
