@@ -23,3 +23,5 @@
 - Added a sword attack for the enemy character
 - Added to the enemy character the behavior that they repeat the sword attack endlessly
 - The player can lose the game by being hit by the enemy's attack and after that a screen with the text `Game over` is displayed
+- Tested that the attack animation is played correctly when the player character is attacking
+- Tested that the player cannot move while attacking
