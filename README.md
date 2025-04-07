@@ -16,8 +16,8 @@
   - Walk: <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
   - Attack: <kbd>Shift</kbd>
 - Current functionality:
-  - There is only one enemy that does nothing
-  - You win the game by attacking the enemy
+  - There is only one enemy that stands in one place and keeps swinging its sword
+  - You win the game by attacking the enemy and you lose the game by getting hit by the enemy
   - The game can be started again from the beginning by closing the game window and then starting the game again
 
 ## Installation
