@@ -30,4 +30,6 @@
 | 1.4.  | 2            | fixing the player being able to walk through the enemy                       |
 |       | 1.5          | implementing a victory screen                                                |
 |       | 1            | updating specification, changelog and readme                                 |
-| total | 30.5         |                                                                              |
+| 6.4.  | 0.5          | fixing issues reported by pylint                                             |
+|       | 2            | implementing attacking for the enemy character                               |
+| total | 33           |                                                                              |
