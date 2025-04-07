@@ -32,4 +32,8 @@
 |       | 1            | updating specification, changelog and readme                                 |
 | 6.4.  | 0.5          | fixing issues reported by pylint                                             |
 |       | 2            | implementing attacking for the enemy character                               |
-| total | 33           |                                                                              |
+| 7.4.  | 2            | writing unit tests for Player class                                          |
+|       | 1            | fixing issues reported by pylint                                             |
+|       | 1            | creating the class diagram                                                   |
+|       | 1            | updating specification, changelog and readme                                 |
+| total | 38           |                                                                              |
