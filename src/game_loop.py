@@ -26,18 +26,11 @@ class GameLoop:
             self.__dt = self.__clock.tick(60)
 
     def __handle_events(self):
-        if self.__game.finished:
-            for event in self.__event_queue.get():
-                if event.type == pygame.QUIT:
-                    return False
-
-            return True
-
         for event in self.__event_queue.get():
             if event.type == pygame.QUIT:
                 return False
 
-            if event.type not in (pygame.KEYDOWN, pygame.KEYUP):
+            if event.type not in (pygame.KEYDOWN, pygame.KEYUP) or self.__game.finished:
                 continue
 
             match event.key:
@@ -51,6 +44,11 @@ class GameLoop:
                     self.__key_pressed["right"] = event.type == pygame.KEYDOWN
                 case pygame.K_RSHIFT | pygame.K_LSHIFT if event.type == pygame.KEYDOWN:
                     self.__game.attack()
+
+        if self.__game.finished:
+            self.__vert_direction = None
+            self.__horiz_direction = None
+            return True
 
         self.__vert_direction = None
         if self.__key_pressed["up"] and not self.__key_pressed["down"]:

@@ -26,6 +26,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, animations):
         super().__init__()
 
+        self.__has_been_defeated = False
+
         self.__direction = "down"
         self.__dx = 0
         self.__dy = 0
@@ -47,7 +49,9 @@ class Player(pygame.sprite.Sprite):
 
         self.__walk_timer = 0
 
-    def update(self, dt, enemy):
+    def update(self, dt, **kwargs):
+        enemy = kwargs["enemy"]
+
         self.__timer += dt
         self.__walk_timer += dt
 
@@ -103,7 +107,7 @@ class Player(pygame.sprite.Sprite):
                 # don't (i.e. the corner of the bounding box collides exactly to the corner of the
                 # other bounding box), then don't move the player character
                 if collides_diagonally and not collides_horizontally and not collides_vertically:
-	                continue
+                    continue
 
                 if (not collides_horizontally and (self.__dx < 0 and self.rect.x > MIN_X or
                         self.__dx > 0 and self.rect.x < MAX_X)):
@@ -164,3 +168,21 @@ class Player(pygame.sprite.Sprite):
                 GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].height
             )
             return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
+
+        return False
+
+    @property
+    def bounding_box(self):
+        return pygame.Rect(
+            self.rect.x + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.x,
+            self.rect.y + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y,
+            GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.width,
+            GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.height
+        )
+
+    @property
+    def has_been_defeated(self):
+        return self.__has_been_defeated
+
+    def lose(self):
+        self.__has_been_defeated = True

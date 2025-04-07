@@ -1,4 +1,5 @@
 import pygame
+from pygame import Color
 
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 from sprites.background import Background
@@ -48,7 +49,7 @@ class Game:
                 "right": load_animation("skeleton", 7, 6)
             },
             "attack": {
-                "framerate": 15,
+                "framerate": 10,
                 "down": load_animation("skeleton", 8, 8),
                 "up": load_animation("skeleton", 9, 8),
                 "left": load_animation("skeleton", 10, 8),
@@ -65,10 +66,18 @@ class Game:
 
         self.__finished = False
 
+        transparent_black = Color(0, 0, 0, 190)
+        result_screen_font = pygame.font.SysFont(name="Sans", size=50, bold=True)
+
         self.__victory_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
-        self.__victory_screen.fill(pygame.Color(0, 0, 0, 190))
-        font = pygame.font.SysFont(name="Sans", size=50, bold=True)
-        self.__victory_screen.blit(font.render("YOU HAVE WON", True, pygame.Color(255, 255, 255)), (210, 270))
+        self.__victory_screen.fill(transparent_black)
+        victory_screen_text = result_screen_font.render("YOU HAVE WON", True, Color("white"))
+        self.__victory_screen.blit(victory_screen_text, (210, 270))
+
+        self.__game_over_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
+        self.__game_over_screen.fill(transparent_black)
+        game_over_screen_text = result_screen_font.render("GAME OVER", True, Color("white"))
+        self.__game_over_screen.blit(game_over_screen_text, (250, 270))
 
     def draw(self, surface):
         # Set each character sprite's layer value to be the same as its Y position so that the
@@ -80,10 +89,16 @@ class Game:
         self.__all_sprites.draw(surface)
 
         if self.__finished:
-            surface.blit(self.__victory_screen, (0, 0))
+            if self.__player.has_been_defeated:
+                surface.blit(self.__game_over_screen, (0, 0))
+            else:
+                surface.blit(self.__victory_screen, (0, 0))
 
     def update(self, dt):
-        self.__all_sprites.update(dt, self.__enemy)
+        self.__all_sprites.update(dt, player=self.__player, enemy=self.__enemy)
+
+        if self.__player.has_been_defeated:
+            self.__finished = True
 
     def walk(self, vert_direction, horiz_direction):
         self.__player.walk(vert_direction, horiz_direction)
