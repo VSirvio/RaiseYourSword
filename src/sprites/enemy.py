@@ -5,10 +5,10 @@ from config import GRAPHICS_SCALING_FACTOR
 BOUNDING_BOX = pygame.Rect((20, 22), (8, 11))
 
 WEAPON_HITBOX = {
-    "down": pygame.Rect((0, 24), (48, 24)),
-    "up": pygame.Rect((0, 0), (48, 24)),
-    "left": pygame.Rect((0, 0), (24, 48)),
-    "right": pygame.Rect((24, 0), (24, 48))
+    "down": pygame.Rect((0, 26), (48, 22)),
+    "up": pygame.Rect((0, 0), (48, 22)),
+    "left": pygame.Rect((0, 0), (22, 48)),
+    "right": pygame.Rect((26, 0), (22, 48))
 }
 
 class Enemy(pygame.sprite.Sprite):
