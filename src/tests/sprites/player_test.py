@@ -93,3 +93,23 @@ class TestPlayer(unittest.TestCase):
                 with self.subTest(direction=direction, frame=frame):
                     self.assertEqual(player.image, self.animations["attack"][direction][frame])
                 player.update(dt=1000/self.animations["attack"]["framerate"], enemy=self.enemy)
+
+    def test_player_cannot_move_while_attacking(self):
+        for attack_direction in ("down", "up", "left", "right"):
+            for walk_direction in ("down", "up", "left", "right"):
+                player = Player(self.animations)
+                starting_position = {"x": player.rect.x, "y": player.rect.y}
+
+                self.__turn_to_direction(player, attack_direction)
+                player.attack(self.enemy)
+
+                player.walk(*vert_and_horiz_components_from(walk_direction))
+
+                attack_frame_count = len(self.animations["attack"][attack_direction])
+                attack_single_frame_duration = 1000 / self.animations["attack"]["framerate"]
+                attack_total_duration = attack_frame_count * attack_single_frame_duration
+                player.update(dt=attack_total_duration-1, enemy=self.enemy)
+
+                with self.subTest(attack_direction=attack_direction, walk_direction=walk_direction):
+                    self.assertEqual(player.rect.x, starting_position["x"])
+                    self.assertEqual(player.rect.y, starting_position["y"])
