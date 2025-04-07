@@ -17,3 +17,9 @@
 - Refactored the game loop into a separate `GameLoop` class
 - Tested that the `Player.walk()` method moves the player character correctly
 - Tested that the idle animation is played correctly when the player character is standing idle
+
+## Week 4
+
+- Added a sword attack for the enemy character
+- Added to the enemy character the behavior that they repeat the sword attack endlessly
+- The player can lose the game by being hit by the enemy's attack and after that a screen with the text `Game over` is displayed
