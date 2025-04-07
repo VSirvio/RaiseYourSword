@@ -44,9 +44,8 @@ class Enemy(pygame.sprite.Sprite):
             if self.__index == 0:
                 if self.__state == "attack":
                     self.__state = "idle"
-                else:
-                    if not player.has_been_defeated:
-                        self.__state = "attack"
+                elif self.__state == "idle" and not player.has_been_defeated:
+                    self.__state = "attack"
 
             weapon_hitbox_relative_to_screen = pygame.Rect(
                 self.rect.x + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].x,
