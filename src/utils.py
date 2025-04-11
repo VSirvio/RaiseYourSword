@@ -45,8 +45,3 @@ def load_animation(character, row, num_of_frames):
 
 def round_to_precision(number, precision):
     return floor_with_precision(number + precision / 2, precision)
-
-def vert_and_horiz_components_from(direction_str):
-    vert_direction = direction_str if direction_str in ("down", "up") else None
-    horiz_direction = direction_str if direction_str in ("left", "right") else None
-    return vert_direction, horiz_direction

@@ -3,6 +3,7 @@ from math import sqrt
 import pygame
 
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, GRAPHICS_SCALING_FACTOR
+from direction import NONE, DOWN, UP, LEFT, RIGHT
 from utils import centered
 
 WALKING_SPEED = 75
@@ -16,10 +17,10 @@ MIN_Y = -GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y
 MAX_Y = DISPLAY_HEIGHT - GRAPHICS_SCALING_FACTOR * (BOUNDING_BOX.y + BOUNDING_BOX.height)
 
 WEAPON_HITBOX = {
-    "down": pygame.Rect((0, 24), (48, 24)),
-    "up": pygame.Rect((0, 0), (48, 24)),
-    "left": pygame.Rect((0, 0), (24, 48)),
-    "right": pygame.Rect((24, 0), (24, 48))
+    DOWN: pygame.Rect((0, 24), (48, 24)),
+    UP: pygame.Rect((0, 0), (48, 24)),
+    LEFT: pygame.Rect((0, 0), (24, 48)),
+    RIGHT: pygame.Rect((24, 0), (24, 48))
 }
 
 class Player(pygame.sprite.Sprite):
@@ -28,16 +29,15 @@ class Player(pygame.sprite.Sprite):
 
         self.__has_been_defeated = False
 
-        self.__direction = "down"
-        self.__dx = 0
-        self.__dy = 0
+        self.__facing_direction = DOWN
+        self.__movement_direction = NONE
         self.__state = "idle"
 
         self.__animations = animations
 
         self.__index = 0
 
-        self.image = self.__animations[self.__state][self.__direction][self.__index]
+        self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
 
         image_rect = self.image.get_rect()
         self.rect = centered(image_rect, canvas_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
@@ -57,17 +57,18 @@ class Player(pygame.sprite.Sprite):
 
         frametime = 1000 / self.__animations[self.__state]["framerate"]
         while self.__timer >= frametime:
-            num_of_frames = len(self.__animations[self.__state][self.__direction])
+            num_of_frames = len(self.__animations[self.__state][self.__facing_direction])
             self.__index = (self.__index + 1) % num_of_frames
             self.__timer -= frametime
 
             if self.__state == "attack" and self.__index == 0:
                 self.__state = "idle"
-                self.__dx = 0
-                self.__dy = 0
+                self.__movement_direction = NONE
                 self.__timer = 0
 
-        self.image = self.__animations[self.__state][self.__direction][self.__index]
+        self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
+
+        dx, dy = self.__movement_direction.movement_vector
 
         time_per_px = 1000 / WALKING_SPEED
 
@@ -76,7 +77,7 @@ class Player(pygame.sprite.Sprite):
         # because the distance moved on the screen per pixel is that much
         # longer (compare the diagonal length of a pixel to the width/height of
         # a pixel)
-        if self.__dx != 0 and self.__dy != 0:
+        if dx != 0 and dy != 0:
             time_per_px *= sqrt(2)
 
         if self.__state != "attack":
@@ -91,16 +92,16 @@ class Player(pygame.sprite.Sprite):
                 )
 
                 bbox_moved_horizontally = bounding_box_positioned_relative_to_screen.copy()
-                bbox_moved_horizontally.x += GRAPHICS_SCALING_FACTOR * self.__dx
+                bbox_moved_horizontally.x += GRAPHICS_SCALING_FACTOR * dx
                 collides_horizontally = bbox_moved_horizontally.colliderect(enemy.bounding_box)
 
                 bbox_moved_vertically = bounding_box_positioned_relative_to_screen.copy()
-                bbox_moved_vertically.y += GRAPHICS_SCALING_FACTOR * self.__dy
+                bbox_moved_vertically.y += GRAPHICS_SCALING_FACTOR * dy
                 collides_vertically = bbox_moved_vertically.colliderect(enemy.bounding_box)
 
                 bbox_moved_diagonally = bounding_box_positioned_relative_to_screen.copy()
-                bbox_moved_diagonally.x += GRAPHICS_SCALING_FACTOR * self.__dx
-                bbox_moved_diagonally.y += GRAPHICS_SCALING_FACTOR * self.__dy
+                bbox_moved_diagonally.x += GRAPHICS_SCALING_FACTOR * dx
+                bbox_moved_diagonally.y += GRAPHICS_SCALING_FACTOR * dy
                 collides_diagonally = bbox_moved_diagonally.colliderect(enemy.bounding_box)
 
                 # If diagonal movement causes a collision but horizontal and vertical movement
@@ -109,63 +110,50 @@ class Player(pygame.sprite.Sprite):
                 if collides_diagonally and not collides_horizontally and not collides_vertically:
                     continue
 
-                if (not collides_horizontally and (self.__dx < 0 and self.rect.x > MIN_X or
-                        self.__dx > 0 and self.rect.x < MAX_X)):
-                    self.rect.x += GRAPHICS_SCALING_FACTOR * self.__dx
+                if (not collides_horizontally and (dx < 0 and self.rect.x > MIN_X or
+                        dx > 0 and self.rect.x < MAX_X)):
+                    self.rect.x += GRAPHICS_SCALING_FACTOR * dx
 
-                if (not collides_vertically and (self.__dy < 0 and self.rect.y > MIN_Y or
-                        self.__dy > 0 and self.rect.y < MAX_Y)):
-                    self.rect.y += GRAPHICS_SCALING_FACTOR * self.__dy
+                if (not collides_vertically and (dy < 0 and self.rect.y > MIN_Y or
+                        dy > 0 and self.rect.y < MAX_Y)):
+                    self.rect.y += GRAPHICS_SCALING_FACTOR * dy
 
-    def walk(self, vert_direction, horiz_direction):
-        if vert_direction is None and horiz_direction is None:
+    def walk(self, direction):
+        if direction == NONE:
             if self.__state != "idle":
-                self.__dx = 0
-                self.__dy = 0
+                self.__movement_direction = NONE
 
                 if self.__state != "attack":
                     self.__state = "idle"
                     self.__index = 0
-                    self.image = self.__animations[self.__state][self.__direction][self.__index]
+                    self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
                     self.__timer = 0
             return
 
         if self.__state != "attack":
             self.__state = "walk"
-            new_direction = horiz_direction if horiz_direction else vert_direction
-            if self.__direction != new_direction:
-                self.__direction = new_direction
+            if self.__facing_direction != direction.clip_to_four_directions():
+                self.__facing_direction = direction.clip_to_four_directions()
                 self.__index = 0
-                self.image = self.__animations[self.__state][self.__direction][self.__index]
+                self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
                 self.__timer = 0
                 self.__walk_timer = 0
 
-        self.__dx = 0
-        if horiz_direction == "left":
-            self.__dx = -1
-        elif horiz_direction == "right":
-            self.__dx = 1
-
-        self.__dy = 0
-        if vert_direction == "up":
-            self.__dy = -1
-        elif vert_direction == "down":
-            self.__dy = 1
+        self.__movement_direction = direction
 
     def attack(self, enemy):
         if self.__state != "attack":
             self.__state = "attack"
-            self.__dx = 0
-            self.__dy = 0
+            self.__movement_direction = NONE
             self.__index = 0
-            self.image = self.__animations[self.__state][self.__direction][self.__index]
+            self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
             self.__timer = 0
 
             weapon_hitbox_relative_to_screen = pygame.Rect(
-                self.rect.x + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].x,
-                self.rect.y + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].y,
-                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].width,
-                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__direction].height
+                self.rect.x + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].x,
+                self.rect.y + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].y,
+                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].width,
+                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].height
             )
             return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
 
