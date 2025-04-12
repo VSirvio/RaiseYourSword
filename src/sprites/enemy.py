@@ -1,6 +1,5 @@
 import pygame
 
-from config import GRAPHICS_SCALING_FACTOR
 from direction import DOWN, UP, LEFT, RIGHT
 
 BOUNDING_BOX = pygame.Rect((20, 22), (8, 11))
@@ -26,8 +25,8 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
 
         self.rect = self.image.get_rect()
-        self.rect.x = 600
-        self.rect.y = 81
+        self.rect.x = 200
+        self.rect.y = 27
 
         self.__timer = 0
 
@@ -49,10 +48,10 @@ class Enemy(pygame.sprite.Sprite):
                     self.__state = "attack"
 
             weapon_hitbox_relative_to_screen = pygame.Rect(
-                self.rect.x + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].x,
-                self.rect.y + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].y,
-                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].width,
-                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].height
+                self.rect.x + WEAPON_HITBOX[self.__facing_direction].x,
+                self.rect.y + WEAPON_HITBOX[self.__facing_direction].y,
+                WEAPON_HITBOX[self.__facing_direction].width,
+                WEAPON_HITBOX[self.__facing_direction].height
             )
             if (self.__state == "attack" and self.__index == num_of_frames - 1
                     and weapon_hitbox_relative_to_screen.colliderect(player.bounding_box)):
@@ -63,8 +62,8 @@ class Enemy(pygame.sprite.Sprite):
     @property
     def bounding_box(self):
         return pygame.Rect(
-            self.rect.x + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.x,
-            self.rect.y + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y,
-            GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.width,
-            GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.height
+            self.rect.x + BOUNDING_BOX.x,
+            self.rect.y + BOUNDING_BOX.y,
+            BOUNDING_BOX.width,
+            BOUNDING_BOX.height
         )

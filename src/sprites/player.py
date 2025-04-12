@@ -2,19 +2,19 @@ from math import sqrt
 
 import pygame
 
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, GRAPHICS_SCALING_FACTOR
+from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 from direction import NONE, DOWN, UP, LEFT, RIGHT
 from utils import centered
 
 WALKING_SPEED = 75
 
-BOUNDING_BOX = pygame.Rect((11, 6), (26, 37))
+BOUNDING_BOX = pygame.Rect((11, 6), (25, 36))
 
-MIN_X = -GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.x
-MAX_X = DISPLAY_WIDTH - GRAPHICS_SCALING_FACTOR * (BOUNDING_BOX.x + BOUNDING_BOX.width)
+MIN_X = -BOUNDING_BOX.x
+MAX_X = DISPLAY_WIDTH - BOUNDING_BOX.x - BOUNDING_BOX.width
 
-MIN_Y = -GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y
-MAX_Y = DISPLAY_HEIGHT - GRAPHICS_SCALING_FACTOR * (BOUNDING_BOX.y + BOUNDING_BOX.height)
+MIN_Y = -BOUNDING_BOX.y
+MAX_Y = DISPLAY_HEIGHT - BOUNDING_BOX.y - BOUNDING_BOX.height
 
 WEAPON_HITBOX = {
     DOWN: pygame.Rect((0, 24), (48, 24)),
@@ -85,23 +85,23 @@ class Player(pygame.sprite.Sprite):
                 self.__walk_timer -= time_per_px
 
                 bounding_box_positioned_relative_to_screen = pygame.Rect(
-                    self.rect.x + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.x,
-                    self.rect.y + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y,
-                    GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.width,
-                    GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.height
+                    self.rect.x + BOUNDING_BOX.x,
+                    self.rect.y + BOUNDING_BOX.y,
+                    BOUNDING_BOX.width,
+                    BOUNDING_BOX.height
                 )
 
                 bbox_moved_horizontally = bounding_box_positioned_relative_to_screen.copy()
-                bbox_moved_horizontally.x += GRAPHICS_SCALING_FACTOR * dx
+                bbox_moved_horizontally.x += dx
                 collides_horizontally = bbox_moved_horizontally.colliderect(enemy.bounding_box)
 
                 bbox_moved_vertically = bounding_box_positioned_relative_to_screen.copy()
-                bbox_moved_vertically.y += GRAPHICS_SCALING_FACTOR * dy
+                bbox_moved_vertically.y += dy
                 collides_vertically = bbox_moved_vertically.colliderect(enemy.bounding_box)
 
                 bbox_moved_diagonally = bounding_box_positioned_relative_to_screen.copy()
-                bbox_moved_diagonally.x += GRAPHICS_SCALING_FACTOR * dx
-                bbox_moved_diagonally.y += GRAPHICS_SCALING_FACTOR * dy
+                bbox_moved_diagonally.x += dx
+                bbox_moved_diagonally.y += dy
                 collides_diagonally = bbox_moved_diagonally.colliderect(enemy.bounding_box)
 
                 # If diagonal movement causes a collision but horizontal and vertical movement
@@ -112,11 +112,11 @@ class Player(pygame.sprite.Sprite):
 
                 if (not collides_horizontally and (dx < 0 and self.rect.x > MIN_X or
                         dx > 0 and self.rect.x < MAX_X)):
-                    self.rect.x += GRAPHICS_SCALING_FACTOR * dx
+                    self.rect.x += dx
 
                 if (not collides_vertically and (dy < 0 and self.rect.y > MIN_Y or
                         dy > 0 and self.rect.y < MAX_Y)):
-                    self.rect.y += GRAPHICS_SCALING_FACTOR * dy
+                    self.rect.y += dy
 
     def walk(self, direction):
         if direction == NONE:
@@ -150,10 +150,10 @@ class Player(pygame.sprite.Sprite):
             self.__timer = 0
 
             weapon_hitbox_relative_to_screen = pygame.Rect(
-                self.rect.x + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].x,
-                self.rect.y + GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].y,
-                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].width,
-                GRAPHICS_SCALING_FACTOR * WEAPON_HITBOX[self.__facing_direction].height
+                self.rect.x + WEAPON_HITBOX[self.__facing_direction].x,
+                self.rect.y + WEAPON_HITBOX[self.__facing_direction].y,
+                WEAPON_HITBOX[self.__facing_direction].width,
+                WEAPON_HITBOX[self.__facing_direction].height
             )
             return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
 
@@ -162,10 +162,10 @@ class Player(pygame.sprite.Sprite):
     @property
     def bounding_box(self):
         return pygame.Rect(
-            self.rect.x + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.x,
-            self.rect.y + GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.y,
-            GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.width,
-            GRAPHICS_SCALING_FACTOR * BOUNDING_BOX.height
+            self.rect.x + BOUNDING_BOX.x,
+            self.rect.y + BOUNDING_BOX.y,
+            BOUNDING_BOX.width,
+            BOUNDING_BOX.height
         )
 
     @property
