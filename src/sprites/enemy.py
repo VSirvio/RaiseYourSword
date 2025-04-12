@@ -47,12 +47,8 @@ class Enemy(pygame.sprite.Sprite):
                 elif self.__state == "idle" and not player.has_been_defeated:
                     self.__state = "attack"
 
-            weapon_hitbox_relative_to_screen = pygame.Rect(
-                self.rect.x + WEAPON_HITBOX[self.__facing_direction].x,
-                self.rect.y + WEAPON_HITBOX[self.__facing_direction].y,
-                WEAPON_HITBOX[self.__facing_direction].width,
-                WEAPON_HITBOX[self.__facing_direction].height
-            )
+            current_weapon_hitbox = WEAPON_HITBOX[self.__facing_direction]
+            weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
             if (self.__state == "attack" and self.__index == num_of_frames - 1
                     and weapon_hitbox_relative_to_screen.colliderect(player.bounding_box)):
                 player.lose()
@@ -61,9 +57,4 @@ class Enemy(pygame.sprite.Sprite):
 
     @property
     def bounding_box(self):
-        return pygame.Rect(
-            self.rect.x + BOUNDING_BOX.x,
-            self.rect.y + BOUNDING_BOX.y,
-            BOUNDING_BOX.width,
-            BOUNDING_BOX.height
-        )
+        return BOUNDING_BOX.move(self.rect.x, self.rect.y)

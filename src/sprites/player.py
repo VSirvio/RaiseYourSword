@@ -149,24 +149,15 @@ class Player(pygame.sprite.Sprite):
             self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
             self.__timer = 0
 
-            weapon_hitbox_relative_to_screen = pygame.Rect(
-                self.rect.x + WEAPON_HITBOX[self.__facing_direction].x,
-                self.rect.y + WEAPON_HITBOX[self.__facing_direction].y,
-                WEAPON_HITBOX[self.__facing_direction].width,
-                WEAPON_HITBOX[self.__facing_direction].height
-            )
+            current_weapon_hitbox = WEAPON_HITBOX[self.__facing_direction]
+            weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
             return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
 
         return False
 
     @property
     def bounding_box(self):
-        return pygame.Rect(
-            self.rect.x + BOUNDING_BOX.x,
-            self.rect.y + BOUNDING_BOX.y,
-            BOUNDING_BOX.width,
-            BOUNDING_BOX.height
-        )
+        return BOUNDING_BOX.move(self.rect.x, self.rect.y)
 
     @property
     def has_been_defeated(self):
