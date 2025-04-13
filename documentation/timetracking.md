@@ -37,4 +37,6 @@
 |       | 1            | creating the class diagram                                                   |
 |       | 1            | updating specification, changelog and readme                                 |
 | 11.4. | 4            | refactoring direction data into its own class                                |
-| total | 42           |                                                                              |
+| 12.4. | 1            | refactoring the code that applies the graphics scaling constant              |
+|       | 1            | refactoring the animation system                                             |
+| total | 44           |                                                                              |
