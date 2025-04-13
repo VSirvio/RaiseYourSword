@@ -36,4 +36,5 @@
 |       | 1            | fixing issues reported by pylint                                             |
 |       | 1            | creating the class diagram                                                   |
 |       | 1            | updating specification, changelog and readme                                 |
-| total | 38           |                                                                              |
+| 11.4. | 4            | refactoring direction data into its own class                                |
+| total | 42           |                                                                              |
