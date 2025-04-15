@@ -39,4 +39,5 @@
 | 11.4. | 4            | refactoring direction data into its own class                                |
 | 12.4. | 1            | refactoring the code that applies the graphics scaling constant              |
 |       | 1            | refactoring the animation system                                             |
-| total | 44           |                                                                              |
+| 13.4. | 1.5          | refactoring the animation system                                             |
+| total | 45.5         |                                                                              |
