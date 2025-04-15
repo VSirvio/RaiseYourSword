@@ -41,4 +41,9 @@
 |       | 1            | refactoring the animation system                                             |
 | 13.4. | 1.5          | refactoring the animation system                                             |
 | 14.4. | 0.5          | fixing issues reported by pylint                                             |
-| total | 46           |                                                                              |
+| 15.4. | 1            | refactoring the animation system                                             |
+|       | 3            | implementing the enemy AI                                                    |
+|       | 0.5          | writing unit tests for Enemy class                                           |
+|       | 1.5          | creating the sequence diagram                                                |
+|       | 1            | fixing issues reported by pylint                                             |
+| total | 53           |                                                                              |
