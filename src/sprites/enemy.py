@@ -5,6 +5,7 @@ import pygame
 import ai.idle_state
 from config import ENEMY_WALKING_SPEED, ENEMY_TO_PLAYER_MIN_DISTANCE
 from direction import NONE, DOWN, UP, LEFT, RIGHT
+import sprites.character
 
 BOUNDING_BOX = pygame.Rect((20, 22), (8, 11))
 
@@ -15,62 +16,43 @@ WEAPON_HITBOX = {
     RIGHT: pygame.Rect((26, 0), (22, 48))
 }
 
-class Enemy(pygame.sprite.Sprite):
+class Enemy(sprites.character.Character):
     def __init__(self, animations):
-        super().__init__()
-
-        self.__facing_direction = DOWN
-        self.__movement_direction = NONE
-        self.__state = ai.idle_state.IdleState()
-
-        self.__animations = animations
-
-        self.__index = 0
-
-        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
+        super().__init__(animations, ai.idle_state.IdleState())
 
         self.rect = self.image.get_rect()
         self.rect.x = 200
         self.rect.y = 27
 
-        self.__timer = 0
-
-        self.__walk_timer = 0
+    def __update_state(self, state, player):
+        if state is not None:
+            self._state = state
+            self._state.enter(enemy=self, player=player)
 
     def update(self, dt, **kwargs):
         player = kwargs["player"]
 
+        super().update(dt)
+
         dist_x = player.rect.x - self.rect.x
         dist_y = player.rect.y - self.rect.y
         if sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_TO_PLAYER_MIN_DISTANCE:
-            state = self.__state.close_enough_to_player()
-            if state is not None:
-                self.__state = state
-                self.__state.enter(enemy=self, player=player)
+            self.__update_state(self._state.close_enough_to_player(), player)
 
-        state = self.__state.update(dt=dt, enemy=self, player=player)
-        if state is not None:
-            self.__state = state
-            self.__state.enter(enemy=self, player=player)
+        self.__update_state(self._state.update(dt=dt, enemy=self, player=player), player)
 
-        self.__timer += dt
-        self.__walk_timer += dt
+        frametime = 1000 / self._animations[self._state.type]["framerate"]
+        while self._timer >= frametime:
+            self._index = self._next_index()
 
-        frametime = 1000 / self.__animations[self.__state.type]["framerate"]
-        while self.__timer >= frametime:
-            num_of_frames = len(self.__animations[self.__state.type][self.__facing_direction])
-            self.__index = (self.__index + 1) % num_of_frames
-            self.__timer -= frametime
+            if self._index == 0:
+                self.__update_state(self._state.animation_finished(), player)
 
-            if self.__index == 0:
-                state = self.__state.animation_finished()
-                if state is not None:
-                    self.__state = state
-                    self.__state.enter(enemy=self, player=player)
+            self._timer -= frametime
 
-        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
+        self.image = self._animations[self._state.type][self._facing_direction][self._index]
 
-        dx, dy = self.__movement_direction.movement_vector
+        dx, dy = self._movement_direction.movement_vector
 
         time_per_px = 1000 / ENEMY_WALKING_SPEED
 
@@ -82,45 +64,35 @@ class Enemy(pygame.sprite.Sprite):
         if dx != 0 and dy != 0:
             time_per_px *= sqrt(2)
 
-        if self.__state.type != "attack":
-            while self.__walk_timer >= time_per_px:
-                self.__walk_timer -= time_per_px
-                self.rect.x += dx
-                self.rect.y += dy
+        while self._walk_timer >= time_per_px:
+            self._walk_timer -= time_per_px
+            self.rect.x += dx
+            self.rect.y += dy
 
     def walk(self, direction):
-        if direction == NONE:
-            self.__movement_direction = NONE
-            self.__index = 0
-            self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
-            self.__timer = 0
-            return
+        if direction != NONE:
+            self._facing_direction = direction.clip_to_four_directions()
 
-        self.__facing_direction = direction.clip_to_four_directions()
-        self.__index = 0
-        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
-        self.__timer = 0
-        self.__walk_timer = 0
+        self._movement_direction = direction
 
-        self.__movement_direction = direction
+        self._reset_animation()
 
     def attack(self, player):
         angle = atan2(self.rect.y - player.rect.y, player.rect.x - self.rect.x)
         if -3*pi/4 <= angle < -pi/4:
-            self.__facing_direction = DOWN
+            self._facing_direction = DOWN
         elif -pi/4 <= angle < pi/4:
-            self.__facing_direction = RIGHT
+            self._facing_direction = RIGHT
         elif pi/4 <= angle < 3*pi/4:
-            self.__facing_direction = UP
+            self._facing_direction = UP
         else:
-            self.__facing_direction = LEFT
+            self._facing_direction = LEFT
 
-        self.__movement_direction = NONE
-        self.__index = 0
-        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
-        self.__timer = 0
+        self._movement_direction = NONE
 
-        current_weapon_hitbox = WEAPON_HITBOX[self.__facing_direction]
+        self._reset_animation()
+
+        current_weapon_hitbox = WEAPON_HITBOX[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         return weapon_hitbox_relative_to_screen.colliderect(player.bounding_box)
 
@@ -130,4 +102,4 @@ class Enemy(pygame.sprite.Sprite):
 
     @property
     def hit_the_player(self):
-        return self.__state.type == "attack" and self.__state.player_was_hit
+        return self._state.type == "attack" and self._state.player_was_hit

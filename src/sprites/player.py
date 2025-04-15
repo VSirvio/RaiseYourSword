@@ -4,6 +4,7 @@ import pygame
 
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 from direction import NONE, DOWN, UP, LEFT, RIGHT
+import sprites.character
 import states.idle_state
 from utils import centered
 
@@ -24,21 +25,11 @@ WEAPON_HITBOX = {
     RIGHT: pygame.Rect((24, 0), (24, 48))
 }
 
-class Player(pygame.sprite.Sprite):
+class Player(sprites.character.Character):
     def __init__(self, animations):
-        super().__init__()
+        super().__init__(animations, states.idle_state.IdleState())
 
-        self.__has_been_defeated = False
-
-        self.__facing_direction = DOWN
-        self.__movement_direction = NONE
-        self.__state = states.idle_state.IdleState()
-
-        self.__animations = animations
-
-        self.__index = 0
-
-        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
+        self._has_been_defeated = False
 
         image_rect = self.image.get_rect()
         self.rect = centered(image_rect, canvas_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
@@ -46,31 +37,28 @@ class Player(pygame.sprite.Sprite):
         # Set starting position a bit off the center (it looks nicer that way)
         self.rect.y -= 21
 
-        self.__timer = 0
-
-        self.__walk_timer = 0
+    def __update_state(self, state, enemy):
+        if state is not None:
+            self._state = state
+            self._state.enter(player=self, enemy=enemy)
 
     def update(self, dt, **kwargs):
         enemy = kwargs["enemy"]
 
-        self.__timer += dt
-        self.__walk_timer += dt
+        super().update(dt)
 
-        frametime = 1000 / self.__animations[self.__state.type]["framerate"]
-        while self.__timer >= frametime:
-            num_of_frames = len(self.__animations[self.__state.type][self.__facing_direction])
-            self.__index = (self.__index + 1) % num_of_frames
-            self.__timer -= frametime
+        frametime = 1000 / self._animations[self._state.type]["framerate"]
+        while self._timer >= frametime:
+            self._index = self._next_index()
 
-            if self.__index == 0:
-                state = self.__state.animation_finished()
-                if state is not None:
-                    self.__state = state
-                    self.__state.enter(player=self, enemy=enemy)
+            if self._index == 0:
+                self.__update_state(self._state.animation_finished(), enemy)
 
-        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
+            self._timer -= frametime
 
-        dx, dy = self.__movement_direction.movement_vector
+        self.image = self._animations[self._state.type][self._facing_direction][self._index]
+
+        dx, dy = self._movement_direction.movement_vector
 
         time_per_px = 1000 / WALKING_SPEED
 
@@ -82,73 +70,61 @@ class Player(pygame.sprite.Sprite):
         if dx != 0 and dy != 0:
             time_per_px *= sqrt(2)
 
-        if self.__state.type != "attack":
-            while self.__walk_timer >= time_per_px:
-                self.__walk_timer -= time_per_px
+        while self._walk_timer >= time_per_px:
+            self._walk_timer -= time_per_px
 
-                bounding_box_positioned_relative_to_screen = pygame.Rect(
-                    self.rect.x + BOUNDING_BOX.x,
-                    self.rect.y + BOUNDING_BOX.y,
-                    BOUNDING_BOX.width,
-                    BOUNDING_BOX.height
-                )
+            bounding_box_positioned_relative_to_screen = pygame.Rect(
+                self.rect.x + BOUNDING_BOX.x,
+                self.rect.y + BOUNDING_BOX.y,
+                BOUNDING_BOX.width,
+                BOUNDING_BOX.height
+            )
 
-                bbox_moved_horizontally = bounding_box_positioned_relative_to_screen.copy()
-                bbox_moved_horizontally.x += dx
-                collides_horizontally = bbox_moved_horizontally.colliderect(enemy.bounding_box)
+            bbox_moved_horizontally = bounding_box_positioned_relative_to_screen.copy()
+            bbox_moved_horizontally.x += dx
+            collides_horizontally = bbox_moved_horizontally.colliderect(enemy.bounding_box)
 
-                bbox_moved_vertically = bounding_box_positioned_relative_to_screen.copy()
-                bbox_moved_vertically.y += dy
-                collides_vertically = bbox_moved_vertically.colliderect(enemy.bounding_box)
+            bbox_moved_vertically = bounding_box_positioned_relative_to_screen.copy()
+            bbox_moved_vertically.y += dy
+            collides_vertically = bbox_moved_vertically.colliderect(enemy.bounding_box)
 
-                bbox_moved_diagonally = bounding_box_positioned_relative_to_screen.copy()
-                bbox_moved_diagonally.x += dx
-                bbox_moved_diagonally.y += dy
-                collides_diagonally = bbox_moved_diagonally.colliderect(enemy.bounding_box)
+            bbox_moved_diagonally = bounding_box_positioned_relative_to_screen.copy()
+            bbox_moved_diagonally.x += dx
+            bbox_moved_diagonally.y += dy
+            collides_diagonally = bbox_moved_diagonally.colliderect(enemy.bounding_box)
 
-                # If diagonal movement causes a collision but horizontal and vertical movement
-                # don't (i.e. the corner of the bounding box collides exactly to the corner of the
-                # other bounding box), then don't move the player character
-                if collides_diagonally and not collides_horizontally and not collides_vertically:
-                    continue
+            # If diagonal movement causes a collision but horizontal and vertical movement
+            # don't (i.e. the corner of the bounding box collides exactly to the corner of the
+            # other bounding box), then don't move the player character
+            if collides_diagonally and not collides_horizontally and not collides_vertically:
+                continue
 
-                if (not collides_horizontally and (dx < 0 and self.rect.x > MIN_X or
-                        dx > 0 and self.rect.x < MAX_X)):
-                    self.rect.x += dx
+            if (not collides_horizontally and (dx < 0 and self.rect.x > MIN_X or
+                    dx > 0 and self.rect.x < MAX_X)):
+                self.rect.x += dx
 
-                if (not collides_vertically and (dy < 0 and self.rect.y > MIN_Y or
-                        dy > 0 and self.rect.y < MAX_Y)):
-                    self.rect.y += dy
+            if (not collides_vertically and (dy < 0 and self.rect.y > MIN_Y or
+                    dy > 0 and self.rect.y < MAX_Y)):
+                self.rect.y += dy
 
     def handle_input(self, event, direction_pressed, enemy):
-        state = self.__state.handle_input(event=event, direction_pressed=direction_pressed)
-        if state is not None:
-            self.__state = state
-            self.__state.enter(player=self, enemy=enemy)
+        new_state = self._state.handle_input(event=event, direction_pressed=direction_pressed)
+        self.__update_state(new_state, enemy)
 
     def walk(self, direction):
-        if direction == NONE:
-            self.__movement_direction = NONE
-            self.__index = 0
-            self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
-            self.__timer = 0
-            return
+        if direction != NONE:
+            self._facing_direction = direction.clip_to_four_directions()
 
-        self.__facing_direction = direction.clip_to_four_directions()
-        self.__index = 0
-        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
-        self.__timer = 0
-        self.__walk_timer = 0
+        self._movement_direction = direction
 
-        self.__movement_direction = direction
+        self._reset_animation()
 
     def attack(self, enemy):
-        self.__movement_direction = NONE
-        self.__index = 0
-        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
-        self.__timer = 0
+        self._movement_direction = NONE
 
-        current_weapon_hitbox = WEAPON_HITBOX[self.__facing_direction]
+        self._reset_animation()
+
+        current_weapon_hitbox = WEAPON_HITBOX[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
 
@@ -158,16 +134,13 @@ class Player(pygame.sprite.Sprite):
 
     @property
     def has_been_defeated(self):
-        return self.__has_been_defeated
+        return self._has_been_defeated
 
     def lose(self):
-        self.__has_been_defeated = True
+        self._has_been_defeated = True
 
-        state = self.__state.has_been_defeated()
-        if state is not None:
-            self.__state = state
-            self.__state.enter(player=self)
+        self.__update_state(self._state.has_been_defeated(), None)
 
     @property
     def hit_an_enemy(self):
-        return self.__state.type == "attack" and self.__state.enemy_was_hit
+        return self._state.type == "attack" and self._state.enemy_was_hit
