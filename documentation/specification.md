@@ -16,12 +16,12 @@ The application is a 2D fantasy action game viewed from a top-down perspective. 
   - [**done**] Has a grass texture as a background
 - Enemies:
   - Emerge from off-screen
-  - Can move to eight directions
+  - [**done**] Can move to eight directions
   - [**done**] Can attack, which will defeat the player with one hit, if the player is in front of them (the text "Game over" appears on the screen, when the player is defeated)
-  - Are controlled by the game:
-    - Try to hit the player with their attacks
-  - Have graphics:
-    - [**partially done**] Animations for standing idle, walking and attacking (all animations have variations for each of the four main directions)
+  - [**done**] Are controlled by the game:
+    - [**done**] Try to hit the player with their attacks
+  - [**done**] Have graphics:
+    - [**done**] Animations for standing idle, walking and attacking (all animations have variations for each of the four main directions)
   - [**done**] When the player has defeated all the enemies in the horde, the player wins the game (the text "You have won" appears on the screen)
 
 ## Extension ideas
