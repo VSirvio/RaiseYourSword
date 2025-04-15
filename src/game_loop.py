@@ -29,20 +29,12 @@ class GameLoop:
             if event.type == pygame.QUIT:
                 return False
 
-            if self.__game.finished:
-                continue
-
             self.__arrow_keys.handle(event)
 
-            if event.type == pygame.KEYDOWN and event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT):
-                self.__game.attack()
-
-        if self.__game.finished:
-            self.__arrow_keys.release_all()
+            if not self.__game.finished:
+                self.__game.handle_input(event, self.__arrow_keys.current_direction)
 
         return True
 
     def __update(self):
-        self.__game.walk(self.__arrow_keys.current_direction)
-
         self.__game.update(self.__dt)

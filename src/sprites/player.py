@@ -4,6 +4,7 @@ import pygame
 
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 from direction import NONE, DOWN, UP, LEFT, RIGHT
+import states.idle_state
 from utils import centered
 
 WALKING_SPEED = 75
@@ -31,13 +32,13 @@ class Player(pygame.sprite.Sprite):
 
         self.__facing_direction = DOWN
         self.__movement_direction = NONE
-        self.__state = "idle"
+        self.__state = states.idle_state.IdleState()
 
         self.__animations = animations
 
         self.__index = 0
 
-        self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
+        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
 
         image_rect = self.image.get_rect()
         self.rect = centered(image_rect, canvas_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
@@ -55,18 +56,19 @@ class Player(pygame.sprite.Sprite):
         self.__timer += dt
         self.__walk_timer += dt
 
-        frametime = 1000 / self.__animations[self.__state]["framerate"]
+        frametime = 1000 / self.__animations[self.__state.type]["framerate"]
         while self.__timer >= frametime:
-            num_of_frames = len(self.__animations[self.__state][self.__facing_direction])
+            num_of_frames = len(self.__animations[self.__state.type][self.__facing_direction])
             self.__index = (self.__index + 1) % num_of_frames
             self.__timer -= frametime
 
-            if self.__state == "attack" and self.__index == 0:
-                self.__state = "idle"
-                self.__movement_direction = NONE
-                self.__timer = 0
+            if self.__index == 0:
+                state = self.__state.animation_finished()
+                if state is not None:
+                    self.__state = state
+                    self.__state.enter(player=self, enemy=enemy)
 
-        self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
+        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
 
         dx, dy = self.__movement_direction.movement_vector
 
@@ -80,7 +82,7 @@ class Player(pygame.sprite.Sprite):
         if dx != 0 and dy != 0:
             time_per_px *= sqrt(2)
 
-        if self.__state != "attack":
+        if self.__state.type != "attack":
             while self.__walk_timer >= time_per_px:
                 self.__walk_timer -= time_per_px
 
@@ -118,42 +120,45 @@ class Player(pygame.sprite.Sprite):
                         dy > 0 and self.rect.y < MAX_Y)):
                     self.rect.y += dy
 
+    def handle_input(self, event, direction_pressed, enemy):
+        state = self.__state.handle_input(event=event, direction_pressed=direction_pressed)
+        if state is not None:
+            self.__state = state
+            self.__state.enter(player=self, enemy=enemy)
+
     def walk(self, direction):
         if direction == NONE:
-            if self.__state != "idle":
-                self.__movement_direction = NONE
-
-                if self.__state != "attack":
-                    self.__state = "idle"
-                    self.__index = 0
-                    self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
-                    self.__timer = 0
+            self.__movement_direction = NONE
+            self.__index = 0
+            self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
+            self.__timer = 0
             return
 
-        if self.__state != "attack":
-            self.__state = "walk"
-            if self.__facing_direction != direction.clip_to_four_directions():
-                self.__facing_direction = direction.clip_to_four_directions()
-                self.__index = 0
-                self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
-                self.__timer = 0
-                self.__walk_timer = 0
+        self.__facing_direction = direction.clip_to_four_directions()
+        self.__index = 0
+        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
+        self.__timer = 0
+        self.__walk_timer = 0
 
         self.__movement_direction = direction
 
     def attack(self, enemy):
-        if self.__state != "attack":
-            self.__state = "attack"
-            self.__movement_direction = NONE
-            self.__index = 0
-            self.image = self.__animations[self.__state][self.__facing_direction][self.__index]
-            self.__timer = 0
+        self.__movement_direction = NONE
+        self.__index = 0
+        self.image = self.__animations[self.__state.type][self.__facing_direction][self.__index]
+        self.__timer = 0
 
-            current_weapon_hitbox = WEAPON_HITBOX[self.__facing_direction]
-            weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
-            return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
+        current_weapon_hitbox = WEAPON_HITBOX[self.__facing_direction]
+        weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
+        return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
 
-        return False
+    def idle(self):
+        # TODO: This whole method is just a quick hack to make the new animation system work
+        # correctly when the player defeats the enemy. Currently without using this the player gets
+        # stuck to the walking animation if the enemy is defeated while pressing down some key that
+        # makes the player character walk (i.e. WASD or arrow key).
+        if self.__state.type == "attack":
+            self.__state.handle_input(direction_pressed=NONE)
 
     @property
     def bounding_box(self):
@@ -165,3 +170,12 @@ class Player(pygame.sprite.Sprite):
 
     def lose(self):
         self.__has_been_defeated = True
+
+        state = self.__state.has_been_defeated()
+        if state is not None:
+            self.__state = state
+            self.__state.enter(player=self)
+
+    @property
+    def hit_an_enemy(self):
+        return self.__state.type == "attack" and self.__state.enemy_was_hit

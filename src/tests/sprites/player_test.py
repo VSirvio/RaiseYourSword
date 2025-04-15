@@ -16,13 +16,21 @@ class StubEnemy:
         return self.__bounding_box
 
 
-class TestPlayer(unittest.TestCase):
-    def __turn_to_direction(self, player, new_direction):
-        # Turn player to the given direction by activating walking to that direction and then
-        # stopping walking
-        player.walk(new_direction)
-        player.walk(NONE)
+class StubEvent:
+    def __init__(self, event_type, key):
+        self.__type = event_type
+        self.__key = key
 
+    @property
+    def type(self):
+        return self.__type
+
+    @property
+    def key(self):
+        return self.__key
+
+
+class TestPlayer(unittest.TestCase):
     def setUp(self):
         self.animations = {
             "idle": {
@@ -48,6 +56,22 @@ class TestPlayer(unittest.TestCase):
             }
         }
         self.enemy = StubEnemy(bounding_box=pygame.Rect(0, 0, 0, 0))
+        self.empty_event = StubEvent(None, None)
+        self.__walk_direction = NONE
+
+    def __turn_to_direction(self, player, new_direction):
+        # Turn player to the given direction by activating walking to that direction and then
+        # stopping walking
+        player.handle_input(self.empty_event, new_direction, None)
+        player.handle_input(self.empty_event, NONE, None)
+        self.__walk_direction = NONE
+
+    def __walk_to_direction(self, player, direction):
+        self.__walk_direction = direction
+        player.handle_input(self.empty_event, self.__walk_direction, None)
+
+    def __attack_an_enemy(self, player, enemy):
+        player.handle_input(StubEvent(pygame.KEYDOWN, pygame.K_LSHIFT), self.__walk_direction, enemy)
 
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
@@ -65,7 +89,7 @@ class TestPlayer(unittest.TestCase):
             player = Player(self.animations)
             starting_position = {"x": player.rect.x, "y": player.rect.y}
 
-            player.walk(walk_direction)
+            self.__walk_to_direction(player, walk_direction)
             player.update(dt=1000, enemy=self.enemy)
 
             with self.subTest(direction=walk_direction):
@@ -88,7 +112,7 @@ class TestPlayer(unittest.TestCase):
             player = Player(self.animations)
             self.__turn_to_direction(player, direction)
 
-            player.attack(self.enemy)
+            self.__attack_an_enemy(player, self.enemy)
 
             for frame in range(len(self.animations["attack"][direction])):
                 with self.subTest(direction=direction, frame=frame):
@@ -102,9 +126,9 @@ class TestPlayer(unittest.TestCase):
                 starting_position = {"x": player.rect.x, "y": player.rect.y}
 
                 self.__turn_to_direction(player, attack_direction)
-                player.attack(self.enemy)
+                self.__attack_an_enemy(player, self.enemy)
 
-                player.walk(walk_direction)
+                self.__walk_to_direction(player, walk_direction)
 
                 attack_frame_count = len(self.animations["attack"][attack_direction])
                 attack_single_frame_duration = 1000 / self.animations["attack"]["framerate"]

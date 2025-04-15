@@ -98,18 +98,15 @@ class Game:
     def update(self, dt):
         self.__all_sprites.update(dt, player=self.__player, enemy=self.__enemy)
 
-        if self.__player.has_been_defeated:
+        if not self.__finished and (self.__player.has_been_defeated or self.__player.hit_an_enemy):
+            if self.__player.hit_an_enemy:
+                self.__characters.remove(self.__enemy)
+                self.__all_sprites.remove(self.__enemy)
+            self.__player.idle()
             self.__finished = True
 
-    def walk(self, direction):
-        self.__player.walk(direction)
-
-    def attack(self):
-        enemy_was_hit = self.__player.attack(self.__enemy)
-        if enemy_was_hit:
-            self.__characters.remove(self.__enemy)
-            self.__all_sprites.remove(self.__enemy)
-            self.__finished = True
+    def handle_input(self, event, direction_pressed):
+        self.__player.handle_input(event, direction_pressed, self.__enemy)
 
     @property
     def finished(self):
