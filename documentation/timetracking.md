@@ -40,4 +40,5 @@
 | 12.4. | 1            | refactoring the code that applies the graphics scaling constant              |
 |       | 1            | refactoring the animation system                                             |
 | 13.4. | 1.5          | refactoring the animation system                                             |
-| total | 45.5         |                                                                              |
+| 14.4. | 0.5          | fixing issues reported by pylint                                             |
+| total | 46           |                                                                              |
