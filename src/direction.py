@@ -1,11 +1,11 @@
-from enum import StrEnum
+from enum import Enum
 
-class VerticalDirection(StrEnum):
+class VerticalDirection(Enum):
     DOWN = "DOWN"
     NONE = "NONE"
     UP = "UP"
 
-class HorizontalDirection(StrEnum):
+class HorizontalDirection(Enum):
     LEFT = "LEFT"
     NONE = "NONE"
     RIGHT = "RIGHT"
