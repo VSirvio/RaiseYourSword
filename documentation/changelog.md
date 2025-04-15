@@ -25,3 +25,12 @@
 - The player can lose the game by being hit by the enemy's attack and after that a screen with the text `Game over` is displayed
 - Tested that the attack animation is played correctly when the player character is attacking
 - Tested that the player cannot move while attacking
+
+## Week 5
+
+- Refactored direction data structures into a separate `Direction` class
+- Refactored directional key tracking into a separate `ArrowKeys` class
+- Refactored graphics scaling factor to be only applied once, inside the `Renderer` class
+- Refactored animations to use `State` design pattern
+- Added an AI to the enemy that allows them to chase the player and try to attack them
+- Tested that the enemy moves
