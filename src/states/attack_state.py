@@ -22,7 +22,7 @@ class AttackState:
         self.__direction_pressed = kwargs["direction_pressed"]
 
     def animation_finished(self):
-        if self.__direction_pressed == direction.NONE:
+        if self.__enemy_was_hit or self.__direction_pressed == direction.NONE:
             return states.idle_state.IdleState()
         return states.walk_state.WalkState(self.__direction_pressed)
 

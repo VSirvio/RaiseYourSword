@@ -78,6 +78,10 @@ DOWN = Direction(VerticalDirection.DOWN, HorizontalDirection.NONE)
 UP = Direction(VerticalDirection.UP, HorizontalDirection.NONE)
 LEFT = Direction(VerticalDirection.NONE, HorizontalDirection.LEFT)
 RIGHT = Direction(VerticalDirection.NONE, HorizontalDirection.RIGHT)
+DOWN_LEFT = Direction(VerticalDirection.DOWN, HorizontalDirection.LEFT)
+DOWN_RIGHT = Direction(VerticalDirection.DOWN, HorizontalDirection.RIGHT)
+UP_LEFT = Direction(VerticalDirection.UP, HorizontalDirection.LEFT)
+UP_RIGHT = Direction(VerticalDirection.UP, HorizontalDirection.RIGHT)
 
 ALL = []
 for vert_component in VerticalDirection:

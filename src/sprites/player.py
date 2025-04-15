@@ -152,14 +152,6 @@ class Player(pygame.sprite.Sprite):
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
 
-    def idle(self):
-        # TODO: This whole method is just a quick hack to make the new animation system work
-        # correctly when the player defeats the enemy. Currently without using this the player gets
-        # stuck to the walking animation if the enemy is defeated while pressing down some key that
-        # makes the player character walk (i.e. WASD or arrow key).
-        if self.__state.type == "attack":
-            self.__state.handle_input(direction_pressed=NONE)
-
     @property
     def bounding_box(self):
         return BOUNDING_BOX.move(self.rect.x, self.rect.y)
