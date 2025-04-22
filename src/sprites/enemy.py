@@ -7,8 +7,6 @@ from config import ENEMY_WALKING_SPEED, ENEMY_TO_PLAYER_MIN_DISTANCE
 from direction import NONE, DOWN, UP, LEFT, RIGHT
 import sprites.character
 
-BOUNDING_BOX = pygame.Rect((20, 22), (8, 11))
-
 WEAPON_HITBOX = {
     DOWN: pygame.Rect((0, 26), (48, 22)),
     UP: pygame.Rect((0, 0), (48, 22)),
@@ -17,12 +15,14 @@ WEAPON_HITBOX = {
 }
 
 class Enemy(sprites.character.Character):
-    def __init__(self, animations):
+    def __init__(self, animations, bounding_box):
         super().__init__(animations, ai.idle_state.IdleState())
 
         self.rect = self.image.get_rect()
         self.rect.x = 200
         self.rect.y = 27
+
+        self.__bounding_box = bounding_box
 
     def __update_state(self, state, player):
         if state is not None:
@@ -98,7 +98,7 @@ class Enemy(sprites.character.Character):
 
     @property
     def bounding_box(self):
-        return BOUNDING_BOX.move(self.rect.x, self.rect.y)
+        return self.__bounding_box.move(self.rect.x, self.rect.y)
 
     @property
     def hit_the_player(self):

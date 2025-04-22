@@ -34,29 +34,32 @@ class Game:
                 RIGHT: load_animation("warrior", 11, 6)
             }
         })
-        self.__enemy = Enemy({
-            "idle": {
-                "framerate": 4,
-                DOWN: load_animation("skeleton", 0, 6),
-                UP: load_animation("skeleton", 1, 6),
-                LEFT: load_animation("skeleton", 2, 6),
-                RIGHT: load_animation("skeleton", 3, 6)
+        self.__enemy = Enemy(
+            animations={
+                "idle": {
+                    "framerate": 4,
+                    DOWN: load_animation("skeleton", 0, 6),
+                    UP: load_animation("skeleton", 1, 6),
+                    LEFT: load_animation("skeleton", 2, 6),
+                    RIGHT: load_animation("skeleton", 3, 6)
+                },
+                "walk": {
+                    "framerate": 12,
+                    DOWN: load_animation("skeleton", 4, 6),
+                    UP: load_animation("skeleton", 5, 6),
+                    LEFT: load_animation("skeleton", 6, 6),
+                    RIGHT: load_animation("skeleton", 7, 6)
+                },
+                "attack": {
+                    "framerate": 10,
+                    DOWN: load_animation("skeleton", 8, 8),
+                    UP: load_animation("skeleton", 9, 8),
+                    LEFT: load_animation("skeleton", 10, 8),
+                    RIGHT: load_animation("skeleton", 11, 8)
+                }
             },
-            "walk": {
-                "framerate": 12,
-                DOWN: load_animation("skeleton", 4, 6),
-                UP: load_animation("skeleton", 5, 6),
-                LEFT: load_animation("skeleton", 6, 6),
-                RIGHT: load_animation("skeleton", 7, 6)
-            },
-            "attack": {
-                "framerate": 10,
-                DOWN: load_animation("skeleton", 8, 8),
-                UP: load_animation("skeleton", 9, 8),
-                LEFT: load_animation("skeleton", 10, 8),
-                RIGHT: load_animation("skeleton", 11, 8)
-            }
-        })
+            bounding_box=pygame.Rect((20, 22), (8, 11))
+        )
 
         self.__characters = pygame.sprite.Group(self.__player, self.__enemy)
 
