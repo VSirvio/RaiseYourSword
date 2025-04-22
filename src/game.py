@@ -58,7 +58,13 @@ class Game:
                     RIGHT: load_animation("skeleton", 11, 8)
                 }
             },
-            bounding_box=pygame.Rect((20, 22), (8, 11))
+            bounding_box=pygame.Rect((20, 22), (8, 11)),
+            weapon_hitbox={
+                DOWN: pygame.Rect((0, 26), (48, 22)),
+                UP: pygame.Rect((0, 0), (48, 22)),
+                LEFT: pygame.Rect((0, 0), (22, 48)),
+                RIGHT: pygame.Rect((26, 0), (22, 48))
+            }
         )
 
         self.__characters = pygame.sprite.Group(self.__player, self.__enemy)

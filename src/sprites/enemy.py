@@ -1,21 +1,12 @@
 from math import atan2, pi, sqrt
 
-import pygame
-
 import ai.idle_state
 from config import ENEMY_WALKING_SPEED, ENEMY_TO_PLAYER_MIN_DISTANCE
 from direction import NONE, DOWN, UP, LEFT, RIGHT
 import sprites.character
 
-WEAPON_HITBOX = {
-    DOWN: pygame.Rect((0, 26), (48, 22)),
-    UP: pygame.Rect((0, 0), (48, 22)),
-    LEFT: pygame.Rect((0, 0), (22, 48)),
-    RIGHT: pygame.Rect((26, 0), (22, 48))
-}
-
 class Enemy(sprites.character.Character):
-    def __init__(self, animations, bounding_box):
+    def __init__(self, animations, bounding_box, weapon_hitbox):
         super().__init__(animations, ai.idle_state.IdleState())
 
         self.rect = self.image.get_rect()
@@ -23,6 +14,7 @@ class Enemy(sprites.character.Character):
         self.rect.y = 27
 
         self.__bounding_box = bounding_box
+        self.__weapon_hitbox = weapon_hitbox
 
     def __update_state(self, state, player):
         if state is not None:
@@ -92,7 +84,7 @@ class Enemy(sprites.character.Character):
 
         self._reset_animation()
 
-        current_weapon_hitbox = WEAPON_HITBOX[self._facing_direction]
+        current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         return weapon_hitbox_relative_to_screen.colliderect(player.bounding_box)
 
