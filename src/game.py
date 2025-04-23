@@ -41,7 +41,11 @@ class Game:
                 UP: pygame.Rect((0, 0), (48, 24)),
                 LEFT: pygame.Rect((0, 0), (24, 48)),
                 RIGHT: pygame.Rect((24, 0), (24, 48))
-            }
+            },
+            starting_position=(
+                (DISPLAY_WIDTH - 48) // 2,
+                (DISPLAY_HEIGHT - 48) // 2 - 7
+            )
         )
         self.__enemy = Enemy(
             animations={

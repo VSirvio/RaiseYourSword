@@ -5,14 +5,6 @@ import pygame
 
 dirname = os.path.dirname(__file__)
 
-def centered(rect, canvas_size):
-    canvas_width, canvas_height = canvas_size
-
-    x_coordinate = (canvas_width - rect.width) // 2
-    y_coordinate = (canvas_height - rect.height) // 2
-
-    return pygame.Rect(x_coordinate, y_coordinate, rect.width, rect.height)
-
 def fill_with_tile(canvas, tile):
     for x in range(math.ceil(canvas.get_width() / tile.get_width())):
         for y in range(math.ceil(canvas.get_height() / tile.get_height())):

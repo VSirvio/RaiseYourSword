@@ -4,21 +4,17 @@ from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 from direction import NONE
 import sprites.character
 import states.idle_state
-from utils import centered
 
 WALKING_SPEED = 75
 
 class Player(sprites.character.Character):
-    def __init__(self, animations, bounding_box, weapon_hitbox):
+    def __init__(self, animations, bounding_box, weapon_hitbox, starting_position):
         super().__init__(animations, states.idle_state.IdleState())
 
         self._has_been_defeated = False
 
-        image_rect = self.image.get_rect()
-        self.rect = centered(image_rect, canvas_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
-
-        # Set starting position a bit off the center (it looks nicer that way)
-        self.rect.y -= 21
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = starting_position
 
         self.__bounding_box = bounding_box
 
