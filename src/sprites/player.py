@@ -26,6 +26,8 @@ class Player(sprites.character.Character):
 
         self.__walking_speed = walking_speed
 
+        self.__direction_controlled_toward = NONE
+
     def __update_state(self, state, enemy):
         if state is not None:
             self._state = state
@@ -41,7 +43,7 @@ class Player(sprites.character.Character):
             self._index = self._next_index()
 
             if self._index == 0:
-                self.__update_state(self._state.animation_finished(), enemy)
+                self.__update_state(self._state.animation_finished(self), enemy)
 
             self._timer -= frametime
 
@@ -90,6 +92,8 @@ class Player(sprites.character.Character):
                 self.rect.y += dy
 
     def handle_input(self, event, direction_pressed, enemy):
+        self.__direction_controlled_toward = direction_pressed
+
         new_state = self._state.handle_input(event=event, direction_pressed=direction_pressed)
         self.__update_state(new_state, enemy)
 
@@ -99,6 +103,10 @@ class Player(sprites.character.Character):
         current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
+
+    @property
+    def direction_controlled_toward(self):
+        return self.__direction_controlled_toward
 
     @property
     def bounding_box(self):

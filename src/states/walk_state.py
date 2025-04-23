@@ -24,7 +24,7 @@ class WalkState:
         direction_pressed = kwargs["direction_pressed"]
 
         if event.type == pygame.KEYDOWN and event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT):
-            return states.attack_state.AttackState(direction_pressed)
+            return states.attack_state.AttackState()
 
         if direction_pressed != self.__direction:
             if direction_pressed == direction.NONE:
@@ -33,7 +33,7 @@ class WalkState:
 
         return None
 
-    def animation_finished(self):
+    def animation_finished(self, player):
         return None
 
     def has_been_defeated(self):

@@ -7,9 +7,8 @@ import states.walk_state   # pylint: disable=cyclic-import
 # and state2 would also need to import state1).
 
 class AttackState:
-    def __init__(self, direction_pressed):
+    def __init__(self):
         self.__enemy_was_hit = False
-        self.__direction_pressed = direction_pressed
 
     @property
     def type(self):
@@ -19,12 +18,12 @@ class AttackState:
         self.__enemy_was_hit = kwargs["player"].attack(kwargs["enemy"])
 
     def handle_input(self, **kwargs):
-        self.__direction_pressed = kwargs["direction_pressed"]
+        return None
 
-    def animation_finished(self):
-        if self.__enemy_was_hit or self.__direction_pressed == direction.NONE:
+    def animation_finished(self, player):
+        if self.__enemy_was_hit or player.direction_controlled_toward == direction.NONE:
             return states.idle_state.IdleState()
-        return states.walk_state.WalkState(self.__direction_pressed)
+        return states.walk_state.WalkState(player.direction_controlled_toward)
 
     def has_been_defeated(self):
         return states.idle_state.IdleState()
