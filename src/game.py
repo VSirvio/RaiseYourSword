@@ -1,7 +1,7 @@
 import pygame
 from pygame import Color
 
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
+from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED, ENEMY_TO_PLAYER_MIN_DISTANCE
 from direction import DOWN, UP, LEFT, RIGHT
 from sprites.background import Background
 from sprites.enemy import Enemy
@@ -66,7 +66,8 @@ class Game:
                 RIGHT: pygame.Rect((26, 0), (22, 48))
             },
             starting_position=(200, 27),
-            walking_speed=ENEMY_WALKING_SPEED
+            walking_speed=ENEMY_WALKING_SPEED,
+            minimum_distance_to_player=ENEMY_TO_PLAYER_MIN_DISTANCE
         )
 
         self.__characters = pygame.sprite.Group(self.__player, self.__enemy)

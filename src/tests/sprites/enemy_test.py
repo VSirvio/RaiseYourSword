@@ -52,13 +52,14 @@ class TestEnemy(unittest.TestCase):
         }
         self.starting_position = (200, 27)
         self.walking_speed = 50
+        self.minimum_distance_to_player = 35
 
         self.player = StubPlayer(rect=pygame.Rect(0, 0, 0, 0))
 
     def test_enemy_moves(self):
         enemy = Enemy(
             self.animations, self.bounding_box, self.weapon_hitbox, self.starting_position,
-            self.walking_speed
+            self.walking_speed, self.minimum_distance_to_player
         )
         starting_position = (enemy.rect.x, enemy.rect.y)
 
