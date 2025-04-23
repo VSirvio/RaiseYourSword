@@ -73,22 +73,15 @@ class Player(sprites.character.Character):
         while self._walk_timer >= time_per_px:
             self._walk_timer -= time_per_px
 
-            bounding_box_positioned_relative_to_screen = pygame.Rect(
-                self.rect.x + BOUNDING_BOX.x,
-                self.rect.y + BOUNDING_BOX.y,
-                BOUNDING_BOX.width,
-                BOUNDING_BOX.height
-            )
-
-            bbox_moved_horizontally = bounding_box_positioned_relative_to_screen.copy()
+            bbox_moved_horizontally = self.bounding_box.copy()
             bbox_moved_horizontally.x += dx
             collides_horizontally = bbox_moved_horizontally.colliderect(enemy.bounding_box)
 
-            bbox_moved_vertically = bounding_box_positioned_relative_to_screen.copy()
+            bbox_moved_vertically = self.bounding_box.copy()
             bbox_moved_vertically.y += dy
             collides_vertically = bbox_moved_vertically.colliderect(enemy.bounding_box)
 
-            bbox_moved_diagonally = bounding_box_positioned_relative_to_screen.copy()
+            bbox_moved_diagonally = self.bounding_box.copy()
             bbox_moved_diagonally.x += dx
             bbox_moved_diagonally.y += dy
             collides_diagonally = bbox_moved_diagonally.colliderect(enemy.bounding_box)
