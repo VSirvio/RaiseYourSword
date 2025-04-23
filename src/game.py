@@ -35,7 +35,13 @@ class Game:
                     RIGHT: load_animation("warrior", 11, 6)
                 }
             },
-            bounding_box=pygame.Rect((11, 6), (25, 36))
+            bounding_box=pygame.Rect((11, 6), (25, 36)),
+            weapon_hitbox={
+                DOWN: pygame.Rect((0, 24), (48, 24)),
+                UP: pygame.Rect((0, 0), (48, 24)),
+                LEFT: pygame.Rect((0, 0), (24, 48)),
+                RIGHT: pygame.Rect((24, 0), (24, 48))
+            }
         )
         self.__enemy = Enemy(
             animations={

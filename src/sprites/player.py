@@ -1,24 +1,15 @@
 from math import sqrt
 
-import pygame
-
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
-from direction import NONE, DOWN, UP, LEFT, RIGHT
+from direction import NONE
 import sprites.character
 import states.idle_state
 from utils import centered
 
 WALKING_SPEED = 75
 
-WEAPON_HITBOX = {
-    DOWN: pygame.Rect((0, 24), (48, 24)),
-    UP: pygame.Rect((0, 0), (48, 24)),
-    LEFT: pygame.Rect((0, 0), (24, 48)),
-    RIGHT: pygame.Rect((24, 0), (24, 48))
-}
-
 class Player(sprites.character.Character):
-    def __init__(self, animations, bounding_box):
+    def __init__(self, animations, bounding_box, weapon_hitbox):
         super().__init__(animations, states.idle_state.IdleState())
 
         self._has_been_defeated = False
@@ -36,6 +27,8 @@ class Player(sprites.character.Character):
 
         self.__min_y = -bounding_box.y
         self.__max_y = DISPLAY_HEIGHT - bounding_box.y - bounding_box.height
+
+        self.__weapon_hitbox = weapon_hitbox
 
     def __update_state(self, state, enemy):
         if state is not None:
@@ -117,7 +110,7 @@ class Player(sprites.character.Character):
 
         self._reset_animation()
 
-        current_weapon_hitbox = WEAPON_HITBOX[self._facing_direction]
+        current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
 
