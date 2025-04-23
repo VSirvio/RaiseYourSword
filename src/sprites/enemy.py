@@ -6,12 +6,11 @@ from direction import NONE, DOWN, UP, LEFT, RIGHT
 import sprites.character
 
 class Enemy(sprites.character.Character):
-    def __init__(self, animations, bounding_box, weapon_hitbox):
+    def __init__(self, animations, bounding_box, weapon_hitbox, starting_position):
         super().__init__(animations, ai.idle_state.IdleState())
 
         self.rect = self.image.get_rect()
-        self.rect.x = 200
-        self.rect.y = 27
+        self.rect.x, self.rect.y = starting_position
 
         self.__bounding_box = bounding_box
         self.__weapon_hitbox = weapon_hitbox

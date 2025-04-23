@@ -64,7 +64,8 @@ class Game:
                 UP: pygame.Rect((0, 0), (48, 22)),
                 LEFT: pygame.Rect((0, 0), (22, 48)),
                 RIGHT: pygame.Rect((26, 0), (22, 48))
-            }
+            },
+            starting_position=(200, 27)
         )
 
         self.__characters = pygame.sprite.Group(self.__player, self.__enemy)
