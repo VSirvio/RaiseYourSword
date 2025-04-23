@@ -55,6 +55,8 @@ class TestPlayer(unittest.TestCase):
                 RIGHT: load_animation("warrior", 11, 6)
             }
         }
+        self.bounding_box = pygame.Rect((11, 6), (25, 36))
+
         self.enemy = StubEnemy(bounding_box=pygame.Rect(0, 0, 0, 0))
         self.empty_event = StubEvent(None, None)
         self.__walk_direction = NONE
@@ -75,7 +77,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
-            player = Player(self.animations)
+            player = Player(self.animations, self.bounding_box)
             self.__turn_to_direction(player, direction)
 
             # Test frame 0 again in the end to check that the animation loops correctly
@@ -86,7 +88,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_walking_moves_player_to_the_correct_direction(self):
         for walk_direction in direction.ALL:
-            player = Player(self.animations)
+            player = Player(self.animations, self.bounding_box)
             starting_position = {"x": player.rect.x, "y": player.rect.y}
 
             self.__walk_to_direction(player, walk_direction)
@@ -109,7 +111,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_attack_animation_is_played_when_player_attacks(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
-            player = Player(self.animations)
+            player = Player(self.animations, self.bounding_box)
             self.__turn_to_direction(player, direction)
 
             self.__attack_an_enemy(player, self.enemy)
@@ -122,7 +124,7 @@ class TestPlayer(unittest.TestCase):
     def test_player_cannot_move_while_attacking(self):
         for attack_direction in (DOWN, UP, LEFT, RIGHT):
             for walk_direction in (DOWN, UP, LEFT, RIGHT):
-                player = Player(self.animations)
+                player = Player(self.animations, self.bounding_box)
                 starting_position = {"x": player.rect.x, "y": player.rect.y}
 
                 self.__turn_to_direction(player, attack_direction)

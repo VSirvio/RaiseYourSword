@@ -10,14 +10,6 @@ from utils import centered
 
 WALKING_SPEED = 75
 
-BOUNDING_BOX = pygame.Rect((11, 6), (25, 36))
-
-MIN_X = -BOUNDING_BOX.x
-MAX_X = DISPLAY_WIDTH - BOUNDING_BOX.x - BOUNDING_BOX.width
-
-MIN_Y = -BOUNDING_BOX.y
-MAX_Y = DISPLAY_HEIGHT - BOUNDING_BOX.y - BOUNDING_BOX.height
-
 WEAPON_HITBOX = {
     DOWN: pygame.Rect((0, 24), (48, 24)),
     UP: pygame.Rect((0, 0), (48, 24)),
@@ -26,7 +18,7 @@ WEAPON_HITBOX = {
 }
 
 class Player(sprites.character.Character):
-    def __init__(self, animations):
+    def __init__(self, animations, bounding_box):
         super().__init__(animations, states.idle_state.IdleState())
 
         self._has_been_defeated = False
@@ -36,6 +28,14 @@ class Player(sprites.character.Character):
 
         # Set starting position a bit off the center (it looks nicer that way)
         self.rect.y -= 21
+
+        self.__bounding_box = bounding_box
+
+        self.__min_x = -bounding_box.x
+        self.__max_x = DISPLAY_WIDTH - bounding_box.x - bounding_box.width
+
+        self.__min_y = -bounding_box.y
+        self.__max_y = DISPLAY_HEIGHT - bounding_box.y - bounding_box.height
 
     def __update_state(self, state, enemy):
         if state is not None:
@@ -92,12 +92,12 @@ class Player(sprites.character.Character):
             if collides_diagonally and not collides_horizontally and not collides_vertically:
                 continue
 
-            if (not collides_horizontally and (dx < 0 and self.rect.x > MIN_X or
-                    dx > 0 and self.rect.x < MAX_X)):
+            if (not collides_horizontally and (dx < 0 and self.rect.x > self.__min_x or
+                    dx > 0 and self.rect.x < self.__max_x)):
                 self.rect.x += dx
 
-            if (not collides_vertically and (dy < 0 and self.rect.y > MIN_Y or
-                    dy > 0 and self.rect.y < MAX_Y)):
+            if (not collides_vertically and (dy < 0 and self.rect.y > self.__min_y or
+                    dy > 0 and self.rect.y < self.__max_y)):
                 self.rect.y += dy
 
     def handle_input(self, event, direction_pressed, enemy):
@@ -123,7 +123,7 @@ class Player(sprites.character.Character):
 
     @property
     def bounding_box(self):
-        return BOUNDING_BOX.move(self.rect.x, self.rect.y)
+        return self.__bounding_box.move(self.rect.x, self.rect.y)
 
     @property
     def has_been_defeated(self):

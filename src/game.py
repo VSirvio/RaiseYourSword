@@ -11,29 +11,32 @@ from utils import load_animation
 class Game:
     def __init__(self):
         self.__background = Background()
-        self.__player = Player({
-            "idle": {
-                "framerate": 4,
-                DOWN: load_animation("warrior", 0, 5),
-                UP: load_animation("warrior", 1, 5),
-                LEFT: load_animation("warrior", 2, 5),
-                RIGHT: load_animation("warrior", 3, 5)
+        self.__player = Player(
+            animations={
+                "idle": {
+                    "framerate": 4,
+                    DOWN: load_animation("warrior", 0, 5),
+                    UP: load_animation("warrior", 1, 5),
+                    LEFT: load_animation("warrior", 2, 5),
+                    RIGHT: load_animation("warrior", 3, 5)
+                },
+                "walk": {
+                    "framerate": 12,
+                    DOWN: load_animation("warrior", 4, 8),
+                    UP: load_animation("warrior", 5, 8),
+                    LEFT: load_animation("warrior", 6, 8),
+                    RIGHT: load_animation("warrior", 7, 8)
+                },
+                "attack": {
+                    "framerate": 15,
+                    DOWN: load_animation("warrior", 8, 6),
+                    UP: load_animation("warrior", 9, 6),
+                    LEFT: load_animation("warrior", 10, 6),
+                    RIGHT: load_animation("warrior", 11, 6)
+                }
             },
-            "walk": {
-                "framerate": 12,
-                DOWN: load_animation("warrior", 4, 8),
-                UP: load_animation("warrior", 5, 8),
-                LEFT: load_animation("warrior", 6, 8),
-                RIGHT: load_animation("warrior", 7, 8)
-            },
-            "attack": {
-                "framerate": 15,
-                DOWN: load_animation("warrior", 8, 6),
-                UP: load_animation("warrior", 9, 6),
-                LEFT: load_animation("warrior", 10, 6),
-                RIGHT: load_animation("warrior", 11, 6)
-            }
-        })
+            bounding_box=pygame.Rect((11, 6), (25, 36))
+        )
         self.__enemy = Enemy(
             animations={
                 "idle": {
