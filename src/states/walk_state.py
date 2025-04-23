@@ -17,7 +17,7 @@ class WalkState:
         return "walk"
 
     def enter(self, **kwargs):
-        kwargs["player"].walk(self.__direction)
+        kwargs["player"].movement_direction = self.__direction
 
     def handle_input(self, **kwargs):
         event = kwargs["event"]

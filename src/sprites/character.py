@@ -33,3 +33,16 @@ class Character(pygame.sprite.Sprite):
         self.image = self._animations[self._state.type][self._facing_direction][self._index]
         self._timer = 0
         self._walk_timer = 0
+
+    @property
+    def movement_direction(self):
+        return self._movement_direction
+
+    @movement_direction.setter
+    def movement_direction(self, new_movement_direction):
+        self._movement_direction = new_movement_direction
+
+        if new_movement_direction != direction.NONE:
+            self._facing_direction = new_movement_direction.clip_to_four_directions()
+
+        self._reset_animation()

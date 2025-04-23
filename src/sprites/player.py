@@ -93,18 +93,8 @@ class Player(sprites.character.Character):
         new_state = self._state.handle_input(event=event, direction_pressed=direction_pressed)
         self.__update_state(new_state, enemy)
 
-    def walk(self, direction):
-        if direction != NONE:
-            self._facing_direction = direction.clip_to_four_directions()
-
-        self._movement_direction = direction
-
-        self._reset_animation()
-
     def attack(self, enemy):
-        self._movement_direction = NONE
-
-        self._reset_animation()
+        self.movement_direction = NONE
 
         current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)

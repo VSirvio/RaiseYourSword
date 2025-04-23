@@ -21,7 +21,7 @@ class IdleState:
         return "idle"
 
     def enter(self, **kwargs):
-        kwargs["enemy"].walk(direction.NONE)
+        kwargs["enemy"].movement_direction = direction.NONE
 
     def update(self, **kwargs):
         enemy = kwargs["enemy"]

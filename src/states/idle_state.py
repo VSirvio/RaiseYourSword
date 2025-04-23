@@ -14,7 +14,7 @@ class IdleState:
         return "idle"
 
     def enter(self, **kwargs):
-        kwargs["player"].walk(direction.NONE)
+        kwargs["player"].movement_direction = direction.NONE
 
     def handle_input(self, **kwargs):
         event = kwargs["event"]

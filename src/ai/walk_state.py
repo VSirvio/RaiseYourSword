@@ -37,7 +37,7 @@ class WalkState:
         return "walk"
 
     def enter(self, **kwargs):
-        kwargs["enemy"].walk(self.__direction)
+        kwargs["enemy"].movement_direction = self.__direction
 
     def update(self, **kwargs):
         self.__timer += kwargs["dt"]

@@ -63,14 +63,6 @@ class Enemy(sprites.character.Character):
             self.rect.x += dx
             self.rect.y += dy
 
-    def walk(self, direction):
-        if direction != NONE:
-            self._facing_direction = direction.clip_to_four_directions()
-
-        self._movement_direction = direction
-
-        self._reset_animation()
-
     def attack(self, player):
         angle = atan2(self.rect.y - player.rect.y, player.rect.x - self.rect.x)
         if -3*pi/4 <= angle < -pi/4:
@@ -82,9 +74,7 @@ class Enemy(sprites.character.Character):
         else:
             self._facing_direction = LEFT
 
-        self._movement_direction = NONE
-
-        self._reset_animation()
+        self.movement_direction = NONE
 
         current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
