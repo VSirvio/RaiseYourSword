@@ -2,6 +2,7 @@ from math import sqrt
 
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 from direction import NONE
+import events
 import sprites.character
 import states.idle_state
 
@@ -43,7 +44,8 @@ class Player(sprites.character.Character):
             self._index = self._next_index()
 
             if self._index == 0:
-                self.__update_state(self._state.animation_finished(self), enemy)
+                new_state = self._state.handle_event(player=self, event=events.AnimationFinished())
+                self.__update_state(new_state, enemy)
 
             self._timer -= frametime
 
@@ -91,10 +93,11 @@ class Player(sprites.character.Character):
                     dy > 0 and self.rect.y < self.__max_y)):
                 self.rect.y += dy
 
-    def handle_input(self, event, direction_pressed, enemy):
-        self.__direction_controlled_toward = direction_pressed
+    def handle_event(self, event, enemy):
+        if event.__class__ == events.MovementDirectionChanged:
+            self.__direction_controlled_toward = event.new_direction
 
-        new_state = self._state.handle_input(event=event, direction_pressed=direction_pressed)
+        new_state = self._state.handle_event(player=self, event=event)
         self.__update_state(new_state, enemy)
 
     def attack(self, enemy):
@@ -119,7 +122,8 @@ class Player(sprites.character.Character):
     def lose(self):
         self._has_been_defeated = True
 
-        self.__update_state(self._state.has_been_defeated(), None)
+        new_state = self._state.handle_event(player=self, event=events.Lose())
+        self.__update_state(new_state, None)
 
     @property
     def hit_an_enemy(self):

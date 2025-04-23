@@ -3,6 +3,7 @@ import unittest
 
 import direction
 from direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
+import events
 from sprites.player import Player
 from utils import load_animation
 
@@ -14,20 +15,6 @@ class StubEnemy:
     @property
     def bounding_box(self):
         return self.__bounding_box
-
-
-class StubEvent:
-    def __init__(self, event_type, key):
-        self.__type = event_type
-        self.__key = key
-
-    @property
-    def type(self):
-        return self.__type
-
-    @property
-    def key(self):
-        return self.__key
 
 
 class TestPlayer(unittest.TestCase):
@@ -66,22 +53,21 @@ class TestPlayer(unittest.TestCase):
         self.walking_speed = 75
 
         self.enemy = StubEnemy(bounding_box=pygame.Rect(0, 0, 0, 0))
-        self.empty_event = StubEvent(None, None)
         self.__walk_direction = NONE
 
     def __turn_to_direction(self, player, new_direction):
         # Turn player to the given direction by activating walking to that direction and then
         # stopping walking
-        player.handle_input(self.empty_event, new_direction, None)
-        player.handle_input(self.empty_event, NONE, None)
+        player.handle_event(events.MovementDirectionChanged(new_direction), None)
+        player.handle_event(events.MovementDirectionChanged(NONE), None)
         self.__walk_direction = NONE
 
     def __walk_to_direction(self, player, direction):
         self.__walk_direction = direction
-        player.handle_input(self.empty_event, self.__walk_direction, None)
+        player.handle_event(events.MovementDirectionChanged(self.__walk_direction), None)
 
     def __attack_an_enemy(self, player, enemy):
-        player.handle_input(StubEvent(pygame.KEYDOWN, pygame.K_LSHIFT), self.__walk_direction, enemy)
+        player.handle_event(events.AttackStarted(), enemy)
 
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction in (DOWN, UP, LEFT, RIGHT):

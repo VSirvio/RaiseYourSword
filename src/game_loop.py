@@ -1,6 +1,7 @@
 import pygame
 
 from arrow_keys import ArrowKeys
+import events
 
 class GameLoop:
     def __init__(self, game, renderer, event_queue, clock):
@@ -29,10 +30,15 @@ class GameLoop:
             if event.type == pygame.QUIT:
                 return False
 
-            self.__arrow_keys.handle(event)
+            direction_changed = self.__arrow_keys.handle(event)
 
             if not self.__game.finished:
-                self.__game.handle_input(event, self.__arrow_keys.current_direction)
+                if direction_changed:
+                    new_direction = self.__arrow_keys.current_direction
+                    self.__game.handle(events.MovementDirectionChanged(new_direction))
+                elif (event.type == pygame.KEYDOWN and
+                        event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT)):
+                    self.__game.handle(events.AttackStarted())
 
         return True
 

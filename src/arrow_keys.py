@@ -11,7 +11,7 @@ class ArrowKeys:
 
     def handle(self, event):
         if event.type not in (pygame.KEYDOWN, pygame.KEYUP):
-            return
+            return False
 
         match event.key:
             case pygame.K_DOWN | pygame.K_s:
@@ -22,6 +22,10 @@ class ArrowKeys:
                 self.__left_key_pressed = event.type == pygame.KEYDOWN
             case pygame.K_RIGHT | pygame.K_d:
                 self.__right_key_pressed = event.type == pygame.KEYDOWN
+            case _:
+                return False
+
+        return True
 
     def release_all(self):
         self.__down_key_pressed = False

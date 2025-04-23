@@ -1,4 +1,5 @@
 import direction
+import events
 import states.idle_state   # pylint: disable=cyclic-import
 import states.walk_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing animation state management
@@ -17,16 +18,17 @@ class AttackState:
     def enter(self, **kwargs):
         self.__enemy_was_hit = kwargs["player"].attack(kwargs["enemy"])
 
-    def handle_input(self, **kwargs):
-        return None
+    def handle_event(self, **kwargs):
+        event = kwargs["event"]
+        player = kwargs["player"]
 
-    def animation_finished(self, player):
-        if self.__enemy_was_hit or player.direction_controlled_toward == direction.NONE:
-            return states.idle_state.IdleState()
-        return states.walk_state.WalkState(player.direction_controlled_toward)
-
-    def has_been_defeated(self):
-        return states.idle_state.IdleState()
+        match event.__class__:
+            case events.AnimationFinished:
+                if self.__enemy_was_hit or player.direction_controlled_toward == direction.NONE:
+                    return states.idle_state.IdleState()
+                return states.walk_state.WalkState(player.direction_controlled_toward)
+            case events.Lose:
+                return states.idle_state.IdleState()
 
     @property
     def enemy_was_hit(self):

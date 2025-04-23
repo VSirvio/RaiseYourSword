@@ -132,8 +132,8 @@ class Game:
                 self.__player.lose()
             self.__finished = True
 
-    def handle_input(self, event, direction_pressed):
-        self.__player.handle_input(event, direction_pressed, self.__enemy)
+    def handle(self, event):
+        self.__player.handle_event(event, self.__enemy)
 
     @property
     def finished(self):
