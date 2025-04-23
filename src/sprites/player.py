@@ -5,10 +5,8 @@ from direction import NONE
 import sprites.character
 import states.idle_state
 
-WALKING_SPEED = 75
-
 class Player(sprites.character.Character):
-    def __init__(self, animations, bounding_box, weapon_hitbox, starting_position):
+    def __init__(self, animations, bounding_box, weapon_hitbox, starting_position, walking_speed):
         super().__init__(animations, states.idle_state.IdleState())
 
         self._has_been_defeated = False
@@ -25,6 +23,8 @@ class Player(sprites.character.Character):
         self.__max_y = DISPLAY_HEIGHT - bounding_box.y - bounding_box.height
 
         self.__weapon_hitbox = weapon_hitbox
+
+        self.__walking_speed = walking_speed
 
     def __update_state(self, state, enemy):
         if state is not None:
@@ -49,7 +49,7 @@ class Player(sprites.character.Character):
 
         dx, dy = self._movement_direction.movement_vector
 
-        time_per_px = 1000 / WALKING_SPEED
+        time_per_px = 1000 / self.__walking_speed
 
         # When the walking direction is diagonal, we have to multiply the time
         # it takes to walk 1 pixel (time_per_px) by sqrt(2) = ~1.1,

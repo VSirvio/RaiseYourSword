@@ -45,7 +45,8 @@ class Game:
             starting_position=(
                 (DISPLAY_WIDTH - 48) // 2,
                 (DISPLAY_HEIGHT - 48) // 2 - 7
-            )
+            ),
+            walking_speed=75
         )
         self.__enemy = Enemy(
             animations={
