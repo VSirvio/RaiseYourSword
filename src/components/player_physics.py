@@ -33,21 +33,13 @@ class PlayerPhysics:
         while self._walk_timer >= time_per_px:
             self._walk_timer -= time_per_px
 
-            bounding_box_positioned_relative_to_screen = self.bounding_box.move(
-                player.rect.x, player.rect.y
-            )
-
-            bbox_moved_horizontally = bounding_box_positioned_relative_to_screen.copy()
-            bbox_moved_horizontally.x += dx
+            bbox_moved_horizontally = self.bounding_box.move(player.rect.x + dx, player.rect.y)
             collides_horizontally = bbox_moved_horizontally.colliderect(enemy.bounding_box)
 
-            bbox_moved_vertically = bounding_box_positioned_relative_to_screen.copy()
-            bbox_moved_vertically.y += dy
+            bbox_moved_vertically = self.bounding_box.move(player.rect.x, player.rect.y + dy)
             collides_vertically = bbox_moved_vertically.colliderect(enemy.bounding_box)
 
-            bbox_moved_diagonally = bounding_box_positioned_relative_to_screen.copy()
-            bbox_moved_diagonally.x += dx
-            bbox_moved_diagonally.y += dy
+            bbox_moved_diagonally = self.bounding_box.move(player.rect.x + dx, player.rect.y + dy)
             collides_diagonally = bbox_moved_diagonally.colliderect(enemy.bounding_box)
 
             # If diagonal movement causes a collision but horizontal and vertical movement
