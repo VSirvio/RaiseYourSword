@@ -4,10 +4,13 @@ import sprites.character
 import states.idle_state
 
 class Player(sprites.character.Character):
-    def __init__(self, animations, weapon_hitbox, starting_position, physics):
-        super().__init__(animations, states.idle_state.IdleState())
+    def __init__(self, weapon_hitbox, starting_position, animations, physics):
+        super().__init__(None, states.idle_state.IdleState())
 
         self._has_been_defeated = False
+
+        self.__animations = animations
+        self.image = self.__animations.current_frame(self)
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = starting_position
@@ -26,20 +29,8 @@ class Player(sprites.character.Character):
     def update(self, dt, **kwargs):
         enemy = kwargs["enemy"]
 
-        super().update(dt)
-
-        frametime = 1000 / self._animations[self._state.type]["framerate"]
-        while self._timer >= frametime:
-            self._index = self._next_index()
-
-            if self._index == 0:
-                event = events.AnimationFinished()
-                new_state = self._state.handle_event(player=self, enemy=enemy, event=event)
-                self.__update_state(new_state, enemy)
-
-            self._timer -= frametime
-
-        self.image = self._animations[self._state.type][self._facing_direction][self._index]
+        self.__animations.update(dt, self, enemy)
+        self.image = self.__animations.current_frame(self)
 
         self.__physics.update(dt, self, enemy)
 
@@ -57,6 +48,27 @@ class Player(sprites.character.Character):
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         if weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box):
             enemy.fall()
+
+    @property
+    def state(self):
+        return self._state.type
+
+    @property
+    def facing_direction(self):
+        return self._facing_direction
+
+    @property
+    def movement_direction(self):
+        return self._movement_direction
+
+    @movement_direction.setter
+    def movement_direction(self, new_movement_direction):
+        self._movement_direction = new_movement_direction
+
+        if new_movement_direction != NONE:
+            self._facing_direction = new_movement_direction.clip_to_four_directions()
+
+        self.__animations.reset(self)
 
     @property
     def direction_controlled_toward(self):

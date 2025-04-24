@@ -1,6 +1,7 @@
 import pygame
 from pygame import Color
 
+from components.player_animations import PlayerAnimations
 from components.player_physics import PlayerPhysics
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
 from direction import DOWN, UP, LEFT, RIGHT
@@ -13,7 +14,17 @@ class Game:
     def __init__(self):
         self.__background = Background()
         self.__player = Player(
-            animations={
+            weapon_hitbox={
+                DOWN: pygame.Rect((0, 24), (48, 24)),
+                UP: pygame.Rect((0, 0), (48, 24)),
+                LEFT: pygame.Rect((0, 0), (24, 48)),
+                RIGHT: pygame.Rect((24, 0), (24, 48))
+            },
+            starting_position=(
+                (DISPLAY_WIDTH - 48) // 2,
+                (DISPLAY_HEIGHT - 48) // 2 - 7
+            ),
+            animations=PlayerAnimations({
                 "idle": {
                     "framerate": 4,
                     DOWN: load_animation("warrior", 0, 5),
@@ -35,17 +46,7 @@ class Game:
                     LEFT: load_animation("warrior", 10, 6),
                     RIGHT: load_animation("warrior", 11, 6)
                 }
-            },
-            weapon_hitbox={
-                DOWN: pygame.Rect((0, 24), (48, 24)),
-                UP: pygame.Rect((0, 0), (48, 24)),
-                LEFT: pygame.Rect((0, 0), (24, 48)),
-                RIGHT: pygame.Rect((24, 0), (24, 48))
-            },
-            starting_position=(
-                (DISPLAY_WIDTH - 48) // 2,
-                (DISPLAY_HEIGHT - 48) // 2 - 7
-            ),
+            }),
             physics=PlayerPhysics(
                 walking_speed=75,
                 bounding_box=pygame.Rect((11, 6), (25, 36)),

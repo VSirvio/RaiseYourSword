@@ -14,7 +14,8 @@ class Character(pygame.sprite.Sprite):
 
         self._index = 0
 
-        self.image = self._animations[self._state.type][self._facing_direction][self._index]
+        if self._animations:
+            self.image = self._animations[self._state.type][self._facing_direction][self._index]
 
         self._timer = 0
 
