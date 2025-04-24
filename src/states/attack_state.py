@@ -18,10 +18,10 @@ class AttackState(state.State):
     def handle_event(self, **kwargs):
         event = kwargs["event"]
         player = kwargs["player"]
-        enemy = kwargs["enemy"]
 
         match event.__class__:
             case events.AnimationFinished:
+                enemy = kwargs["enemy"]
                 if enemy.has_been_defeated or player.direction_controlled_toward == direction.NONE:
                     return states.idle_state.IdleState()
                 return states.walk_state.WalkState(player.direction_controlled_toward)
