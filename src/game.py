@@ -90,8 +90,6 @@ class Game:
         # Move background to layer -1000 to make sure that it is behind all other sprites
         self.__all_sprites.change_layer(self.__background, -1000)
 
-        self.__finished = False
-
         transparent_black = Color(0, 0, 0, 190)
         result_screen_font = pygame.font.SysFont(name="Sans", size=17, bold=True)
 
@@ -114,25 +112,21 @@ class Game:
 
         self.__all_sprites.draw(surface)
 
-        if self.__finished:
-            if self.__player.has_been_defeated:
-                surface.blit(self.__game_over_screen, (0, 0))
-            else:
-                surface.blit(self.__victory_screen, (0, 0))
+        if self.__player.has_been_defeated:
+            surface.blit(self.__game_over_screen, (0, 0))
+        elif self.__enemy.has_been_defeated:
+            surface.blit(self.__victory_screen, (0, 0))
 
     def update(self, dt):
         self.__all_sprites.update(dt, player=self.__player, enemy=self.__enemy)
 
-        if not self.__finished and (self.__enemy.has_been_defeated or
-                self.__player.has_been_defeated):
-            if self.__enemy.has_been_defeated:
-                self.__characters.remove(self.__enemy)
-                self.__all_sprites.remove(self.__enemy)
-            self.__finished = True
+        if self.__enemy.has_been_defeated:
+            self.__characters.remove(self.__enemy)
+            self.__all_sprites.remove(self.__enemy)
 
     def handle(self, event):
         self.__player.handle_event(event, self.__enemy)
 
     @property
     def finished(self):
-        return self.__finished
+        return self.__enemy.has_been_defeated or self.__player.has_been_defeated
