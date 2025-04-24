@@ -2,6 +2,7 @@ from math import atan2, pi, sqrt
 
 import ai.idle_state
 from direction import NONE, DOWN, UP, LEFT, RIGHT
+import events
 import sprites.character
 
 class Enemy(sprites.character.Character):
@@ -33,7 +34,8 @@ class Enemy(sprites.character.Character):
             self._index = self._next_index()
 
             if self._index == 0:
-                self.__update_state(self._state.animation_finished(), player)
+                new_state = self._state.handle_event(events.AnimationFinished())
+                self.__update_state(new_state, player)
 
             self._timer -= frametime
 

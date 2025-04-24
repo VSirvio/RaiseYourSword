@@ -38,5 +38,5 @@ class IdleState(state.State):
 
         return None
 
-    def animation_finished(self):
+    def handle_event(self, event):
         return None
