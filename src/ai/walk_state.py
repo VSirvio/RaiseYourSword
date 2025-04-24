@@ -11,32 +11,31 @@ import ai.idle_state   # pylint: disable=cyclic-import
 import state
 
 class WalkState(state.State):
-    def __init__(self, enemy, player):
+    def __init__(self):
         self.__duration = randrange(ENEMY_AI_WALK_TIME_MIN, ENEMY_AI_WALK_TIME_MAX)
         self.__timer = 0
 
-        angle = atan2(enemy.rect.y - player.rect.y, player.rect.x - enemy.rect.x)
-        if -7*pi/8 <= angle < -5*pi/8:
-            self.__direction = direction.DOWN_LEFT
-        elif -5*pi/8 <= angle < -3*pi/8:
-            self.__direction = direction.DOWN
-        elif -3*pi/8 <= angle < -pi/8:
-            self.__direction = direction.DOWN_RIGHT
-        elif -pi/8 <= angle < pi/8:
-            self.__direction = direction.RIGHT
-        elif pi/8 <= angle < 3*pi/8:
-            self.__direction = direction.UP_RIGHT
-        elif 3*pi/8 <= angle < 5*pi/8:
-            self.__direction = direction.UP
-        elif 5*pi/8 <= angle < 7*pi/8:
-            self.__direction = direction.UP_LEFT
-        else:
-            self.__direction = direction.LEFT
-
     def enter(self, **kwargs):
         enemy = kwargs["enemy"]
+        player = kwargs["player"]
 
-        enemy.movement_direction = self.__direction
+        angle = atan2(enemy.rect.y - player.rect.y, player.rect.x - enemy.rect.x)
+        if -7*pi/8 <= angle < -5*pi/8:
+            enemy.movement_direction = direction.DOWN_LEFT
+        elif -5*pi/8 <= angle < -3*pi/8:
+            enemy.movement_direction = direction.DOWN
+        elif -3*pi/8 <= angle < -pi/8:
+            enemy.movement_direction = direction.DOWN_RIGHT
+        elif -pi/8 <= angle < pi/8:
+            enemy.movement_direction = direction.RIGHT
+        elif pi/8 <= angle < 3*pi/8:
+            enemy.movement_direction = direction.UP_RIGHT
+        elif 3*pi/8 <= angle < 5*pi/8:
+            enemy.movement_direction = direction.UP
+        elif 5*pi/8 <= angle < 7*pi/8:
+            enemy.movement_direction = direction.UP_LEFT
+        else:
+            enemy.movement_direction = direction.LEFT
 
     def update(self, **kwargs):
         dt = kwargs["dt"]

@@ -36,7 +36,7 @@ class IdleState(state.State):
             dist_y = player.rect.y - enemy.rect.y
             if sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_TO_PLAYER_MIN_DISTANCE:
                 return ai.attack_state.AttackState()
-            return ai.walk_state.WalkState(enemy=enemy, player=player)
+            return ai.walk_state.WalkState()
 
         return None
 
