@@ -8,8 +8,9 @@ import ai.idle_state   # pylint: disable=cyclic-import
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
 # imports (like in the example given, state1 would need to import state2 and state2 would also need
 # to import state1).
+import state
 
-class WalkState:
+class WalkState(state.State):
     def __init__(self, enemy, player):
         self.__duration = randrange(ENEMY_AI_WALK_TIME_MIN, ENEMY_AI_WALK_TIME_MAX)
         self.__timer = 0
@@ -31,10 +32,6 @@ class WalkState:
             self.__direction = direction.UP_LEFT
         else:
             self.__direction = direction.LEFT
-
-    @property
-    def type(self):
-        return "walk"
 
     def enter(self, **kwargs):
         kwargs["enemy"].movement_direction = self.__direction
