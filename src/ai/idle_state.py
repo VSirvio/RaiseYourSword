@@ -12,10 +12,9 @@ import ai.walk_state   # pylint: disable=cyclic-import
 import state
 
 class IdleState(state.State):
-    def __init__(self, game_finished=False):
+    def __init__(self):
         self.__duration = randrange(ENEMY_AI_IDLE_TIME_MIN, ENEMY_AI_IDLE_TIME_MAX)
         self.__timer = 0
-        self.__game_finished = game_finished
 
     def enter(self, **kwargs):
         enemy = kwargs["enemy"]
@@ -26,7 +25,7 @@ class IdleState(state.State):
         enemy = kwargs["enemy"]
         player = kwargs["player"]
 
-        if self.__game_finished:
+        if player.has_been_defeated:
             return None
 
         self.__timer += kwargs["dt"]

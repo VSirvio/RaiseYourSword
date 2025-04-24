@@ -7,14 +7,11 @@ import events
 import state
 
 class AttackState(state.State):
-    def __init__(self):
-        self.__player_was_hit = False
-
     def enter(self, **kwargs):
         enemy = kwargs["enemy"]
         player = kwargs["player"]
 
-        self.__player_was_hit = enemy.attack(player)
+        enemy.attack(player)
 
     def update(self, **kwargs):
         return None
@@ -22,8 +19,4 @@ class AttackState(state.State):
     def handle_event(self, event):
         match event.__class__:
             case events.AnimationFinished:
-                return ai.idle_state.IdleState(game_finished=self.__player_was_hit)
-
-    @property
-    def player_was_hit(self):
-        return self.__player_was_hit
+                return ai.idle_state.IdleState()

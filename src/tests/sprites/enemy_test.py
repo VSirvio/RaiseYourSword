@@ -17,6 +17,10 @@ class StubPlayer:
     def rect(self):
         return self.__rect
 
+    @property
+    def has_been_defeated(self):
+        return False
+
 
 class TestEnemy(unittest.TestCase):
     def setUp(self):

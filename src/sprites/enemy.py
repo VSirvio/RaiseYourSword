@@ -73,12 +73,9 @@ class Enemy(sprites.character.Character):
 
         current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
-        return weapon_hitbox_relative_to_screen.colliderect(player.bounding_box)
+        if weapon_hitbox_relative_to_screen.colliderect(player.bounding_box):
+            player.lose()
 
     @property
     def bounding_box(self):
         return self.__bounding_box.move(self.rect.x, self.rect.y)
-
-    @property
-    def hit_the_player(self):
-        return self._state.type == "attack" and self._state.player_was_hit

@@ -123,12 +123,10 @@ class Game:
     def update(self, dt):
         self.__all_sprites.update(dt, player=self.__player, enemy=self.__enemy)
 
-        if not self.__finished and (self.__player.hit_an_enemy or self.__enemy.hit_the_player):
+        if not self.__finished and (self.__player.hit_an_enemy or self.__player.has_been_defeated):
             if self.__player.hit_an_enemy:
                 self.__characters.remove(self.__enemy)
                 self.__all_sprites.remove(self.__enemy)
-            else:
-                self.__player.lose()
             self.__finished = True
 
     def handle(self, event):
