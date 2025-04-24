@@ -1,6 +1,7 @@
 import pygame
 import unittest
 
+from components.player_physics import PlayerPhysics
 import direction
 from direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
 import events
@@ -46,7 +47,6 @@ class TestPlayer(unittest.TestCase):
                 RIGHT: load_animation("warrior", 11, 6)
             }
         }
-        self.bounding_box = pygame.Rect((11, 6), (25, 36))
         self.weapon_hitbox = {
             DOWN: pygame.Rect((0, 24), (48, 24)),
             UP: pygame.Rect((0, 0), (48, 24)),
@@ -54,7 +54,11 @@ class TestPlayer(unittest.TestCase):
             RIGHT: pygame.Rect((24, 0), (24, 48))
         }
         self.starting_position = ((260 - 48) // 2, (190 - 48) // 2 - 7)
-        self.walking_speed = 75
+        self.physics = PlayerPhysics(
+            walking_speed=75,
+            bounding_box=pygame.Rect((11, 6), (25, 36)),
+            game_area_size=(260, 190)
+        )
 
         self.enemy = StubEnemy(bounding_box=pygame.Rect(0, 0, 0, 0))
         self.__walk_direction = NONE
@@ -76,8 +80,7 @@ class TestPlayer(unittest.TestCase):
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
             player = Player(
-                self.animations, self.bounding_box, self.weapon_hitbox, self.starting_position,
-                self.walking_speed
+                self.animations, self.weapon_hitbox, self.starting_position, self.physics
             )
             self.__turn_to_direction(player, direction)
 
@@ -90,8 +93,7 @@ class TestPlayer(unittest.TestCase):
     def test_walking_moves_player_to_the_correct_direction(self):
         for walk_direction in direction.ALL:
             player = Player(
-                self.animations, self.bounding_box, self.weapon_hitbox, self.starting_position,
-                self.walking_speed
+                self.animations, self.weapon_hitbox, self.starting_position, self.physics
             )
             starting_position = {"x": player.rect.x, "y": player.rect.y}
 
@@ -116,8 +118,7 @@ class TestPlayer(unittest.TestCase):
     def test_attack_animation_is_played_when_player_attacks(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
             player = Player(
-                self.animations, self.bounding_box, self.weapon_hitbox, self.starting_position,
-                self.walking_speed
+                self.animations, self.weapon_hitbox, self.starting_position, self.physics
             )
             self.__turn_to_direction(player, direction)
 
@@ -132,8 +133,7 @@ class TestPlayer(unittest.TestCase):
         for attack_direction in (DOWN, UP, LEFT, RIGHT):
             for walk_direction in (DOWN, UP, LEFT, RIGHT):
                 player = Player(
-                    self.animations, self.bounding_box, self.weapon_hitbox, self.starting_position,
-                    self.walking_speed
+                    self.animations, self.weapon_hitbox, self.starting_position, self.physics
                 )
                 starting_position = {"x": player.rect.x, "y": player.rect.y}
 

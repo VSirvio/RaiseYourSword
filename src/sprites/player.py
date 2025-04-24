@@ -1,13 +1,10 @@
-from math import sqrt
-
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 from direction import NONE
 import events
 import sprites.character
 import states.idle_state
 
 class Player(sprites.character.Character):
-    def __init__(self, animations, bounding_box, weapon_hitbox, starting_position, walking_speed):
+    def __init__(self, animations, weapon_hitbox, starting_position, physics):
         super().__init__(animations, states.idle_state.IdleState())
 
         self._has_been_defeated = False
@@ -15,19 +12,11 @@ class Player(sprites.character.Character):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = starting_position
 
-        self.__bounding_box = bounding_box
-
-        self.__min_x = -bounding_box.x
-        self.__max_x = DISPLAY_WIDTH - bounding_box.x - bounding_box.width
-
-        self.__min_y = -bounding_box.y
-        self.__max_y = DISPLAY_HEIGHT - bounding_box.y - bounding_box.height
-
         self.__weapon_hitbox = weapon_hitbox
 
-        self.__walking_speed = walking_speed
-
         self.__direction_controlled_toward = NONE
+
+        self.__physics = physics
 
     def __update_state(self, state, enemy):
         if state is not None:
@@ -52,47 +41,7 @@ class Player(sprites.character.Character):
 
         self.image = self._animations[self._state.type][self._facing_direction][self._index]
 
-        dx, dy = self._movement_direction.movement_vector
-
-        time_per_px = 1000 / self.__walking_speed
-
-        # When the walking direction is diagonal, we have to multiply the time
-        # it takes to walk 1 pixel (time_per_px) by sqrt(2) = ~1.1,
-        # because the distance moved on the screen per pixel is that much
-        # longer (compare the diagonal length of a pixel to the width/height of
-        # a pixel)
-        if dx != 0 and dy != 0:
-            time_per_px *= sqrt(2)
-
-        while self._walk_timer >= time_per_px:
-            self._walk_timer -= time_per_px
-
-            bbox_moved_horizontally = self.bounding_box.copy()
-            bbox_moved_horizontally.x += dx
-            collides_horizontally = bbox_moved_horizontally.colliderect(enemy.bounding_box)
-
-            bbox_moved_vertically = self.bounding_box.copy()
-            bbox_moved_vertically.y += dy
-            collides_vertically = bbox_moved_vertically.colliderect(enemy.bounding_box)
-
-            bbox_moved_diagonally = self.bounding_box.copy()
-            bbox_moved_diagonally.x += dx
-            bbox_moved_diagonally.y += dy
-            collides_diagonally = bbox_moved_diagonally.colliderect(enemy.bounding_box)
-
-            # If diagonal movement causes a collision but horizontal and vertical movement
-            # don't (i.e. the corner of the bounding box collides exactly to the corner of the
-            # other bounding box), then don't move the player character
-            if collides_diagonally and not collides_horizontally and not collides_vertically:
-                continue
-
-            if (not collides_horizontally and (dx < 0 and self.rect.x > self.__min_x or
-                    dx > 0 and self.rect.x < self.__max_x)):
-                self.rect.x += dx
-
-            if (not collides_vertically and (dy < 0 and self.rect.y > self.__min_y or
-                    dy > 0 and self.rect.y < self.__max_y)):
-                self.rect.y += dy
+        self.__physics.update(dt, self, enemy)
 
     def handle_event(self, event, enemy):
         if event.__class__ == events.MovementDirectionChanged:
@@ -115,7 +64,7 @@ class Player(sprites.character.Character):
 
     @property
     def bounding_box(self):
-        return self.__bounding_box.move(self.rect.x, self.rect.y)
+        return self.__physics.bounding_box.move(self.rect.x, self.rect.y)
 
     @property
     def has_been_defeated(self):
