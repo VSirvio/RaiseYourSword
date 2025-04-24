@@ -41,13 +41,10 @@ class Player(sprites.character.Character):
         new_state = self._state.handle_event(player=self, enemy=enemy, event=event)
         self.__update_state(new_state, enemy)
 
-    def attack(self, enemy):
-        self.movement_direction = NONE
-
+    def does_attack_hit(self, enemy):
         current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
-        if weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box):
-            enemy.fall()
+        return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
 
     @property
     def movement_direction(self):

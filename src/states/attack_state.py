@@ -13,7 +13,10 @@ class AttackState(state.State):
         player = kwargs["player"]
         enemy = kwargs["enemy"]
 
-        player.attack(enemy)
+        player.movement_direction = direction.NONE
+
+        if player.does_attack_hit(enemy):
+            enemy.fall()
 
     def handle_event(self, **kwargs):
         event = kwargs["event"]

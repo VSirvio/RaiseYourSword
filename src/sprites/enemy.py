@@ -1,7 +1,5 @@
-from math import atan2, pi
-
 import ai.idle_state
-from direction import NONE, DOWN, UP, LEFT, RIGHT
+from direction import NONE
 import sprites.character
 
 class Enemy(sprites.character.Character):
@@ -39,23 +37,10 @@ class Enemy(sprites.character.Character):
         new_state = self._state.handle_event(event)
         self.__update_state(new_state, player)
 
-    def attack(self, player):
-        angle = atan2(self.rect.y - player.rect.y, player.rect.x - self.rect.x)
-        if -3*pi/4 <= angle < -pi/4:
-            self._facing_direction = DOWN
-        elif -pi/4 <= angle < pi/4:
-            self._facing_direction = RIGHT
-        elif pi/4 <= angle < 3*pi/4:
-            self._facing_direction = UP
-        else:
-            self._facing_direction = LEFT
-
-        self.movement_direction = NONE
-
+    def does_attack_hit(self, player):
         current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
-        if weapon_hitbox_relative_to_screen.colliderect(player.bounding_box):
-            player.lose()
+        return weapon_hitbox_relative_to_screen.colliderect(player.bounding_box)
 
     @property
     def movement_direction(self):
