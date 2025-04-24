@@ -3,6 +3,7 @@ from math import ceil
 import pygame
 import unittest
 
+from components.enemy_animations import EnemyAnimations
 from components.enemy_physics import EnemyPhysics
 from config import ENEMY_AI_IDLE_TIME_MAX, ENEMY_AI_WALK_TIME_MAX
 from direction import DOWN, UP, LEFT, RIGHT
@@ -25,6 +26,13 @@ class StubPlayer:
 
 class TestEnemy(unittest.TestCase):
     def setUp(self):
+        self.weapon_hitbox = {
+            DOWN: pygame.Rect((0, 26), (48, 22)),
+            UP: pygame.Rect((0, 0), (48, 22)),
+            LEFT: pygame.Rect((0, 0), (22, 48)),
+            RIGHT: pygame.Rect((26, 0), (22, 48))
+        }
+        self.starting_position = (200, 27)
         self.animations = {
             "idle": {
                 "framerate": 4,
@@ -48,13 +56,6 @@ class TestEnemy(unittest.TestCase):
                 RIGHT: load_animation("skeleton", 11, 8)
             }
         }
-        self.weapon_hitbox = {
-            DOWN: pygame.Rect((0, 26), (48, 22)),
-            UP: pygame.Rect((0, 0), (48, 22)),
-            LEFT: pygame.Rect((0, 0), (22, 48)),
-            RIGHT: pygame.Rect((26, 0), (22, 48))
-        }
-        self.starting_position = (200, 27)
         self.physics=EnemyPhysics(
             walking_speed=50,
             bounding_box=pygame.Rect((20, 22), (8, 11))
@@ -64,7 +65,8 @@ class TestEnemy(unittest.TestCase):
 
     def test_enemy_moves(self):
         enemy = Enemy(
-            self.animations, self.weapon_hitbox, self.starting_position, self.physics
+            self.weapon_hitbox, self.starting_position, EnemyAnimations(self.animations),
+            self.physics
         )
         starting_position = (enemy.rect.x, enemy.rect.y)
 

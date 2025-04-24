@@ -5,7 +5,7 @@ import states.idle_state
 
 class Player(sprites.character.Character):
     def __init__(self, weapon_hitbox, starting_position, animations, physics):
-        super().__init__(None, states.idle_state.IdleState())
+        super().__init__(states.idle_state.IdleState())
 
         self._has_been_defeated = False
 
@@ -48,14 +48,6 @@ class Player(sprites.character.Character):
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         if weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box):
             enemy.fall()
-
-    @property
-    def state(self):
-        return self._state.type
-
-    @property
-    def facing_direction(self):
-        return self._facing_direction
 
     @property
     def movement_direction(self):

@@ -1,6 +1,7 @@
 import pygame
 from pygame import Color
 
+from components.enemy_animations import EnemyAnimations
 from components.enemy_physics import EnemyPhysics
 from components.player_animations import PlayerAnimations
 from components.player_physics import PlayerPhysics
@@ -55,7 +56,14 @@ class Game:
             )
         )
         self.__enemy = Enemy(
-            animations={
+            weapon_hitbox={
+                DOWN: pygame.Rect((0, 26), (48, 22)),
+                UP: pygame.Rect((0, 0), (48, 22)),
+                LEFT: pygame.Rect((0, 0), (22, 48)),
+                RIGHT: pygame.Rect((26, 0), (22, 48))
+            },
+            starting_position=(200, 27),
+            animations=EnemyAnimations({
                 "idle": {
                     "framerate": 4,
                     DOWN: load_animation("skeleton", 0, 6),
@@ -77,14 +85,7 @@ class Game:
                     LEFT: load_animation("skeleton", 10, 8),
                     RIGHT: load_animation("skeleton", 11, 8)
                 }
-            },
-            weapon_hitbox={
-                DOWN: pygame.Rect((0, 26), (48, 22)),
-                UP: pygame.Rect((0, 0), (48, 22)),
-                LEFT: pygame.Rect((0, 0), (22, 48)),
-                RIGHT: pygame.Rect((26, 0), (22, 48))
-            },
-            starting_position=(200, 27),
+            }),
             physics=EnemyPhysics(
                 walking_speed=ENEMY_WALKING_SPEED,
                 bounding_box=pygame.Rect((20, 22), (8, 11))

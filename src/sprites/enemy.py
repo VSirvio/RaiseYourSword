@@ -2,14 +2,16 @@ from math import atan2, pi
 
 import ai.idle_state
 from direction import NONE, DOWN, UP, LEFT, RIGHT
-import events
 import sprites.character
 
 class Enemy(sprites.character.Character):
-    def __init__(self, animations, weapon_hitbox, starting_position, physics):
-        super().__init__(animations, ai.idle_state.IdleState())
+    def __init__(self, weapon_hitbox, starting_position, animations, physics):
+        super().__init__(ai.idle_state.IdleState())
 
         self._has_been_defeated = False
+
+        self.__animations = animations
+        self.image = self.__animations.current_frame(self)
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = starting_position
@@ -26,23 +28,16 @@ class Enemy(sprites.character.Character):
     def update(self, dt, **kwargs):
         player = kwargs["player"]
 
-        super().update(dt)
-
         self.__update_state(self._state.update(dt=dt, enemy=self, player=player), player)
 
-        frametime = 1000 / self._animations[self._state.type]["framerate"]
-        while self._timer >= frametime:
-            self._index = self._next_index()
-
-            if self._index == 0:
-                new_state = self._state.handle_event(events.AnimationFinished())
-                self.__update_state(new_state, player)
-
-            self._timer -= frametime
-
-        self.image = self._animations[self._state.type][self._facing_direction][self._index]
+        self.__animations.update(dt, self, player)
+        self.image = self.__animations.current_frame(self)
 
         self.__physics.update(dt, self)
+
+    def handle_event(self, event, player):
+        new_state = self._state.handle_event(event)
+        self.__update_state(new_state, player)
 
     def attack(self, player):
         angle = atan2(self.rect.y - player.rect.y, player.rect.x - self.rect.x)
@@ -61,6 +56,19 @@ class Enemy(sprites.character.Character):
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         if weapon_hitbox_relative_to_screen.colliderect(player.bounding_box):
             player.lose()
+
+    @property
+    def movement_direction(self):
+        return self._movement_direction
+
+    @movement_direction.setter
+    def movement_direction(self, new_movement_direction):
+        self._movement_direction = new_movement_direction
+
+        if new_movement_direction != NONE:
+            self._facing_direction = new_movement_direction.clip_to_four_directions()
+
+        self.__animations.reset(self)
 
     @property
     def bounding_box(self):
