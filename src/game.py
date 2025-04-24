@@ -1,9 +1,8 @@
 import pygame
 from pygame import Color
 
-from components.enemy_animations import EnemyAnimations
+from components.animations_component import AnimationsComponent
 from components.enemy_physics import EnemyPhysics
-from components.player_animations import PlayerAnimations
 from components.player_physics import PlayerPhysics
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
 from direction import DOWN, UP, LEFT, RIGHT
@@ -26,7 +25,7 @@ class Game:
                 (DISPLAY_WIDTH - 48) // 2,
                 (DISPLAY_HEIGHT - 48) // 2 - 7
             ),
-            animations=PlayerAnimations({
+            animations=AnimationsComponent({
                 "idle": {
                     "framerate": 4,
                     DOWN: load_animation("warrior", 0, 5),
@@ -63,7 +62,7 @@ class Game:
                 RIGHT: pygame.Rect((26, 0), (22, 48))
             },
             starting_position=(200, 27),
-            animations=EnemyAnimations({
+            animations=AnimationsComponent({
                 "idle": {
                     "framerate": 4,
                     DOWN: load_animation("skeleton", 0, 6),

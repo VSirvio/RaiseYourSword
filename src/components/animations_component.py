@@ -1,0 +1,28 @@
+import events
+
+class AnimationsComponent:
+    def __init__(self, animations):
+        self.__animations = animations
+        self.__index = 0
+        self.__timer = 0
+
+    def update(self, dt, owner, opponent):
+        self.__timer += dt
+
+        frametime = 1000 / self.__animations[owner.state]["framerate"]
+        while self.__timer >= frametime:
+            num_of_frames = len(self.__animations[owner.state][owner.facing_direction])
+            self.__index = (self.__index + 1) % num_of_frames
+
+            if self.__index == 0:
+                owner.handle_event(events.AnimationFinished(), opponent)
+
+            self.__timer -= frametime
+
+    def current_frame(self, owner):
+        return self.__animations[owner.state][owner.facing_direction][self.__index]
+
+    def reset(self, owner):
+        self.__index = 0
+        owner.image = self.current_frame(owner)
+        self.__timer = 0

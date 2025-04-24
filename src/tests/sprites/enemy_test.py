@@ -3,7 +3,7 @@ from math import ceil
 import pygame
 import unittest
 
-from components.enemy_animations import EnemyAnimations
+from components.animations_component import AnimationsComponent
 from components.enemy_physics import EnemyPhysics
 from config import ENEMY_AI_IDLE_TIME_MAX, ENEMY_AI_WALK_TIME_MAX
 from direction import DOWN, UP, LEFT, RIGHT
@@ -65,7 +65,7 @@ class TestEnemy(unittest.TestCase):
 
     def test_enemy_moves(self):
         enemy = Enemy(
-            self.weapon_hitbox, self.starting_position, EnemyAnimations(self.animations),
+            self.weapon_hitbox, self.starting_position, AnimationsComponent(self.animations),
             self.physics
         )
         starting_position = (enemy.rect.x, enemy.rect.y)

@@ -1,7 +1,7 @@
 import pygame
 import unittest
 
-from components.player_animations import PlayerAnimations
+from components.animations_component import AnimationsComponent
 from components.player_physics import PlayerPhysics
 import direction
 from direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
@@ -81,7 +81,7 @@ class TestPlayer(unittest.TestCase):
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
             player = Player(
-                self.weapon_hitbox, self.starting_position, PlayerAnimations(self.animations),
+                self.weapon_hitbox, self.starting_position, AnimationsComponent(self.animations),
                 self.physics
             )
             self.__turn_to_direction(player, direction)
@@ -95,7 +95,7 @@ class TestPlayer(unittest.TestCase):
     def test_walking_moves_player_to_the_correct_direction(self):
         for walk_direction in direction.ALL:
             player = Player(
-                self.weapon_hitbox, self.starting_position, PlayerAnimations(self.animations),
+                self.weapon_hitbox, self.starting_position, AnimationsComponent(self.animations),
                 self.physics
             )
             starting_position = {"x": player.rect.x, "y": player.rect.y}
@@ -121,7 +121,7 @@ class TestPlayer(unittest.TestCase):
     def test_attack_animation_is_played_when_player_attacks(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
             player = Player(
-                self.weapon_hitbox, self.starting_position, PlayerAnimations(self.animations),
+                self.weapon_hitbox, self.starting_position, AnimationsComponent(self.animations),
                 self.physics
             )
             self.__turn_to_direction(player, direction)
@@ -137,8 +137,8 @@ class TestPlayer(unittest.TestCase):
         for attack_direction in (DOWN, UP, LEFT, RIGHT):
             for walk_direction in (DOWN, UP, LEFT, RIGHT):
                 player = Player(
-                    self.weapon_hitbox, self.starting_position, PlayerAnimations(self.animations),
-                    self.physics
+                    self.weapon_hitbox, self.starting_position,
+                    AnimationsComponent(self.animations), self.physics
                 )
                 starting_position = {"x": player.rect.x, "y": player.rect.y}
 
