@@ -3,6 +3,7 @@ from math import ceil
 import pygame
 import unittest
 
+from components.enemy_physics import EnemyPhysics
 from config import ENEMY_AI_IDLE_TIME_MAX, ENEMY_AI_WALK_TIME_MAX
 from direction import DOWN, UP, LEFT, RIGHT
 from sprites.enemy import Enemy
@@ -47,7 +48,6 @@ class TestEnemy(unittest.TestCase):
                 RIGHT: load_animation("skeleton", 11, 8)
             }
         }
-        self.bounding_box = pygame.Rect((20, 22), (8, 11))
         self.weapon_hitbox = {
             DOWN: pygame.Rect((0, 26), (48, 22)),
             UP: pygame.Rect((0, 0), (48, 22)),
@@ -55,14 +55,16 @@ class TestEnemy(unittest.TestCase):
             RIGHT: pygame.Rect((26, 0), (22, 48))
         }
         self.starting_position = (200, 27)
-        self.walking_speed = 50
+        self.physics=EnemyPhysics(
+            walking_speed=50,
+            bounding_box=pygame.Rect((20, 22), (8, 11))
+        )
 
         self.player = StubPlayer(rect=pygame.Rect(0, 0, 0, 0))
 
     def test_enemy_moves(self):
         enemy = Enemy(
-            self.animations, self.bounding_box, self.weapon_hitbox, self.starting_position,
-            self.walking_speed
+            self.animations, self.weapon_hitbox, self.starting_position, self.physics
         )
         starting_position = (enemy.rect.x, enemy.rect.y)
 

@@ -1,6 +1,7 @@
 import pygame
 from pygame import Color
 
+from components.enemy_physics import EnemyPhysics
 from components.player_animations import PlayerAnimations
 from components.player_physics import PlayerPhysics
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
@@ -77,7 +78,6 @@ class Game:
                     RIGHT: load_animation("skeleton", 11, 8)
                 }
             },
-            bounding_box=pygame.Rect((20, 22), (8, 11)),
             weapon_hitbox={
                 DOWN: pygame.Rect((0, 26), (48, 22)),
                 UP: pygame.Rect((0, 0), (48, 22)),
@@ -85,7 +85,10 @@ class Game:
                 RIGHT: pygame.Rect((26, 0), (22, 48))
             },
             starting_position=(200, 27),
-            walking_speed=ENEMY_WALKING_SPEED
+            physics=EnemyPhysics(
+                walking_speed=ENEMY_WALKING_SPEED,
+                bounding_box=pygame.Rect((20, 22), (8, 11))
+            )
         )
 
         self.__characters = pygame.sprite.Group(self.__player, self.__enemy)

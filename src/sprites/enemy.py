@@ -1,4 +1,4 @@
-from math import atan2, pi, sqrt
+from math import atan2, pi
 
 import ai.idle_state
 from direction import NONE, DOWN, UP, LEFT, RIGHT
@@ -6,7 +6,7 @@ import events
 import sprites.character
 
 class Enemy(sprites.character.Character):
-    def __init__(self, animations, bounding_box, weapon_hitbox, starting_position, walking_speed):
+    def __init__(self, animations, weapon_hitbox, starting_position, physics):
         super().__init__(animations, ai.idle_state.IdleState())
 
         self._has_been_defeated = False
@@ -14,10 +14,9 @@ class Enemy(sprites.character.Character):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = starting_position
 
-        self.__bounding_box = bounding_box
         self.__weapon_hitbox = weapon_hitbox
 
-        self.__walking_speed = walking_speed
+        self.__physics = physics
 
     def __update_state(self, state, player):
         if state is not None:
@@ -43,22 +42,7 @@ class Enemy(sprites.character.Character):
 
         self.image = self._animations[self._state.type][self._facing_direction][self._index]
 
-        dx, dy = self._movement_direction.movement_vector
-
-        time_per_px = 1000 / self.__walking_speed
-
-        # When the walking direction is diagonal, we have to multiply the time
-        # it takes to walk 1 pixel (time_per_px) by sqrt(2) = ~1.1,
-        # because the distance moved on the screen per pixel is that much
-        # longer (compare the diagonal length of a pixel to the width/height of
-        # a pixel)
-        if dx != 0 and dy != 0:
-            time_per_px *= sqrt(2)
-
-        while self._walk_timer >= time_per_px:
-            self._walk_timer -= time_per_px
-            self.rect.x += dx
-            self.rect.y += dy
+        self.__physics.update(dt, self)
 
     def attack(self, player):
         angle = atan2(self.rect.y - player.rect.y, player.rect.x - self.rect.x)
@@ -80,7 +64,7 @@ class Enemy(sprites.character.Character):
 
     @property
     def bounding_box(self):
-        return self.__bounding_box.move(self.rect.x, self.rect.y)
+        return self.__physics.bounding_box.move(self.rect.x, self.rect.y)
 
     @property
     def has_been_defeated(self):

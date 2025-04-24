@@ -19,11 +19,8 @@ class Character(pygame.sprite.Sprite):
 
         self._timer = 0
 
-        self._walk_timer = 0
-
     def update(self, dt):
         self._timer += dt
-        self._walk_timer += dt
 
     def _next_index(self):
         num_of_frames = len(self._animations[self._state.type][self._facing_direction])
@@ -33,7 +30,6 @@ class Character(pygame.sprite.Sprite):
         self._index = 0
         self.image = self._animations[self._state.type][self._facing_direction][self._index]
         self._timer = 0
-        self._walk_timer = 0
 
     @property
     def movement_direction(self):
