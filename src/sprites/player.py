@@ -44,7 +44,8 @@ class Player(sprites.character.Character):
             self._index = self._next_index()
 
             if self._index == 0:
-                new_state = self._state.handle_event(player=self, event=events.AnimationFinished())
+                event = events.AnimationFinished()
+                new_state = self._state.handle_event(player=self, enemy=enemy, event=event)
                 self.__update_state(new_state, enemy)
 
             self._timer -= frametime
@@ -97,7 +98,7 @@ class Player(sprites.character.Character):
         if event.__class__ == events.MovementDirectionChanged:
             self.__direction_controlled_toward = event.new_direction
 
-        new_state = self._state.handle_event(player=self, event=event)
+        new_state = self._state.handle_event(player=self, enemy=enemy, event=event)
         self.__update_state(new_state, enemy)
 
     def attack(self, enemy):
@@ -105,7 +106,8 @@ class Player(sprites.character.Character):
 
         current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
-        return weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box)
+        if weapon_hitbox_relative_to_screen.colliderect(enemy.bounding_box):
+            enemy.fall()
 
     @property
     def direction_controlled_toward(self):
@@ -124,7 +126,3 @@ class Player(sprites.character.Character):
 
         new_state = self._state.handle_event(player=self, event=events.Lose())
         self.__update_state(new_state, None)
-
-    @property
-    def hit_an_enemy(self):
-        return self._state.type == "attack" and self._state.enemy_was_hit

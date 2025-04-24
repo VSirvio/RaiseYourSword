@@ -16,6 +16,10 @@ class StubEnemy:
     def bounding_box(self):
         return self.__bounding_box
 
+    @property
+    def has_been_defeated(self):
+        return False
+
 
 class TestPlayer(unittest.TestCase):
     def setUp(self):

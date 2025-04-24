@@ -9,6 +9,8 @@ class Enemy(sprites.character.Character):
     def __init__(self, animations, bounding_box, weapon_hitbox, starting_position, walking_speed):
         super().__init__(animations, ai.idle_state.IdleState())
 
+        self._has_been_defeated = False
+
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = starting_position
 
@@ -79,3 +81,10 @@ class Enemy(sprites.character.Character):
     @property
     def bounding_box(self):
         return self.__bounding_box.move(self.rect.x, self.rect.y)
+
+    @property
+    def has_been_defeated(self):
+        return self._has_been_defeated
+
+    def fall(self):
+        self._has_been_defeated = True

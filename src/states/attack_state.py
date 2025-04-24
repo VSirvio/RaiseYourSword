@@ -9,27 +9,21 @@ import states.walk_state   # pylint: disable=cyclic-import
 # and state2 would also need to import state1).
 
 class AttackState(state.State):
-    def __init__(self):
-        self.__enemy_was_hit = False
-
     def enter(self, **kwargs):
         player = kwargs["player"]
         enemy = kwargs["enemy"]
 
-        self.__enemy_was_hit = player.attack(enemy)
+        player.attack(enemy)
 
     def handle_event(self, **kwargs):
         event = kwargs["event"]
         player = kwargs["player"]
+        enemy = kwargs["enemy"]
 
         match event.__class__:
             case events.AnimationFinished:
-                if self.__enemy_was_hit or player.direction_controlled_toward == direction.NONE:
+                if enemy.has_been_defeated or player.direction_controlled_toward == direction.NONE:
                     return states.idle_state.IdleState()
                 return states.walk_state.WalkState(player.direction_controlled_toward)
             case events.Lose:
                 return states.idle_state.IdleState()
-
-    @property
-    def enemy_was_hit(self):
-        return self.__enemy_was_hit
