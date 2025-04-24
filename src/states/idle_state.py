@@ -1,5 +1,6 @@
 import direction
 import events
+import state
 import states.attack_state   # pylint: disable=cyclic-import
 import states.walk_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing animation state management
@@ -7,11 +8,7 @@ import states.walk_state   # pylint: disable=cyclic-import
 # necessary to use cyclic imports (like in the example given, state1 would need to import state2
 # and state2 would also need to import state1).
 
-class IdleState:
-    @property
-    def type(self):
-        return "idle"
-
+class IdleState(state.State):
     def enter(self, **kwargs):
         kwargs["player"].movement_direction = direction.NONE
 
