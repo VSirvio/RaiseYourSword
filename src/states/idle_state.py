@@ -10,7 +10,9 @@ import states.walk_state   # pylint: disable=cyclic-import
 
 class IdleState(state.State):
     def enter(self, **kwargs):
-        kwargs["player"].movement_direction = direction.NONE
+        player = kwargs["player"]
+
+        player.movement_direction = direction.NONE
 
     def handle_event(self, **kwargs):
         event = kwargs["event"]

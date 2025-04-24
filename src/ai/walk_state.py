@@ -34,12 +34,16 @@ class WalkState(state.State):
             self.__direction = direction.LEFT
 
     def enter(self, **kwargs):
-        kwargs["enemy"].movement_direction = self.__direction
+        enemy = kwargs["enemy"]
+
+        enemy.movement_direction = self.__direction
 
     def update(self, **kwargs):
+        dt = kwargs["dt"]
         enemy = kwargs["enemy"]
         player = kwargs["player"]
-        self.__timer += kwargs["dt"]
+
+        self.__timer += dt
 
         if self.__timer >= self.__duration:
             return ai.idle_state.IdleState()

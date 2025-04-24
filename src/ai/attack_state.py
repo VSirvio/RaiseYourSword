@@ -11,7 +11,10 @@ class AttackState(state.State):
         self.__player_was_hit = False
 
     def enter(self, **kwargs):
-        self.__player_was_hit = kwargs["enemy"].attack(kwargs["player"])
+        enemy = kwargs["enemy"]
+        player = kwargs["player"]
+
+        self.__player_was_hit = enemy.attack(player)
 
     def update(self, **kwargs):
         return None

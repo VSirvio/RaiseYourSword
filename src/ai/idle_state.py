@@ -18,7 +18,9 @@ class IdleState(state.State):
         self.__game_finished = game_finished
 
     def enter(self, **kwargs):
-        kwargs["enemy"].movement_direction = direction.NONE
+        enemy = kwargs["enemy"]
+
+        enemy.movement_direction = direction.NONE
 
     def update(self, **kwargs):
         enemy = kwargs["enemy"]
