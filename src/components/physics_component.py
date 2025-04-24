@@ -1,16 +1,18 @@
 from math import sqrt
 
-class EnemyPhysics:
+class PhysicsComponent:
     def __init__(self, walking_speed, bounding_box):
         self.__bounding_box = bounding_box
 
         self._walk_timer = 0
         self.__walking_speed = walking_speed
 
-    def update(self, dt, enemy):
+    def update(self, dt, *args):
+        owner = args[0]
+
         self._walk_timer += dt
 
-        dx, dy = enemy.movement_direction.movement_vector
+        dx, dy = owner.movement_direction.movement_vector
 
         time_per_px = 1000 / self.__walking_speed
 
@@ -24,8 +26,13 @@ class EnemyPhysics:
 
         while self._walk_timer >= time_per_px:
             self._walk_timer -= time_per_px
-            enemy.rect.x += dx
-            enemy.rect.y += dy
+            self._move(dx, dy, *args)
+
+    def _move(self, dx, dy, *args):
+        owner = args[0]
+
+        owner.rect.x += dx
+        owner.rect.y += dy
 
     @property
     def bounding_box(self):

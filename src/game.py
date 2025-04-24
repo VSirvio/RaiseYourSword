@@ -2,7 +2,7 @@ import pygame
 from pygame import Color
 
 from components.animations_component import AnimationsComponent
-from components.enemy_physics import EnemyPhysics
+from components.physics_component import PhysicsComponent
 from components.player_physics import PlayerPhysics
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
 from direction import DOWN, UP, LEFT, RIGHT
@@ -85,7 +85,7 @@ class Game:
                     RIGHT: load_animation("skeleton", 11, 8)
                 }
             }),
-            physics=EnemyPhysics(
+            physics=PhysicsComponent(
                 walking_speed=ENEMY_WALKING_SPEED,
                 bounding_box=pygame.Rect((20, 22), (8, 11))
             )

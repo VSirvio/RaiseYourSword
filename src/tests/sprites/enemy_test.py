@@ -4,7 +4,7 @@ import pygame
 import unittest
 
 from components.animations_component import AnimationsComponent
-from components.enemy_physics import EnemyPhysics
+from components.physics_component import PhysicsComponent
 from config import ENEMY_AI_IDLE_TIME_MAX, ENEMY_AI_WALK_TIME_MAX
 from direction import DOWN, UP, LEFT, RIGHT
 from sprites.enemy import Enemy
@@ -56,7 +56,7 @@ class TestEnemy(unittest.TestCase):
                 RIGHT: load_animation("skeleton", 11, 8)
             }
         }
-        self.physics=EnemyPhysics(
+        self.physics=PhysicsComponent(
             walking_speed=50,
             bounding_box=pygame.Rect((20, 22), (8, 11))
         )
