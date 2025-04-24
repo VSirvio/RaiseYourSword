@@ -5,8 +5,7 @@ from direction import NONE, DOWN, UP, LEFT, RIGHT
 import sprites.character
 
 class Enemy(sprites.character.Character):
-    def __init__(self, animations, bounding_box, weapon_hitbox, starting_position, walking_speed,
-            minimum_distance_to_player):
+    def __init__(self, animations, bounding_box, weapon_hitbox, starting_position, walking_speed):
         super().__init__(animations, ai.idle_state.IdleState())
 
         self.rect = self.image.get_rect()
@@ -16,7 +15,6 @@ class Enemy(sprites.character.Character):
         self.__weapon_hitbox = weapon_hitbox
 
         self.__walking_speed = walking_speed
-        self.__minimum_distance_to_player = minimum_distance_to_player
 
     def __update_state(self, state, player):
         if state is not None:
@@ -27,11 +25,6 @@ class Enemy(sprites.character.Character):
         player = kwargs["player"]
 
         super().update(dt)
-
-        dist_x = player.rect.x - self.rect.x
-        dist_y = player.rect.y - self.rect.y
-        if sqrt(dist_x ** 2 + dist_y ** 2) <= self.__minimum_distance_to_player:
-            self.__update_state(self._state.close_enough_to_player(), player)
 
         self.__update_state(self._state.update(dt=dt, enemy=self, player=player), player)
 

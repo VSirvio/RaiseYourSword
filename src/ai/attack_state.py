@@ -18,9 +18,6 @@ class AttackState(state.State):
     def animation_finished(self):
         return ai.idle_state.IdleState(game_finished=self.__player_was_hit)
 
-    def close_enough_to_player(self):
-        return None
-
     @property
     def player_was_hit(self):
         return self.__player_was_hit

@@ -40,6 +40,3 @@ class IdleState(state.State):
 
     def animation_finished(self):
         return None
-
-    def close_enough_to_player(self):
-        return None

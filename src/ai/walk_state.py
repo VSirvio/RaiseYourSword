@@ -1,7 +1,7 @@
-from math import atan2, pi
+from math import atan2, pi, sqrt
 from random import randrange
 
-from config import ENEMY_AI_WALK_TIME_MIN, ENEMY_AI_WALK_TIME_MAX
+from config import ENEMY_TO_PLAYER_MIN_DISTANCE, ENEMY_AI_WALK_TIME_MIN, ENEMY_AI_WALK_TIME_MAX
 import direction
 import ai.idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
@@ -37,15 +37,19 @@ class WalkState(state.State):
         kwargs["enemy"].movement_direction = self.__direction
 
     def update(self, **kwargs):
+        enemy = kwargs["enemy"]
+        player = kwargs["player"]
         self.__timer += kwargs["dt"]
 
         if self.__timer >= self.__duration:
+            return ai.idle_state.IdleState()
+
+        dist_x = player.rect.x - enemy.rect.x
+        dist_y = player.rect.y - enemy.rect.y
+        if sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_TO_PLAYER_MIN_DISTANCE:
             return ai.idle_state.IdleState()
 
         return None
 
     def animation_finished(self):
         return None
-
-    def close_enough_to_player(self):
-        return ai.idle_state.IdleState()
