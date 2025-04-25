@@ -10,13 +10,13 @@ import states.walk_state   # pylint: disable=cyclic-import
 
 class AttackState(state.State):
     def enter(self, **kwargs):
-        player = kwargs["player"]
-        enemy = kwargs["enemy"]
+        owner = kwargs["owner"]
+        opponent = kwargs["opponent"]
 
-        player.direction.moving = direction.NONE
+        owner.direction.moving = direction.NONE
 
-        if player.does_attack_hit(enemy):
-            enemy.fall()
+        if owner.does_attack_hit(opponent):
+            opponent.defeat()
 
     def update(self, **kwargs):
         return None
@@ -26,10 +26,11 @@ class AttackState(state.State):
 
         match event.__class__:
             case events.AnimationFinished:
-                player = kwargs["player"]
-                enemy = kwargs["enemy"]
-                if enemy.has_been_defeated or player.direction.controlled_toward == direction.NONE:
+                owner = kwargs["owner"]
+                opponent = kwargs["opponent"]
+                if (opponent.has_been_defeated or
+                        owner.direction.controlled_toward == direction.NONE):
                     return states.idle_state.IdleState()
-                return states.walk_state.WalkState(player.direction.controlled_toward)
+                return states.walk_state.WalkState(owner.direction.controlled_toward)
             case events.Lose:
                 return states.idle_state.IdleState()

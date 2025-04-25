@@ -15,3 +15,6 @@ class CharacterDirection:
 
         if new_movement_direction != NONE:
             self.facing = new_movement_direction.clip_to_four_directions()
+
+    def handle(self, event):
+        pass

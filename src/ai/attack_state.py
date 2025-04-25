@@ -11,28 +11,30 @@ import state
 
 class AttackState(state.State):
     def enter(self, **kwargs):
-        enemy = kwargs["enemy"]
-        player = kwargs["player"]
+        owner = kwargs["owner"]
+        opponent = kwargs["opponent"]
 
-        angle = atan2(enemy.rect.y - player.rect.y, player.rect.x - enemy.rect.x)
+        angle = atan2(owner.rect.y - opponent.rect.y, opponent.rect.x - owner.rect.x)
         if -3*pi/4 <= angle < -pi/4:
-            enemy.direction.moving = DOWN
+            owner.direction.moving = DOWN
         elif -pi/4 <= angle < pi/4:
-            enemy.direction.moving = RIGHT
+            owner.direction.moving = RIGHT
         elif pi/4 <= angle < 3*pi/4:
-            enemy.direction.moving = UP
+            owner.direction.moving = UP
         else:
-            enemy.direction.moving = LEFT
+            owner.direction.moving = LEFT
 
-        enemy.direction.moving = NONE
+        owner.direction.moving = NONE
 
-        if enemy.does_attack_hit(player):
-            player.lose()
+        if owner.does_attack_hit(opponent):
+            opponent.defeat()
 
     def update(self, **kwargs):
         return None
 
-    def handle_event(self, event):
+    def handle_event(self, **kwargs):
+        event = kwargs["event"]
+
         match event.__class__:
             case events.AnimationFinished:
                 return ai.idle_state.IdleState()

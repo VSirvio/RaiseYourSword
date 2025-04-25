@@ -1,28 +1,32 @@
 import pygame
 from pygame import Color
 
+import ai.idle_state
 from character_direction import CharacterDirection
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
 from components.player_physics import PlayerPhysics
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
 from direction import NONE, DOWN, UP, LEFT, RIGHT
+import events
 from player_direction import PlayerDirection
 from sprites.background import Background
-from sprites.enemy import Enemy
-from sprites.player import Player
+from sprites.character import Character
+import states.idle_state
 from utils import load_animation
 
 class Game:
     def __init__(self):
         self.__background = Background()
-        self.__player = Player(
+        self.__player = Character(
+            role="player",
             weapon_hitbox={
                 DOWN: pygame.Rect((0, 24), (48, 24)),
                 UP: pygame.Rect((0, 0), (48, 24)),
                 LEFT: pygame.Rect((0, 0), (24, 48)),
                 RIGHT: pygame.Rect((24, 0), (24, 48))
             },
+            initial_state=states.idle_state.IdleState(),
             starting_position=(
                 (DISPLAY_WIDTH - 48) // 2,
                 (DISPLAY_HEIGHT - 48) // 2 - 7
@@ -55,15 +59,18 @@ class Game:
                 walking_speed=75,
                 bounding_box=pygame.Rect((11, 6), (25, 36)),
                 game_area_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-            )
+            ),
+            event_when_defeated=events.Lose()
         )
-        self.__enemy = Enemy(
+        self.__enemy = Character(
+            role="enemy",
             weapon_hitbox={
                 DOWN: pygame.Rect((0, 26), (48, 22)),
                 UP: pygame.Rect((0, 0), (48, 22)),
                 LEFT: pygame.Rect((0, 0), (22, 48)),
                 RIGHT: pygame.Rect((26, 0), (22, 48))
             },
+            initial_state=ai.idle_state.IdleState(),
             starting_position=(200, 27),
             direction=CharacterDirection(facing=DOWN, moving=NONE),
             animations=AnimationsComponent({
@@ -130,7 +137,9 @@ class Game:
             surface.blit(self.__victory_screen, (0, 0))
 
     def update(self, dt):
-        self.__all_sprites.update(dt, player=self.__player, enemy=self.__enemy)
+        self.__all_sprites.update(
+            dt, opponent_to={"enemy": self.__player, "player": self.__enemy}
+        )
 
         if self.__enemy.has_been_defeated:
             self.__characters.remove(self.__enemy)

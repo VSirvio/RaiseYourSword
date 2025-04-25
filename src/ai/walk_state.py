@@ -16,43 +16,43 @@ class WalkState(state.State):
         self.__timer = 0
 
     def enter(self, **kwargs):
-        enemy = kwargs["enemy"]
-        player = kwargs["player"]
+        owner = kwargs["owner"]
+        opponent = kwargs["opponent"]
 
-        angle = atan2(enemy.rect.y - player.rect.y, player.rect.x - enemy.rect.x)
+        angle = atan2(owner.rect.y - opponent.rect.y, opponent.rect.x - owner.rect.x)
         if -7*pi/8 <= angle < -5*pi/8:
-            enemy.direction.moving = direction.DOWN_LEFT
+            owner.direction.moving = direction.DOWN_LEFT
         elif -5*pi/8 <= angle < -3*pi/8:
-            enemy.direction.moving = direction.DOWN
+            owner.direction.moving = direction.DOWN
         elif -3*pi/8 <= angle < -pi/8:
-            enemy.direction.moving = direction.DOWN_RIGHT
+            owner.direction.moving = direction.DOWN_RIGHT
         elif -pi/8 <= angle < pi/8:
-            enemy.direction.moving = direction.RIGHT
+            owner.direction.moving = direction.RIGHT
         elif pi/8 <= angle < 3*pi/8:
-            enemy.direction.moving = direction.UP_RIGHT
+            owner.direction.moving = direction.UP_RIGHT
         elif 3*pi/8 <= angle < 5*pi/8:
-            enemy.direction.moving = direction.UP
+            owner.direction.moving = direction.UP
         elif 5*pi/8 <= angle < 7*pi/8:
-            enemy.direction.moving = direction.UP_LEFT
+            owner.direction.moving = direction.UP_LEFT
         else:
-            enemy.direction.moving = direction.LEFT
+            owner.direction.moving = direction.LEFT
 
     def update(self, **kwargs):
         dt = kwargs["dt"]
-        enemy = kwargs["enemy"]
-        player = kwargs["player"]
+        owner = kwargs["owner"]
+        opponent = kwargs["opponent"]
 
         self.__timer += dt
 
         if self.__timer >= self.__duration:
             return ai.idle_state.IdleState()
 
-        dist_x = player.rect.x - enemy.rect.x
-        dist_y = player.rect.y - enemy.rect.y
+        dist_x = opponent.rect.x - owner.rect.x
+        dist_y = opponent.rect.y - owner.rect.y
         if sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_TO_PLAYER_MIN_DISTANCE:
             return ai.idle_state.IdleState()
 
         return None
 
-    def handle_event(self, event):
+    def handle_event(self, **kwargs):
         return None

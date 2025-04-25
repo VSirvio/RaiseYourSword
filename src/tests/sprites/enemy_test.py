@@ -3,12 +3,13 @@ from math import ceil
 import pygame
 import unittest
 
+import ai.idle_state
 from character_direction import CharacterDirection
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
 from config import ENEMY_AI_IDLE_TIME_MAX, ENEMY_AI_WALK_TIME_MAX
 from direction import NONE, DOWN, UP, LEFT, RIGHT
-from sprites.enemy import Enemy
+from sprites.character import Character
 from utils import load_animation
 
 
@@ -33,6 +34,7 @@ class TestEnemy(unittest.TestCase):
             LEFT: pygame.Rect((0, 0), (22, 48)),
             RIGHT: pygame.Rect((26, 0), (22, 48))
         }
+        self.initial_state = ai.idle_state.IdleState()
         self.starting_position = (200, 27)
         self.direction = CharacterDirection(facing=DOWN, moving=NONE)
         self.animations = {
@@ -66,13 +68,13 @@ class TestEnemy(unittest.TestCase):
         self.player = StubPlayer(rect=pygame.Rect(0, 0, 0, 0))
 
     def test_enemy_moves(self):
-        enemy = Enemy(
-            self.weapon_hitbox, self.starting_position, self.direction,
-            AnimationsComponent(self.animations), self.physics
+        enemy = Character(
+            "enemy", self.weapon_hitbox, self.initial_state, self.starting_position,
+            self.direction, AnimationsComponent(self.animations), self.physics
         )
         starting_position = (enemy.rect.x, enemy.rect.y)
 
         for frame in range(0, ceil((ENEMY_AI_IDLE_TIME_MAX + ENEMY_AI_WALK_TIME_MAX) * 60 / 1000)):
-            enemy.update(dt=ceil(1000/60), player=self.player)
+            enemy.update(dt=ceil(1000/60), opponent_to={"enemy": self.player})
 
         self.assertNotEqual((enemy.rect.x, enemy.rect.y), starting_position)

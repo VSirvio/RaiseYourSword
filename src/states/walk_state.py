@@ -13,9 +13,9 @@ class WalkState(state.State):
         self.__direction = walk_direction
 
     def enter(self, **kwargs):
-        player = kwargs["player"]
+        owner = kwargs["owner"]
 
-        player.direction.moving = self.__direction
+        owner.direction.moving = self.__direction
 
     def update(self, **kwargs):
         return None

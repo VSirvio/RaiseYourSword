@@ -17,27 +17,27 @@ class IdleState(state.State):
         self.__timer = 0
 
     def enter(self, **kwargs):
-        enemy = kwargs["enemy"]
+        owner = kwargs["owner"]
 
-        enemy.direction.moving = direction.NONE
+        owner.direction.moving = direction.NONE
 
     def update(self, **kwargs):
-        enemy = kwargs["enemy"]
-        player = kwargs["player"]
+        owner = kwargs["owner"]
+        opponent = kwargs["opponent"]
 
-        if player.has_been_defeated:
+        if opponent.has_been_defeated:
             return None
 
         self.__timer += kwargs["dt"]
 
         if self.__timer >= self.__duration:
-            dist_x = player.rect.x - enemy.rect.x
-            dist_y = player.rect.y - enemy.rect.y
+            dist_x = opponent.rect.x - owner.rect.x
+            dist_y = opponent.rect.y - owner.rect.y
             if sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_TO_PLAYER_MIN_DISTANCE:
                 return ai.attack_state.AttackState()
             return ai.walk_state.WalkState()
 
         return None
 
-    def handle_event(self, event):
+    def handle_event(self, **kwargs):
         return None

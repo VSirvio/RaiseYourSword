@@ -7,7 +7,8 @@ import direction
 from direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
 import events
 from player_direction import PlayerDirection
-from sprites.player import Player
+from sprites.character import Character
+import states.idle_state
 from utils import load_animation
 
 
@@ -32,6 +33,7 @@ class TestPlayer(unittest.TestCase):
             LEFT: pygame.Rect((0, 0), (24, 48)),
             RIGHT: pygame.Rect((24, 0), (24, 48))
         }
+        self.initial_state = states.idle_state.IdleState()
         self.starting_position = ((260 - 48) // 2, (190 - 48) // 2 - 7)
         self.direction = PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE)
         self.animations = {
@@ -82,9 +84,9 @@ class TestPlayer(unittest.TestCase):
 
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
-            player = Player(
-                self.weapon_hitbox, self.starting_position, self.direction,
-                AnimationsComponent(self.animations), self.physics
+            player = Character(
+                "player", self.weapon_hitbox, self.initial_state, self.starting_position,
+                self.direction, AnimationsComponent(self.animations), self.physics
             )
             self.__turn_to_direction(player, direction)
 
@@ -92,18 +94,21 @@ class TestPlayer(unittest.TestCase):
             for frame in list(range(len(self.animations["idle"][direction]))) + [0]:
                 with self.subTest(direction=direction, frame=frame):
                     self.assertEqual(player.image, self.animations["idle"][direction][frame])
-                player.update(dt=1000/self.animations["idle"]["framerate"], enemy=self.enemy)
+                player.update(
+                    dt=1000/self.animations["idle"]["framerate"],
+                    opponent_to={"player": self.enemy}
+                )
 
     def test_walking_moves_player_to_the_correct_direction(self):
         for walk_direction in direction.ALL:
-            player = Player(
-                self.weapon_hitbox, self.starting_position, self.direction,
-                AnimationsComponent(self.animations), self.physics
+            player = Character(
+                "player", self.weapon_hitbox, self.initial_state, self.starting_position,
+                self.direction, AnimationsComponent(self.animations), self.physics
             )
             starting_position = {"x": player.rect.x, "y": player.rect.y}
 
             self.__walk_to_direction(player, walk_direction)
-            player.update(dt=1000, enemy=self.enemy)
+            player.update(dt=1000, opponent_to={"player": self.enemy})
 
             with self.subTest(direction=walk_direction):
                 if walk_direction.vertical_component == VerticalDirection.UP:
@@ -122,9 +127,9 @@ class TestPlayer(unittest.TestCase):
 
     def test_attack_animation_is_played_when_player_attacks(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
-            player = Player(
-                self.weapon_hitbox, self.starting_position, self.direction,
-                AnimationsComponent(self.animations), self.physics
+            player = Character(
+                "player", self.weapon_hitbox, self.initial_state, self.starting_position,
+                self.direction, AnimationsComponent(self.animations), self.physics
             )
             self.__turn_to_direction(player, direction)
 
@@ -133,14 +138,17 @@ class TestPlayer(unittest.TestCase):
             for frame in range(len(self.animations["attack"][direction])):
                 with self.subTest(direction=direction, frame=frame):
                     self.assertEqual(player.image, self.animations["attack"][direction][frame])
-                player.update(dt=1000/self.animations["attack"]["framerate"], enemy=self.enemy)
+                player.update(
+                    dt=1000/self.animations["attack"]["framerate"],
+                    opponent_to={"player": self.enemy}
+                )
 
     def test_player_cannot_move_while_attacking(self):
         for attack_direction in (DOWN, UP, LEFT, RIGHT):
             for walk_direction in (DOWN, UP, LEFT, RIGHT):
-                player = Player(
-                    self.weapon_hitbox, self.starting_position, self.direction,
-                    AnimationsComponent(self.animations), self.physics
+                player = Character(
+                    "player", self.weapon_hitbox, self.initial_state, self.starting_position,
+                    self.direction, AnimationsComponent(self.animations), self.physics
                 )
                 starting_position = {"x": player.rect.x, "y": player.rect.y}
 
@@ -152,7 +160,7 @@ class TestPlayer(unittest.TestCase):
                 attack_frame_count = len(self.animations["attack"][attack_direction])
                 attack_single_frame_duration = 1000 / self.animations["attack"]["framerate"]
                 attack_total_duration = attack_frame_count * attack_single_frame_duration
-                player.update(dt=attack_total_duration-1, enemy=self.enemy)
+                player.update(dt=attack_total_duration-1, opponent_to={"player": self.enemy})
 
                 with self.subTest(attack_direction=attack_direction, walk_direction=walk_direction):
                     self.assertEqual(player.rect.x, starting_position["x"])
