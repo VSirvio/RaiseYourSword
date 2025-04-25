@@ -12,7 +12,7 @@ class IdleState(state.State):
     def enter(self, **kwargs):
         player = kwargs["player"]
 
-        player.movement_direction = direction.NONE
+        player.direction.moving = direction.NONE
 
     def handle_event(self, **kwargs):
         event = kwargs["event"]

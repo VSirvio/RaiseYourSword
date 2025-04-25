@@ -11,7 +11,7 @@ class AnimationsComponent:
 
         frametime = 1000 / self.__animations[owner.state]["framerate"]
         while self.__timer >= frametime:
-            num_of_frames = len(self.__animations[owner.state][owner.facing_direction])
+            num_of_frames = len(self.__animations[owner.state][owner.direction.facing])
             self.__index = (self.__index + 1) % num_of_frames
 
             if self.__index == 0:
@@ -20,7 +20,7 @@ class AnimationsComponent:
             self.__timer -= frametime
 
     def current_frame(self, owner):
-        return self.__animations[owner.state][owner.facing_direction][self.__index]
+        return self.__animations[owner.state][owner.direction.facing][self.__index]
 
     def reset(self, owner):
         self.__index = 0

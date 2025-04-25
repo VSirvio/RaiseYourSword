@@ -1,11 +1,13 @@
 import pygame
 from pygame import Color
 
+from character_direction import CharacterDirection
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
 from components.player_physics import PlayerPhysics
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
-from direction import DOWN, UP, LEFT, RIGHT
+from direction import NONE, DOWN, UP, LEFT, RIGHT
+from player_direction import PlayerDirection
 from sprites.background import Background
 from sprites.enemy import Enemy
 from sprites.player import Player
@@ -25,6 +27,7 @@ class Game:
                 (DISPLAY_WIDTH - 48) // 2,
                 (DISPLAY_HEIGHT - 48) // 2 - 7
             ),
+            direction=PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE),
             animations=AnimationsComponent({
                 "idle": {
                     "framerate": 4,
@@ -62,6 +65,7 @@ class Game:
                 RIGHT: pygame.Rect((26, 0), (22, 48))
             },
             starting_position=(200, 27),
+            direction=CharacterDirection(facing=DOWN, moving=NONE),
             animations=AnimationsComponent({
                 "idle": {
                     "framerate": 4,

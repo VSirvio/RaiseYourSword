@@ -3,10 +3,11 @@ from math import ceil
 import pygame
 import unittest
 
+from character_direction import CharacterDirection
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
 from config import ENEMY_AI_IDLE_TIME_MAX, ENEMY_AI_WALK_TIME_MAX
-from direction import DOWN, UP, LEFT, RIGHT
+from direction import NONE, DOWN, UP, LEFT, RIGHT
 from sprites.enemy import Enemy
 from utils import load_animation
 
@@ -33,6 +34,7 @@ class TestEnemy(unittest.TestCase):
             RIGHT: pygame.Rect((26, 0), (22, 48))
         }
         self.starting_position = (200, 27)
+        self.direction = CharacterDirection(facing=DOWN, moving=NONE)
         self.animations = {
             "idle": {
                 "framerate": 4,
@@ -65,8 +67,8 @@ class TestEnemy(unittest.TestCase):
 
     def test_enemy_moves(self):
         enemy = Enemy(
-            self.weapon_hitbox, self.starting_position, AnimationsComponent(self.animations),
-            self.physics
+            self.weapon_hitbox, self.starting_position, self.direction,
+            AnimationsComponent(self.animations), self.physics
         )
         starting_position = (enemy.rect.x, enemy.rect.y)
 

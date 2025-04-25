@@ -1,12 +1,13 @@
 import ai.idle_state
-from direction import NONE
 import sprites.character
 
 class Enemy(sprites.character.Character):
-    def __init__(self, weapon_hitbox, starting_position, animations, physics):
+    def __init__(self, weapon_hitbox, starting_position, direction, animations, physics):
         super().__init__(ai.idle_state.IdleState())
 
         self._has_been_defeated = False
+
+        self.direction = direction
 
         self.__animations = animations
         self.image = self.__animations.current_frame(self)
@@ -22,6 +23,7 @@ class Enemy(sprites.character.Character):
         if state is not None:
             self._state = state
             self._state.enter(enemy=self, player=player)
+            self.__animations.reset(self)
 
     def update(self, dt, **kwargs):
         player = kwargs["player"]
@@ -38,22 +40,9 @@ class Enemy(sprites.character.Character):
         self.__update_state(new_state, player)
 
     def does_attack_hit(self, player):
-        current_weapon_hitbox = self.__weapon_hitbox[self._facing_direction]
+        current_weapon_hitbox = self.__weapon_hitbox[self.direction.facing]
         weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
         return weapon_hitbox_relative_to_screen.colliderect(player.bounding_box)
-
-    @property
-    def movement_direction(self):
-        return self._movement_direction
-
-    @movement_direction.setter
-    def movement_direction(self, new_movement_direction):
-        self._movement_direction = new_movement_direction
-
-        if new_movement_direction != NONE:
-            self._facing_direction = new_movement_direction.clip_to_four_directions()
-
-        self.__animations.reset(self)
 
     @property
     def bounding_box(self):

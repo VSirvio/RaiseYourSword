@@ -13,7 +13,7 @@ class AttackState(state.State):
         player = kwargs["player"]
         enemy = kwargs["enemy"]
 
-        player.movement_direction = direction.NONE
+        player.direction.moving = direction.NONE
 
         if player.does_attack_hit(enemy):
             enemy.fall()
@@ -25,8 +25,8 @@ class AttackState(state.State):
             case events.AnimationFinished:
                 player = kwargs["player"]
                 enemy = kwargs["enemy"]
-                if enemy.has_been_defeated or player.direction_controlled_toward == direction.NONE:
+                if enemy.has_been_defeated or player.direction.controlled_toward == direction.NONE:
                     return states.idle_state.IdleState()
-                return states.walk_state.WalkState(player.direction_controlled_toward)
+                return states.walk_state.WalkState(player.direction.controlled_toward)
             case events.Lose:
                 return states.idle_state.IdleState()

@@ -19,7 +19,7 @@ class IdleState(state.State):
     def enter(self, **kwargs):
         enemy = kwargs["enemy"]
 
-        enemy.movement_direction = direction.NONE
+        enemy.direction.moving = direction.NONE
 
     def update(self, **kwargs):
         enemy = kwargs["enemy"]

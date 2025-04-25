@@ -21,21 +21,21 @@ class WalkState(state.State):
 
         angle = atan2(enemy.rect.y - player.rect.y, player.rect.x - enemy.rect.x)
         if -7*pi/8 <= angle < -5*pi/8:
-            enemy.movement_direction = direction.DOWN_LEFT
+            enemy.direction.moving = direction.DOWN_LEFT
         elif -5*pi/8 <= angle < -3*pi/8:
-            enemy.movement_direction = direction.DOWN
+            enemy.direction.moving = direction.DOWN
         elif -3*pi/8 <= angle < -pi/8:
-            enemy.movement_direction = direction.DOWN_RIGHT
+            enemy.direction.moving = direction.DOWN_RIGHT
         elif -pi/8 <= angle < pi/8:
-            enemy.movement_direction = direction.RIGHT
+            enemy.direction.moving = direction.RIGHT
         elif pi/8 <= angle < 3*pi/8:
-            enemy.movement_direction = direction.UP_RIGHT
+            enemy.direction.moving = direction.UP_RIGHT
         elif 3*pi/8 <= angle < 5*pi/8:
-            enemy.movement_direction = direction.UP
+            enemy.direction.moving = direction.UP
         elif 5*pi/8 <= angle < 7*pi/8:
-            enemy.movement_direction = direction.UP_LEFT
+            enemy.direction.moving = direction.UP_LEFT
         else:
-            enemy.movement_direction = direction.LEFT
+            enemy.direction.moving = direction.LEFT
 
     def update(self, **kwargs):
         dt = kwargs["dt"]

@@ -6,6 +6,7 @@ from components.player_physics import PlayerPhysics
 import direction
 from direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
 import events
+from player_direction import PlayerDirection
 from sprites.player import Player
 from utils import load_animation
 
@@ -32,6 +33,7 @@ class TestPlayer(unittest.TestCase):
             RIGHT: pygame.Rect((24, 0), (24, 48))
         }
         self.starting_position = ((260 - 48) // 2, (190 - 48) // 2 - 7)
+        self.direction = PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE)
         self.animations = {
             "idle": {
                 "framerate": 4,
@@ -81,8 +83,8 @@ class TestPlayer(unittest.TestCase):
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
             player = Player(
-                self.weapon_hitbox, self.starting_position, AnimationsComponent(self.animations),
-                self.physics
+                self.weapon_hitbox, self.starting_position, self.direction,
+                AnimationsComponent(self.animations), self.physics
             )
             self.__turn_to_direction(player, direction)
 
@@ -95,8 +97,8 @@ class TestPlayer(unittest.TestCase):
     def test_walking_moves_player_to_the_correct_direction(self):
         for walk_direction in direction.ALL:
             player = Player(
-                self.weapon_hitbox, self.starting_position, AnimationsComponent(self.animations),
-                self.physics
+                self.weapon_hitbox, self.starting_position, self.direction,
+                AnimationsComponent(self.animations), self.physics
             )
             starting_position = {"x": player.rect.x, "y": player.rect.y}
 
@@ -121,8 +123,8 @@ class TestPlayer(unittest.TestCase):
     def test_attack_animation_is_played_when_player_attacks(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
             player = Player(
-                self.weapon_hitbox, self.starting_position, AnimationsComponent(self.animations),
-                self.physics
+                self.weapon_hitbox, self.starting_position, self.direction,
+                AnimationsComponent(self.animations), self.physics
             )
             self.__turn_to_direction(player, direction)
 
@@ -137,7 +139,7 @@ class TestPlayer(unittest.TestCase):
         for attack_direction in (DOWN, UP, LEFT, RIGHT):
             for walk_direction in (DOWN, UP, LEFT, RIGHT):
                 player = Player(
-                    self.weapon_hitbox, self.starting_position,
+                    self.weapon_hitbox, self.starting_position, self.direction,
                     AnimationsComponent(self.animations), self.physics
                 )
                 starting_position = {"x": player.rect.x, "y": player.rect.y}

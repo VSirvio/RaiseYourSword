@@ -12,7 +12,7 @@ class PhysicsComponent:
 
         self._walk_timer += dt
 
-        dx, dy = owner.movement_direction.movement_vector
+        dx, dy = owner.direction.moving.movement_vector
 
         time_per_px = 1000 / self.__walking_speed
 

@@ -16,15 +16,15 @@ class AttackState(state.State):
 
         angle = atan2(enemy.rect.y - player.rect.y, player.rect.x - enemy.rect.x)
         if -3*pi/4 <= angle < -pi/4:
-            enemy.movement_direction = DOWN
+            enemy.direction.moving = DOWN
         elif -pi/4 <= angle < pi/4:
-            enemy.movement_direction = RIGHT
+            enemy.direction.moving = RIGHT
         elif pi/4 <= angle < 3*pi/4:
-            enemy.movement_direction = UP
+            enemy.direction.moving = UP
         else:
-            enemy.movement_direction = LEFT
+            enemy.direction.moving = LEFT
 
-        enemy.movement_direction = NONE
+        enemy.direction.moving = NONE
 
         if enemy.does_attack_hit(player):
             player.lose()
