@@ -14,6 +14,9 @@ class IdleState(state.State):
 
         player.direction.moving = direction.NONE
 
+    def update(self, **kwargs):
+        return None
+
     def handle_event(self, **kwargs):
         event = kwargs["event"]
 

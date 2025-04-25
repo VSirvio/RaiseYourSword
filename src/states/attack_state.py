@@ -18,6 +18,9 @@ class AttackState(state.State):
         if player.does_attack_hit(enemy):
             enemy.fall()
 
+    def update(self, **kwargs):
+        return None
+
     def handle_event(self, **kwargs):
         event = kwargs["event"]
 

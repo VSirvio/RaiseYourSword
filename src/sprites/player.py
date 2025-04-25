@@ -29,6 +29,8 @@ class Player(sprites.character.Character):
     def update(self, dt, **kwargs):
         enemy = kwargs["enemy"]
 
+        self.__update_state(self._state.update(dt=dt, player=self, enemy=enemy), enemy)
+
         self.__animations.update(dt, self, enemy)
         self.image = self.__animations.current_frame(self)
 
