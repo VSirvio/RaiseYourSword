@@ -16,13 +16,13 @@ class PlayerPhysics(PhysicsComponent):
         player = args[0]
         enemy = args[1]
 
-        bbox_moved_horizontally = self.bounding_box.move(player.rect.x + dx, player.rect.y)
+        bbox_moved_horizontally = self.bounding_box.move(player.x + dx, player.y)
         collides_horizontally = bbox_moved_horizontally.colliderect(enemy.bounding_box)
 
-        bbox_moved_vertically = self.bounding_box.move(player.rect.x, player.rect.y + dy)
+        bbox_moved_vertically = self.bounding_box.move(player.x, player.y + dy)
         collides_vertically = bbox_moved_vertically.colliderect(enemy.bounding_box)
 
-        bbox_moved_diagonally = self.bounding_box.move(player.rect.x + dx, player.rect.y + dy)
+        bbox_moved_diagonally = self.bounding_box.move(player.x + dx, player.y + dy)
         collides_diagonally = bbox_moved_diagonally.colliderect(enemy.bounding_box)
 
         # If diagonal movement causes a collision but horizontal and vertical movement
@@ -31,10 +31,10 @@ class PlayerPhysics(PhysicsComponent):
         if collides_diagonally and not collides_horizontally and not collides_vertically:
             return
 
-        if (not collides_horizontally and (dx < 0 and player.rect.x > self.__min_x or
-                dx > 0 and player.rect.x < self.__max_x)):
-            player.rect.x += dx
+        if (not collides_horizontally and (dx < 0 and player.x > self.__min_x or
+                dx > 0 and player.x < self.__max_x)):
+            player.x += dx
 
-        if (not collides_vertically and (dy < 0 and player.rect.y > self.__min_y or
-                dy > 0 and player.rect.y < self.__max_y)):
-            player.rect.y += dy
+        if (not collides_vertically and (dy < 0 and player.y > self.__min_y or
+                dy > 0 and player.y < self.__max_y)):
+            player.y += dy

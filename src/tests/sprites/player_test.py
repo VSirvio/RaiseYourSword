@@ -1,13 +1,13 @@
 import pygame
 import unittest
 
+from character import Character
 from components.animations_component import AnimationsComponent
 from components.player_physics import PlayerPhysics
 import direction
 from direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
 import events
 from player_direction import PlayerDirection
-from sprites.character import Character
 import states.idle_state
 from utils import load_animation
 
@@ -97,7 +97,10 @@ class TestPlayer(unittest.TestCase):
             # Test frame 0 again in the end to check that the animation loops correctly
             for frame in list(range(len(self.animations["idle"][direction]))) + [0]:
                 with self.subTest(direction=direction, frame=frame):
-                    self.assertEqual(player.image, self.animations["idle"][direction][frame])
+                    self.assertEqual(
+                        player.sprite.image,
+                        self.animations["idle"][direction][frame]
+                    )
                 player.update(
                     dt=1000/self.animations["idle"]["framerate"],
                     opponent_to={"player": self.enemy}
@@ -106,25 +109,25 @@ class TestPlayer(unittest.TestCase):
     def test_walking_moves_player_to_the_correct_direction(self):
         for walk_direction in direction.ALL:
             player = self.__create_new_player()
-            starting_position = {"x": player.rect.x, "y": player.rect.y}
+            starting_position = {"x": player.x, "y": player.y}
 
             self.__walk_to_direction(player, walk_direction)
             player.update(dt=1000, opponent_to={"player": self.enemy})
 
             with self.subTest(direction=walk_direction):
                 if walk_direction.vertical_component == VerticalDirection.UP:
-                    self.assertLess(player.rect.y, starting_position["y"])
+                    self.assertLess(player.y, starting_position["y"])
                 elif walk_direction.vertical_component == VerticalDirection.DOWN:
-                    self.assertGreater(player.rect.y, starting_position["y"])
+                    self.assertGreater(player.y, starting_position["y"])
                 else:
-                    self.assertEqual(player.rect.y, starting_position["y"])
+                    self.assertEqual(player.y, starting_position["y"])
 
                 if walk_direction.horizontal_component == HorizontalDirection.LEFT:
-                    self.assertLess(player.rect.x, starting_position["x"])
+                    self.assertLess(player.x, starting_position["x"])
                 elif walk_direction.horizontal_component == HorizontalDirection.RIGHT:
-                    self.assertGreater(player.rect.x, starting_position["x"])
+                    self.assertGreater(player.x, starting_position["x"])
                 else:
-                    self.assertEqual(player.rect.x, starting_position["x"])
+                    self.assertEqual(player.x, starting_position["x"])
 
     def test_attack_animation_is_played_when_player_attacks(self):
         for direction in (DOWN, UP, LEFT, RIGHT):
@@ -135,7 +138,10 @@ class TestPlayer(unittest.TestCase):
 
             for frame in range(len(self.animations["attack"][direction])):
                 with self.subTest(direction=direction, frame=frame):
-                    self.assertEqual(player.image, self.animations["attack"][direction][frame])
+                    self.assertEqual(
+                        player.sprite.image,
+                        self.animations["attack"][direction][frame]
+                    )
                 player.update(
                     dt=1000/self.animations["attack"]["framerate"],
                     opponent_to={"player": self.enemy}
@@ -145,7 +151,7 @@ class TestPlayer(unittest.TestCase):
         for attack_direction in (DOWN, UP, LEFT, RIGHT):
             for walk_direction in (DOWN, UP, LEFT, RIGHT):
                 player = self.__create_new_player()
-                starting_position = {"x": player.rect.x, "y": player.rect.y}
+                starting_position = {"x": player.x, "y": player.y}
 
                 self.__turn_to_direction(player, attack_direction)
                 self.__attack_an_enemy(player, self.enemy)
@@ -158,5 +164,5 @@ class TestPlayer(unittest.TestCase):
                 player.update(dt=attack_total_duration-1, opponent_to={"player": self.enemy})
 
                 with self.subTest(attack_direction=attack_direction, walk_direction=walk_direction):
-                    self.assertEqual(player.rect.x, starting_position["x"])
-                    self.assertEqual(player.rect.y, starting_position["y"])
+                    self.assertEqual(player.x, starting_position["x"])
+                    self.assertEqual(player.y, starting_position["y"])

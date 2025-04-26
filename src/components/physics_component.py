@@ -32,8 +32,8 @@ class PhysicsComponent:
     def _move(self, dx, dy, *args):
         owner = args[0]
 
-        owner.rect.x += dx
-        owner.rect.y += dy
+        owner.x += dx
+        owner.y += dy
 
     @property
     def bounding_box(self):
@@ -41,5 +41,5 @@ class PhysicsComponent:
 
     def does_attack_hit(self, attacker, target):
         weapon_hitbox = self.__weapon_hitbox[attacker.direction.facing]
-        weapon_hitbox_relative_to_screen = weapon_hitbox.move(attacker.rect.x, attacker.rect.y)
+        weapon_hitbox_relative_to_screen = weapon_hitbox.move(attacker.x, attacker.y)
         return weapon_hitbox_relative_to_screen.colliderect(target.bounding_box)

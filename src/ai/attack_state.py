@@ -14,7 +14,7 @@ class AttackState(state.State):
         owner = kwargs["owner"]
         opponent = kwargs["opponent"]
 
-        angle = atan2(owner.rect.y - opponent.rect.y, opponent.rect.x - owner.rect.x)
+        angle = atan2(owner.y - opponent.y, opponent.x - owner.x)
         if -3*pi/4 <= angle < -pi/4:
             owner.direction.moving = DOWN
         elif -pi/4 <= angle < pi/4:

@@ -1,8 +1,7 @@
-import pygame
-
 import events
+from sprites.custom_sprite import CustomSprite
 
-class Character(pygame.sprite.Sprite):
+class Character:
     def __init__(self, *, role, initial_state, starting_position, direction, animations, physics):
         super().__init__()
 
@@ -14,11 +13,13 @@ class Character(pygame.sprite.Sprite):
 
         self.direction = direction
 
-        self.__animations = animations
-        self.image = self.__animations.current_frame(self)
+        self.__sprite = CustomSprite(self)
 
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = starting_position
+        self.__animations = animations
+        self.__sprite.image = self.__animations.current_frame(self)
+
+        self.__sprite.rect = self.__sprite.image.get_rect()
+        self.__sprite.rect.x, self.__sprite.rect.y = starting_position
 
         self.__physics = physics
 
@@ -26,7 +27,8 @@ class Character(pygame.sprite.Sprite):
         if state is not None:
             self._state = state
             self._state.enter(owner=self, opponent=opponent)
-            self.__animations.reset(self)
+            self.__animations.reset()
+            self.__sprite.image = self.__animations.current_frame(self)
 
     def update(self, dt, opponent_to):
         opponent = opponent_to[self.__role]
@@ -34,7 +36,7 @@ class Character(pygame.sprite.Sprite):
         self.__update_state(self._state.update(dt=dt, owner=self, opponent=opponent), opponent)
 
         self.__animations.update(dt, self, opponent)
-        self.image = self.__animations.current_frame(self)
+        self.__sprite.image = self.__animations.current_frame(self)
 
         self.__physics.update(dt, self, opponent)
 
@@ -48,8 +50,28 @@ class Character(pygame.sprite.Sprite):
         return self.__physics.does_attack_hit(attacker=self, target=opponent)
 
     @property
+    def sprite(self):
+        return self.__sprite
+
+    @property
+    def x(self):
+        return self.__sprite.rect.x
+
+    @x.setter
+    def x(self, x):
+        self.__sprite.rect.x = x
+
+    @property
+    def y(self):
+        return self.__sprite.rect.y
+
+    @y.setter
+    def y(self, y):
+        self.__sprite.rect.y = y
+
+    @property
     def bounding_box(self):
-        return self.__physics.bounding_box.move(self.rect.x, self.rect.y)
+        return self.__physics.bounding_box.move(self.x, self.y)
 
     @property
     def has_been_defeated(self):

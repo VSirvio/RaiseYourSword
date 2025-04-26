@@ -2,6 +2,7 @@ import pygame
 from pygame import Color
 
 import ai.idle_state
+from character import Character
 from character_direction import CharacterDirection
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
@@ -10,7 +11,6 @@ from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
 from direction import NONE, DOWN, UP, LEFT, RIGHT
 from player_direction import PlayerDirection
 from sprites.background import Background
-from sprites.character import Character
 import states.idle_state
 from utils import load_animation
 
@@ -100,7 +100,7 @@ class Game:
             )
         )
 
-        self.__characters = pygame.sprite.Group(self.__player, self.__enemy)
+        self.__characters = pygame.sprite.Group(self.__player.sprite, self.__enemy.sprite)
 
         self.__all_sprites = pygame.sprite.LayeredUpdates(self.__background, self.__characters)
 
@@ -140,8 +140,8 @@ class Game:
         )
 
         if self.__enemy.has_been_defeated:
-            self.__characters.remove(self.__enemy)
-            self.__all_sprites.remove(self.__enemy)
+            self.__characters.remove(self.__enemy.sprite)
+            self.__all_sprites.remove(self.__enemy.sprite)
 
     def handle(self, event):
         self.__player.handle_event(event, self.__enemy)

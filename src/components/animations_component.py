@@ -22,7 +22,6 @@ class AnimationsComponent:
     def current_frame(self, owner):
         return self.__animations[owner.state][owner.direction.facing][self.__index]
 
-    def reset(self, owner):
+    def reset(self):
         self.__index = 0
-        owner.image = self.current_frame(owner)
         self.__timer = 0

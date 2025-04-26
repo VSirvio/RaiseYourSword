@@ -31,8 +31,8 @@ class IdleState(state.State):
         self.__timer += kwargs["dt"]
 
         if self.__timer >= self.__duration:
-            dist_x = opponent.rect.x - owner.rect.x
-            dist_y = opponent.rect.y - owner.rect.y
+            dist_x = opponent.x - owner.x
+            dist_y = opponent.y - owner.y
             if sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_TO_PLAYER_MIN_DISTANCE:
                 return ai.attack_state.AttackState()
             return ai.walk_state.WalkState()

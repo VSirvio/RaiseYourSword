@@ -4,22 +4,27 @@ import pygame
 import unittest
 
 import ai.idle_state
+from character import Character
 from character_direction import CharacterDirection
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
 from config import ENEMY_AI_IDLE_TIME_MAX, ENEMY_AI_WALK_TIME_MAX
 from direction import NONE, DOWN, UP, LEFT, RIGHT
-from sprites.character import Character
 from utils import load_animation
 
 
 class StubPlayer:
-    def __init__(self, rect):
-        self.__rect = rect
+    def __init__(self, x, y):
+        self.__x = x
+        self.__y = y
 
     @property
-    def rect(self):
-        return self.__rect
+    def x(self):
+        return self.__x
+
+    @property
+    def y(self):
+        return self.__y
 
     @property
     def has_been_defeated(self):
@@ -65,7 +70,7 @@ class TestEnemy(unittest.TestCase):
             }
         )
 
-        self.player = StubPlayer(rect=pygame.Rect(0, 0, 0, 0))
+        self.player = StubPlayer(x=0, y=0)
 
     def test_enemy_moves(self):
         enemy = Character(
@@ -73,9 +78,9 @@ class TestEnemy(unittest.TestCase):
             starting_position=self.starting_position, direction=self.direction,
             animations=AnimationsComponent(self.animations), physics=self.physics
         )
-        starting_position = (enemy.rect.x, enemy.rect.y)
+        starting_position = (enemy.x, enemy.y)
 
         for frame in range(0, ceil((ENEMY_AI_IDLE_TIME_MAX + ENEMY_AI_WALK_TIME_MAX) * 60 / 1000)):
             enemy.update(dt=ceil(1000/60), opponent_to={"enemy": self.player})
 
-        self.assertNotEqual((enemy.rect.x, enemy.rect.y), starting_position)
+        self.assertNotEqual((enemy.x, enemy.y), starting_position)
