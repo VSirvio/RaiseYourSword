@@ -69,8 +69,9 @@ class TestEnemy(unittest.TestCase):
 
     def test_enemy_moves(self):
         enemy = Character(
-            "enemy", self.weapon_hitbox, self.initial_state, self.starting_position,
-            self.direction, AnimationsComponent(self.animations), self.physics
+            role="enemy", weapon_hitbox=self.weapon_hitbox, initial_state=self.initial_state,
+            starting_position=self.starting_position, direction=self.direction,
+            animations=AnimationsComponent(self.animations), physics=self.physics
         )
         starting_position = (enemy.rect.x, enemy.rect.y)
 

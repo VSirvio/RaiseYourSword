@@ -70,8 +70,9 @@ class TestPlayer(unittest.TestCase):
 
     def __create_new_player(self):
         return Character(
-            "player", self.weapon_hitbox, self.initial_state, self.starting_position,
-            self.direction, AnimationsComponent(self.animations), self.physics
+            role="player", weapon_hitbox=self.weapon_hitbox, initial_state=self.initial_state,
+            starting_position=self.starting_position, direction=self.direction,
+            animations=AnimationsComponent(self.animations), physics=self.physics
         )
 
     def __turn_to_direction(self, player, new_direction):

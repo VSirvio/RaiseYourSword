@@ -3,7 +3,7 @@ import pygame
 import events
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, role, weapon_hitbox, initial_state, starting_position, direction,
+    def __init__(self, *, role, weapon_hitbox, initial_state, starting_position, direction,
             animations, physics):
         super().__init__()
 
