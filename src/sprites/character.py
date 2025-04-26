@@ -1,8 +1,10 @@
 import pygame
 
+import events
+
 class Character(pygame.sprite.Sprite):
     def __init__(self, role, weapon_hitbox, initial_state, starting_position, direction,
-            animations, physics, event_when_defeated=None):
+            animations, physics):
         super().__init__()
 
         self._has_been_defeated = False
@@ -22,8 +24,6 @@ class Character(pygame.sprite.Sprite):
         self.__weapon_hitbox = weapon_hitbox
 
         self.__physics = physics
-
-        self.__event_when_defeated = event_when_defeated
 
     def __update_state(self, state, opponent):
         if state is not None:
@@ -63,7 +63,7 @@ class Character(pygame.sprite.Sprite):
     def defeat(self):
         self._has_been_defeated = True
 
-        new_state = self._state.handle_event(event=self.__event_when_defeated)
+        new_state = self._state.handle_event(event=events.WasDefeated())
         self.__update_state(new_state, None)
 
     @property

@@ -8,7 +8,6 @@ from components.physics_component import PhysicsComponent
 from components.player_physics import PlayerPhysics
 from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
 from direction import NONE, DOWN, UP, LEFT, RIGHT
-import events
 from player_direction import PlayerDirection
 from sprites.background import Background
 from sprites.character import Character
@@ -59,8 +58,7 @@ class Game:
                 walking_speed=75,
                 bounding_box=pygame.Rect((11, 6), (25, 36)),
                 game_area_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-            ),
-            event_when_defeated=events.Lose()
+            )
         )
         self.__enemy = Character(
             role="enemy",

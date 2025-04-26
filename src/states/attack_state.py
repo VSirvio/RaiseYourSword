@@ -29,5 +29,5 @@ class AttackState(state.State):
                         owner.direction.controlled_toward == direction.NONE):
                     return states.idle_state.IdleState()
                 return states.walk_state.WalkState(owner.direction.controlled_toward)
-            case events.Lose:
+            case events.WasDefeated:
                 return states.idle_state.IdleState()

@@ -8,5 +8,5 @@ class AttackStarted:
 class AnimationFinished:
     pass
 
-class Lose:
+class WasDefeated:
     pass
