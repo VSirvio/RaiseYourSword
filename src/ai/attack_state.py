@@ -29,9 +29,6 @@ class AttackState(state.State):
         if owner.does_attack_hit(opponent):
             opponent.defeat()
 
-    def update(self, **kwargs):
-        return None
-
     def handle_event(self, **kwargs):
         event = kwargs["event"]
 
