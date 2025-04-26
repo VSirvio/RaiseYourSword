@@ -70,6 +70,14 @@ class Character:
         self.__sprite.rect.y = y
 
     @property
+    def width(self):
+        return self.__sprite.rect.width
+
+    @property
+    def height(self):
+        return self.__sprite.rect.height
+
+    @property
     def bounding_box(self):
         return self.__physics.bounding_box.move(self.x, self.y)
 
