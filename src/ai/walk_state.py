@@ -53,6 +53,3 @@ class WalkState(state.State):
             return ai.idle_state.IdleState()
 
         return None
-
-    def handle_event(self, **kwargs):
-        return None
