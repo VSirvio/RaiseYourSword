@@ -23,9 +23,9 @@ class WalkState(state.State):
         match event.__class__:
             case events.AttackStarted:
                 return states.attack_state.AttackState()
+            case events.Lose:
+                return states.idle_state.IdleState()
             case events.MovementDirectionChanged:
                 if event.new_direction == direction.NONE:
                     return states.idle_state.IdleState()
                 return WalkState(event.new_direction)
-            case events.Lose:
-                return states.idle_state.IdleState()
