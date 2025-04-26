@@ -3,8 +3,7 @@ import pygame
 import events
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, *, role, weapon_hitbox, initial_state, starting_position, direction,
-            animations, physics):
+    def __init__(self, *, role, initial_state, starting_position, direction, animations, physics):
         super().__init__()
 
         self._has_been_defeated = False
@@ -20,8 +19,6 @@ class Character(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = starting_position
-
-        self.__weapon_hitbox = weapon_hitbox
 
         self.__physics = physics
 
@@ -48,9 +45,7 @@ class Character(pygame.sprite.Sprite):
         self.__update_state(new_state, opponent)
 
     def does_attack_hit(self, opponent):
-        current_weapon_hitbox = self.__weapon_hitbox[self.direction.facing]
-        weapon_hitbox_relative_to_screen = current_weapon_hitbox.move(self.rect.x, self.rect.y)
-        return weapon_hitbox_relative_to_screen.colliderect(opponent.bounding_box)
+        return self.__physics.does_attack_hit(attacker=self, target=opponent)
 
     @property
     def bounding_box(self):

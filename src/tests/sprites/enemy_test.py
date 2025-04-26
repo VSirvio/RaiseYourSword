@@ -28,12 +28,6 @@ class StubPlayer:
 
 class TestEnemy(unittest.TestCase):
     def setUp(self):
-        self.weapon_hitbox = {
-            DOWN: pygame.Rect((0, 26), (48, 22)),
-            UP: pygame.Rect((0, 0), (48, 22)),
-            LEFT: pygame.Rect((0, 0), (22, 48)),
-            RIGHT: pygame.Rect((26, 0), (22, 48))
-        }
         self.initial_state = ai.idle_state.IdleState()
         self.starting_position = (200, 27)
         self.direction = CharacterDirection(facing=DOWN, moving=NONE)
@@ -62,14 +56,20 @@ class TestEnemy(unittest.TestCase):
         }
         self.physics=PhysicsComponent(
             walking_speed=50,
-            bounding_box=pygame.Rect((20, 22), (8, 11))
+            bounding_box=pygame.Rect((20, 22), (8, 11)),
+            weapon_hitbox={
+                DOWN: pygame.Rect((0, 26), (48, 22)),
+                UP: pygame.Rect((0, 0), (48, 22)),
+                LEFT: pygame.Rect((0, 0), (22, 48)),
+                RIGHT: pygame.Rect((26, 0), (22, 48))
+            }
         )
 
         self.player = StubPlayer(rect=pygame.Rect(0, 0, 0, 0))
 
     def test_enemy_moves(self):
         enemy = Character(
-            role="enemy", weapon_hitbox=self.weapon_hitbox, initial_state=self.initial_state,
+            role="enemy", initial_state=self.initial_state,
             starting_position=self.starting_position, direction=self.direction,
             animations=AnimationsComponent(self.animations), physics=self.physics
         )

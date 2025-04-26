@@ -1,8 +1,8 @@
 from .physics_component import PhysicsComponent
 
 class PlayerPhysics(PhysicsComponent):
-    def __init__(self, walking_speed, bounding_box, game_area_size):
-        super().__init__(walking_speed, bounding_box)
+    def __init__(self, walking_speed, bounding_box, weapon_hitbox, game_area_size):
+        super().__init__(walking_speed, bounding_box, weapon_hitbox)
 
         game_area_width, game_area_height = game_area_size
 

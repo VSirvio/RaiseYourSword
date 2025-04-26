@@ -1,8 +1,9 @@
 from math import sqrt
 
 class PhysicsComponent:
-    def __init__(self, walking_speed, bounding_box):
+    def __init__(self, walking_speed, bounding_box, weapon_hitbox):
         self.__bounding_box = bounding_box
+        self.__weapon_hitbox = weapon_hitbox
 
         self._walk_timer = 0
         self.__walking_speed = walking_speed
@@ -37,3 +38,8 @@ class PhysicsComponent:
     @property
     def bounding_box(self):
         return self.__bounding_box
+
+    def does_attack_hit(self, attacker, target):
+        weapon_hitbox = self.__weapon_hitbox[attacker.direction.facing]
+        weapon_hitbox_relative_to_screen = weapon_hitbox.move(attacker.rect.x, attacker.rect.y)
+        return weapon_hitbox_relative_to_screen.colliderect(target.bounding_box)
