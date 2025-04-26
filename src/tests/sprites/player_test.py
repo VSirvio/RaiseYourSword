@@ -1,5 +1,6 @@
-import pygame
 import unittest
+
+import pygame
 
 from character import Character
 from components.animations_component import AnimationsComponent
@@ -82,24 +83,24 @@ class TestPlayer(unittest.TestCase):
         player.handle_event(events.MovementDirectionChanged(NONE), None)
         self.__walk_direction = NONE
 
-    def __walk_to_direction(self, player, direction):
-        self.__walk_direction = direction
+    def __walk_to_direction(self, player, walking_direction):
+        self.__walk_direction = walking_direction
         player.handle_event(events.MovementDirectionChanged(self.__walk_direction), None)
 
     def __attack_an_enemy(self, player, enemy):
         player.handle_event(events.AttackStarted(), enemy)
 
     def test_idle_animation_is_played_when_player_is_idle(self):
-        for direction in (DOWN, UP, LEFT, RIGHT):
+        for direction_facing in (DOWN, UP, LEFT, RIGHT):
             player = self.__create_new_player()
-            self.__turn_to_direction(player, direction)
+            self.__turn_to_direction(player, direction_facing)
 
             # Test frame 0 again in the end to check that the animation loops correctly
-            for frame in list(range(len(self.animations["idle"][direction]))) + [0]:
-                with self.subTest(direction=direction, frame=frame):
+            for frame in list(range(len(self.animations["idle"][direction_facing]))) + [0]:
+                with self.subTest(direction=direction_facing, frame=frame):
                     self.assertEqual(
                         player.sprite.image,
-                        self.animations["idle"][direction][frame]
+                        self.animations["idle"][direction_facing][frame]
                     )
                 player.update(
                     dt=1000/self.animations["idle"]["framerate"],
@@ -130,17 +131,17 @@ class TestPlayer(unittest.TestCase):
                     self.assertEqual(player.x, starting_position["x"])
 
     def test_attack_animation_is_played_when_player_attacks(self):
-        for direction in (DOWN, UP, LEFT, RIGHT):
+        for direction_facing in (DOWN, UP, LEFT, RIGHT):
             player = self.__create_new_player()
-            self.__turn_to_direction(player, direction)
+            self.__turn_to_direction(player, direction_facing)
 
             self.__attack_an_enemy(player, self.enemy)
 
-            for frame in range(len(self.animations["attack"][direction])):
-                with self.subTest(direction=direction, frame=frame):
+            for frame in range(len(self.animations["attack"][direction_facing])):
+                with self.subTest(direction=direction_facing, frame=frame):
                     self.assertEqual(
                         player.sprite.image,
-                        self.animations["attack"][direction][frame]
+                        self.animations["attack"][direction_facing][frame]
                     )
                 player.update(
                     dt=1000/self.animations["attack"]["framerate"],

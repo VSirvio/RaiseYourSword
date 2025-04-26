@@ -1,7 +1,7 @@
 from math import ceil
+import unittest
 
 import pygame
-import unittest
 
 import ai.idle_state
 from character import Character
@@ -80,7 +80,7 @@ class TestEnemy(unittest.TestCase):
         )
         starting_position = (enemy.x, enemy.y)
 
-        for frame in range(0, ceil((ENEMY_AI_IDLE_TIME_MAX + ENEMY_AI_WALK_TIME_MAX) * 60 / 1000)):
+        for _ in range(0, ceil((ENEMY_AI_IDLE_TIME_MAX + ENEMY_AI_WALK_TIME_MAX) * 60 / 1000)):
             enemy.update(dt=ceil(1000/60), opponent_to={"enemy": self.player})
 
         self.assertNotEqual((enemy.x, enemy.y), starting_position)
