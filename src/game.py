@@ -60,10 +60,33 @@ class Game:
                 game_area_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT)
             )
         )
-        self.__enemy = Character(
+        self.__enemy = self.__create_enemy(starting_position=(200, 27))
+
+        self.__characters = pygame.sprite.Group(self.__player.sprite, self.__enemy.sprite)
+
+        self.__all_sprites = pygame.sprite.LayeredUpdates(self.__background, self.__characters)
+
+        # Move background to layer -1000 to make sure that it is behind all other sprites
+        self.__all_sprites.change_layer(self.__background, -1000)
+
+        transparent_black = Color(0, 0, 0, 190)
+        result_screen_font = pygame.font.SysFont(name="Sans", size=17, bold=True)
+
+        self.__victory_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
+        self.__victory_screen.fill(transparent_black)
+        victory_screen_text = result_screen_font.render("YOU HAVE WON", True, Color("white"))
+        self.__victory_screen.blit(victory_screen_text, (60, 90))
+
+        self.__game_over_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
+        self.__game_over_screen.fill(transparent_black)
+        game_over_screen_text = result_screen_font.render("GAME OVER", True, Color("white"))
+        self.__game_over_screen.blit(game_over_screen_text, (80, 90))
+
+    def __create_enemy(self, starting_position):
+        return Character(
             role="enemy",
             initial_state=ai.idle_state.IdleState(),
-            starting_position=(200, 27),
+            starting_position=starting_position,
             direction=CharacterDirection(facing=DOWN, moving=NONE),
             animations=AnimationsComponent({
                 "idle": {
@@ -99,26 +122,6 @@ class Game:
                 }
             )
         )
-
-        self.__characters = pygame.sprite.Group(self.__player.sprite, self.__enemy.sprite)
-
-        self.__all_sprites = pygame.sprite.LayeredUpdates(self.__background, self.__characters)
-
-        # Move background to layer -1000 to make sure that it is behind all other sprites
-        self.__all_sprites.change_layer(self.__background, -1000)
-
-        transparent_black = Color(0, 0, 0, 190)
-        result_screen_font = pygame.font.SysFont(name="Sans", size=17, bold=True)
-
-        self.__victory_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
-        self.__victory_screen.fill(transparent_black)
-        victory_screen_text = result_screen_font.render("YOU HAVE WON", True, Color("white"))
-        self.__victory_screen.blit(victory_screen_text, (60, 90))
-
-        self.__game_over_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
-        self.__game_over_screen.fill(transparent_black)
-        game_over_screen_text = result_screen_font.render("GAME OVER", True, Color("white"))
-        self.__game_over_screen.blit(game_over_screen_text, (80, 90))
 
     def draw(self, surface):
         # Set each character sprite's layer value to be the same as its Y position so that the
