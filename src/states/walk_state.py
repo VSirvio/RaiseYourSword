@@ -29,3 +29,5 @@ class WalkState(state.State):
                 if event.new_direction == direction.NONE:
                     return states.idle_state.IdleState()
                 return WalkState(event.new_direction)
+            case events.Won:
+                return states.idle_state.IdleState()

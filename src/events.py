@@ -10,3 +10,6 @@ class AnimationFinished:
 
 class WasDefeated:
     pass
+
+class Won:
+    pass

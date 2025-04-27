@@ -18,6 +18,7 @@ from config import (
     NUMBER_OF_ENEMIES_TO_SPAWN
 )
 from direction import NONE, DOWN, UP, LEFT, RIGHT
+import events
 from player_direction import PlayerDirection
 from sprites.background import Background
 import states.idle_state
@@ -143,6 +144,10 @@ class Game:
             )
         )
 
+    def __all_enemies_have_been_defeated(self):
+        return (self.__number_of_enemies_spawned_so_far >= NUMBER_OF_ENEMIES_TO_SPAWN and
+            not self.__enemies)
+
     def draw(self, surface):
         # Set each character sprite's layer value to be the same as its Y position so that the
         # sprites further away (the sprites that have a lower Y value) are shown behind the sprites
@@ -154,7 +159,7 @@ class Game:
 
         if self.__player.has_been_defeated:
             surface.blit(self.__game_over_screen, (0, 0))
-        elif self.__enemies and all(enemy.has_been_defeated for enemy in self.__enemies):
+        elif self.__all_enemies_have_been_defeated():
             surface.blit(self.__victory_screen, (0, 0))
 
     def update(self, dt):
@@ -169,6 +174,9 @@ class Game:
                 self.__enemies.remove(enemy)
                 self.__characters.remove(enemy.sprite)
                 self.__all_sprites.remove(enemy.sprite)
+
+        if self.__all_enemies_have_been_defeated():
+            self.__player.handle_event(events.Won(), self.__enemies)
 
     def handle(self, event):
         self.__player.handle_event(event, self.__enemies)
@@ -220,5 +228,4 @@ class Game:
 
     @property
     def finished(self):
-        return (self.__enemies and all(enemy.has_been_defeated for enemy in self.__enemies) or
-            self.__player.has_been_defeated)
+        return self.__all_enemies_have_been_defeated() or self.__player.has_been_defeated

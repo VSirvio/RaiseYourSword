@@ -22,12 +22,10 @@ class AttackState(state.State):
     def handle_event(self, **kwargs):
         event = kwargs["event"]
         owner = kwargs["owner"] if event.__class__ == events.AnimationFinished else None
-        opponents = kwargs["opponents"] if event.__class__ == events.AnimationFinished else None
 
         match event.__class__:
             case events.AnimationFinished:
-                if (all(opponent.has_been_defeated for opponent in opponents) or
-                        owner.direction.controlled_toward == direction.NONE):
+                if owner.direction.controlled_toward == direction.NONE:
                     return states.idle_state.IdleState()
                 return states.walk_state.WalkState(owner.direction.controlled_toward)
             case events.WasDefeated:
