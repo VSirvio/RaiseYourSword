@@ -53,4 +53,5 @@
 |       | 3            | refactoring event handling in player state classes and AI state classes           |
 | 24.4. | 1            | refactoring event handling in player state classes and AI state classes           |
 |       | 5            | refactoring Player and Enemy classes into smaller component classes               |
-| total | 66.5         |                                                                                   |
+| 25.4. | 3            | refactoring Player and Enemy classes into smaller component classes               |
+| total | 69.5         |                                                                                   |
