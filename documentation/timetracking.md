@@ -48,4 +48,7 @@
 |       | 1            | fixing issues reported by pylint                                                  |
 | 22.4. | 1.5          | refactoring Player and Enemy classes into smaller component classes               |
 |       | 0.5          | refactoring Player and Enemy classes so that all initial data is injected to them |
-| total | 55           |                                                                                   |
+| 23.4. | 1.5          | refactoring Player and Enemy classes so that all initial data is injected to them |
+|       | 1            | refactoring Player and Enemy classes into smaller component classes               |
+|       | 3            | refactoring event handling in player state classes and AI state classes           |
+| total | 60.5         |                                                                                   |
