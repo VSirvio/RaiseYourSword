@@ -14,7 +14,8 @@ from config import (
     DISPLAY_HEIGHT,
     ENEMY_WALKING_SPEED,
     ENEMY_MIN_TIME_BETWEEN_SPAWNING,
-    ENEMY_MAX_TIME_BETWEEN_SPAWNING
+    ENEMY_MAX_TIME_BETWEEN_SPAWNING,
+    NUMBER_OF_ENEMIES_TO_SPAWN
 )
 from direction import NONE, DOWN, UP, LEFT, RIGHT
 from player_direction import PlayerDirection
@@ -82,6 +83,7 @@ class Game:
             ENEMY_MIN_TIME_BETWEEN_SPAWNING,
             ENEMY_MAX_TIME_BETWEEN_SPAWNING
         )
+        self.__number_of_enemies_spawned_so_far = 0
 
         transparent_black = Color(0, 0, 0, 190)
         result_screen_font = pygame.font.SysFont(name="Sans", size=17, bold=True)
@@ -172,9 +174,13 @@ class Game:
         self.__player.handle_event(event, self.__enemies)
 
     def __spawn_enemies(self, dt):
+        if self.__number_of_enemies_spawned_so_far >= NUMBER_OF_ENEMIES_TO_SPAWN:
+            return
+
         self.__spawning_timer += dt
 
-        while self.__spawning_timer >= self.__time_until_next_spawn:
+        while (self.__spawning_timer >= self.__time_until_next_spawn and
+                self.__number_of_enemies_spawned_so_far < NUMBER_OF_ENEMIES_TO_SPAWN):
             spawn_area_width = DISPLAY_WIDTH + self.__enemy_width
             spawn_area_height = DISPLAY_HEIGHT + self.__enemy_height
 
@@ -210,6 +216,7 @@ class Game:
                 ENEMY_MIN_TIME_BETWEEN_SPAWNING,
                 ENEMY_MAX_TIME_BETWEEN_SPAWNING
             )
+            self.__number_of_enemies_spawned_so_far += 1
 
     @property
     def finished(self):
