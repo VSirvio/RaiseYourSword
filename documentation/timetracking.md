@@ -54,4 +54,8 @@
 | 24.4. | 1            | refactoring event handling in player state classes and AI state classes           |
 |       | 5            | refactoring Player and Enemy classes into smaller component classes               |
 | 25.4. | 3            | refactoring Player and Enemy classes into smaller component classes               |
-| total | 69.5         |                                                                                   |
+| 26.4. | 3.5          | fixing issues reported by pylint                                                  |
+|       | 1            | implementing enemy spawning off-screen at random intervals                        |
+|       | 0.5          | writing unit tests for ArrowKeys class                                            |
+|       | 1            | writing docstrings                                                                |
+| total | 75.5         |                                                                                   |
