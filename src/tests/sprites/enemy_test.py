@@ -81,6 +81,6 @@ class TestEnemy(unittest.TestCase):
         starting_position = (enemy.x, enemy.y)
 
         for _ in range(0, ceil((ENEMY_AI_IDLE_TIME_MAX + ENEMY_AI_WALK_TIME_MAX) * 60 / 1000)):
-            enemy.update(dt=ceil(1000/60), opponent_to={"enemy": self.player})
+            enemy.update(dt=ceil(1000/60), opponents_to={"enemy": [self.player]})
 
         self.assertNotEqual((enemy.x, enemy.y), starting_position)

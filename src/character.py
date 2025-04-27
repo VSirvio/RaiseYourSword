@@ -23,31 +23,31 @@ class Character:
 
         self.__physics = physics
 
-    def __update_state(self, state, opponent):
+    def __update_state(self, state, opponents):
         if state is not None:
             self._state = state
-            self._state.enter(owner=self, opponent=opponent)
+            self._state.enter(owner=self, opponents=opponents)
             self.__animations.reset()
             self.__sprite.image = self.__animations.current_frame(self)
 
-    def update(self, dt, opponent_to):
-        opponent = opponent_to[self.__role]
+    def update(self, dt, opponents_to):
+        opponents = opponents_to[self.__role]
 
-        self.__update_state(self._state.update(dt=dt, owner=self, opponent=opponent), opponent)
+        self.__update_state(self._state.update(dt=dt, owner=self, opponents=opponents), opponents)
 
-        self.__animations.update(dt, self, opponent)
+        self.__animations.update(dt, self, opponents)
         self.__sprite.image = self.__animations.current_frame(self)
 
-        self.__physics.update(dt, self, opponent)
+        self.__physics.update(dt, self, opponents)
 
-    def handle_event(self, event, opponent):
+    def handle_event(self, event, opponents):
         self.direction.handle(event)
 
-        new_state = self._state.handle_event(owner=self, opponent=opponent, event=event)
-        self.__update_state(new_state, opponent)
+        new_state = self._state.handle_event(owner=self, opponents=opponents, event=event)
+        self.__update_state(new_state, opponents)
 
-    def does_attack_hit(self, opponent):
-        return self.__physics.does_attack_hit(attacker=self, target=opponent)
+    def does_attack_hit(self, opponents):
+        return self.__physics.does_attack_hit(attacker=self, target=opponents)
 
     @property
     def sprite(self):

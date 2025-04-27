@@ -12,7 +12,7 @@ import state
 class AttackState(state.State):
     def enter(self, **kwargs):
         owner = kwargs["owner"]
-        opponent = kwargs["opponent"]
+        opponent = kwargs["opponents"][0]
 
         angle = atan2(owner.y - opponent.y, opponent.x - owner.x)
         if -3*pi/4 <= angle < -pi/4:

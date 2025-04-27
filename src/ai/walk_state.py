@@ -17,7 +17,7 @@ class WalkState(state.State):
 
     def enter(self, **kwargs):
         owner = kwargs["owner"]
-        opponent = kwargs["opponent"]
+        opponent = kwargs["opponents"][0]
 
         angle = atan2(owner.y - opponent.y, opponent.x - owner.x)
         if -7*pi/8 <= angle < -5*pi/8:
@@ -40,7 +40,7 @@ class WalkState(state.State):
     def update(self, **kwargs):
         dt = kwargs["dt"]
         owner = kwargs["owner"]
-        opponent = kwargs["opponent"]
+        opponent = kwargs["opponents"][0]
 
         self.__timer += dt
 

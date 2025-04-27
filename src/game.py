@@ -68,9 +68,9 @@ class Game:
                 game_area_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT)
             )
         )
-        self.__enemy = self.__create_enemy(starting_position=(200, 27))
+        self.__enemies = []
 
-        self.__characters = pygame.sprite.Group(self.__player.sprite, self.__enemy.sprite)
+        self.__characters = pygame.sprite.Group(self.__player.sprite)
 
         self.__all_sprites = pygame.sprite.LayeredUpdates(self.__background, self.__characters)
 
@@ -95,6 +95,10 @@ class Game:
         self.__game_over_screen.fill(transparent_black)
         game_over_screen_text = result_screen_font.render("GAME OVER", True, Color("white"))
         self.__game_over_screen.blit(game_over_screen_text, (80, 90))
+
+        sample_enemy = self.__create_enemy((0, 0))
+        self.__enemy_width = sample_enemy.width
+        self.__enemy_height = sample_enemy.height
 
     def __create_enemy(self, starting_position):
         return Character(
@@ -148,53 +152,56 @@ class Game:
 
         if self.__player.has_been_defeated:
             surface.blit(self.__game_over_screen, (0, 0))
-        elif self.__enemy.has_been_defeated:
+        elif self.__enemies and all(enemy.has_been_defeated for enemy in self.__enemies):
             surface.blit(self.__victory_screen, (0, 0))
 
     def update(self, dt):
         self.__all_sprites.update(
-            dt, opponent_to={"enemy": self.__player, "player": self.__enemy}
+            dt, opponents_to={"enemy": [self.__player], "player": self.__enemies}
         )
 
         self.__spawn_enemies(dt)
 
-        if self.__enemy.has_been_defeated:
-            self.__characters.remove(self.__enemy.sprite)
-            self.__all_sprites.remove(self.__enemy.sprite)
+        for enemy in self.__enemies:
+            if enemy.has_been_defeated:
+                self.__enemies.remove(enemy)
+                self.__characters.remove(enemy.sprite)
+                self.__all_sprites.remove(enemy.sprite)
 
     def handle(self, event):
-        self.__player.handle_event(event, self.__enemy)
+        self.__player.handle_event(event, self.__enemies)
 
     def __spawn_enemies(self, dt):
         self.__spawning_timer += dt
 
         while self.__spawning_timer >= self.__time_until_next_spawn:
-            spawn_area_width = DISPLAY_WIDTH + self.__enemy.width
-            spawn_area_height = DISPLAY_HEIGHT + self.__enemy.height
+            spawn_area_width = DISPLAY_WIDTH + self.__enemy_width
+            spawn_area_height = DISPLAY_HEIGHT + self.__enemy_height
 
             random_number = randint(1, 2 * spawn_area_width + 2 * spawn_area_height)
             if random_number < spawn_area_width:
                 spawning_position = (
-                    -self.__enemy.width + random_number,
-                    -self.__enemy.height
+                    -self.__enemy_width + random_number,
+                    -self.__enemy_height
                 )
             elif random_number < 2 * spawn_area_width:
                 spawning_position = (
-                    -self.__enemy.width + random_number - spawn_area_width,
+                    -self.__enemy_width + random_number - spawn_area_width,
                     DISPLAY_HEIGHT
                 )
             elif random_number < 2 * spawn_area_width + spawn_area_height:
                 spawning_position = (
-                    -self.__enemy.width,
-                    -self.__enemy.height + random_number - 2 * spawn_area_width
+                    -self.__enemy_width,
+                    -self.__enemy_height + random_number - 2 * spawn_area_width
                 )
             else:
                 spawning_position = (
                     DISPLAY_WIDTH,
-                    -self.__enemy.height + random_number - 2 * spawn_area_width - spawn_area_height
+                    -self.__enemy_height + random_number - 2 * spawn_area_width - spawn_area_height
                 )
 
             new_enemy = self.__create_enemy(spawning_position)
+            self.__enemies.append(new_enemy)
             self.__characters.add(new_enemy.sprite)
             self.__all_sprites.add(new_enemy.sprite)
 
@@ -206,4 +213,5 @@ class Game:
 
     @property
     def finished(self):
-        return self.__enemy.has_been_defeated or self.__player.has_been_defeated
+        return (self.__enemies and all(enemy.has_been_defeated for enemy in self.__enemies) or
+            self.__player.has_been_defeated)

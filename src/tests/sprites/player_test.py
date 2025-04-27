@@ -13,19 +13,6 @@ import states.idle_state
 from utils import load_animation
 
 
-class StubEnemy:
-    def __init__(self, bounding_box):
-        self.__bounding_box = bounding_box
-
-    @property
-    def bounding_box(self):
-        return self.__bounding_box
-
-    @property
-    def has_been_defeated(self):
-        return False
-
-
 class TestPlayer(unittest.TestCase):
     def setUp(self):
         self.initial_state = states.idle_state.IdleState()
@@ -66,7 +53,7 @@ class TestPlayer(unittest.TestCase):
             game_area_size=(260, 190)
         )
 
-        self.enemy = StubEnemy(bounding_box=pygame.Rect(0, 0, 0, 0))
+        self.enemies = []
         self.__walk_direction = NONE
 
     def __create_new_player(self):
@@ -87,8 +74,8 @@ class TestPlayer(unittest.TestCase):
         self.__walk_direction = walking_direction
         player.handle_event(events.MovementDirectionChanged(self.__walk_direction), None)
 
-    def __attack_an_enemy(self, player, enemy):
-        player.handle_event(events.AttackStarted(), enemy)
+    def __attack_an_enemy(self, player, enemies):
+        player.handle_event(events.AttackStarted(), enemies)
 
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction_facing in (DOWN, UP, LEFT, RIGHT):
@@ -104,7 +91,7 @@ class TestPlayer(unittest.TestCase):
                     )
                 player.update(
                     dt=1000/self.animations["idle"]["framerate"],
-                    opponent_to={"player": self.enemy}
+                    opponents_to={"player": self.enemies}
                 )
 
     def test_walking_moves_player_to_the_correct_direction(self):
@@ -113,7 +100,7 @@ class TestPlayer(unittest.TestCase):
             starting_position = {"x": player.x, "y": player.y}
 
             self.__walk_to_direction(player, walk_direction)
-            player.update(dt=1000, opponent_to={"player": self.enemy})
+            player.update(dt=1000, opponents_to={"player": self.enemies})
 
             with self.subTest(direction=walk_direction):
                 if walk_direction.vertical_component == VerticalDirection.UP:
@@ -135,7 +122,7 @@ class TestPlayer(unittest.TestCase):
             player = self.__create_new_player()
             self.__turn_to_direction(player, direction_facing)
 
-            self.__attack_an_enemy(player, self.enemy)
+            self.__attack_an_enemy(player, self.enemies)
 
             for frame in range(len(self.animations["attack"][direction_facing])):
                 with self.subTest(direction=direction_facing, frame=frame):
@@ -145,7 +132,7 @@ class TestPlayer(unittest.TestCase):
                     )
                 player.update(
                     dt=1000/self.animations["attack"]["framerate"],
-                    opponent_to={"player": self.enemy}
+                    opponents_to={"player": self.enemies}
                 )
 
     def test_player_cannot_move_while_attacking(self):
@@ -155,14 +142,14 @@ class TestPlayer(unittest.TestCase):
                 starting_position = {"x": player.x, "y": player.y}
 
                 self.__turn_to_direction(player, attack_direction)
-                self.__attack_an_enemy(player, self.enemy)
+                self.__attack_an_enemy(player, self.enemies)
 
                 self.__walk_to_direction(player, walk_direction)
 
                 attack_frame_count = len(self.animations["attack"][attack_direction])
                 attack_single_frame_duration = 1000 / self.animations["attack"]["framerate"]
                 attack_total_duration = attack_frame_count * attack_single_frame_duration
-                player.update(dt=attack_total_duration-1, opponent_to={"player": self.enemy})
+                player.update(dt=attack_total_duration-1, opponents_to={"player": self.enemies})
 
                 with self.subTest(attack_direction=attack_direction, walk_direction=walk_direction):
                     self.assertEqual(player.x, starting_position["x"])

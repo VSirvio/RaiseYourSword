@@ -23,7 +23,7 @@ class IdleState(state.State):
 
     def update(self, **kwargs):
         owner = kwargs["owner"]
-        opponent = kwargs["opponent"]
+        opponent = kwargs["opponents"][0]
 
         if opponent.has_been_defeated:
             return None

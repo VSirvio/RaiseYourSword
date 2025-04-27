@@ -6,7 +6,7 @@ class AnimationsComponent:
         self.__index = 0
         self.__timer = 0
 
-    def update(self, dt, owner, opponent):
+    def update(self, dt, owner, opponents):
         self.__timer += dt
 
         frametime = 1000 / self.__animations[owner.state]["framerate"]
@@ -15,7 +15,7 @@ class AnimationsComponent:
             self.__index = (self.__index + 1) % num_of_frames
 
             if self.__index == 0:
-                owner.handle_event(events.AnimationFinished(), opponent)
+                owner.handle_event(events.AnimationFinished(), opponents)
 
             self.__timer -= frametime
 
