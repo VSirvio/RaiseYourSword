@@ -1,3 +1,5 @@
+from random import randint
+
 import pygame
 from pygame import Color
 
@@ -7,7 +9,13 @@ from character_direction import CharacterDirection
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
 from components.player_physics import PlayerPhysics
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, ENEMY_WALKING_SPEED
+from config import (
+    DISPLAY_WIDTH,
+    DISPLAY_HEIGHT,
+    ENEMY_WALKING_SPEED,
+    ENEMY_MIN_TIME_BETWEEN_SPAWNING,
+    ENEMY_MAX_TIME_BETWEEN_SPAWNING
+)
 from direction import NONE, DOWN, UP, LEFT, RIGHT
 from player_direction import PlayerDirection
 from sprites.background import Background
@@ -68,6 +76,12 @@ class Game:
 
         # Move background to layer -1000 to make sure that it is behind all other sprites
         self.__all_sprites.change_layer(self.__background, -1000)
+
+        self.__spawning_timer = 0
+        self.__time_until_next_spawn = randint(
+            ENEMY_MIN_TIME_BETWEEN_SPAWNING,
+            ENEMY_MAX_TIME_BETWEEN_SPAWNING
+        )
 
         transparent_black = Color(0, 0, 0, 190)
         result_screen_font = pygame.font.SysFont(name="Sans", size=17, bold=True)
@@ -142,12 +156,53 @@ class Game:
             dt, opponent_to={"enemy": self.__player, "player": self.__enemy}
         )
 
+        self.__spawn_enemies(dt)
+
         if self.__enemy.has_been_defeated:
             self.__characters.remove(self.__enemy.sprite)
             self.__all_sprites.remove(self.__enemy.sprite)
 
     def handle(self, event):
         self.__player.handle_event(event, self.__enemy)
+
+    def __spawn_enemies(self, dt):
+        self.__spawning_timer += dt
+
+        while self.__spawning_timer >= self.__time_until_next_spawn:
+            spawn_area_width = DISPLAY_WIDTH + self.__enemy.width
+            spawn_area_height = DISPLAY_HEIGHT + self.__enemy.height
+
+            random_number = randint(1, 2 * spawn_area_width + 2 * spawn_area_height)
+            if random_number < spawn_area_width:
+                spawning_position = (
+                    -self.__enemy.width + random_number,
+                    -self.__enemy.height
+                )
+            elif random_number < 2 * spawn_area_width:
+                spawning_position = (
+                    -self.__enemy.width + random_number - spawn_area_width,
+                    DISPLAY_HEIGHT
+                )
+            elif random_number < 2 * spawn_area_width + spawn_area_height:
+                spawning_position = (
+                    -self.__enemy.width,
+                    -self.__enemy.height + random_number - 2 * spawn_area_width
+                )
+            else:
+                spawning_position = (
+                    DISPLAY_WIDTH,
+                    -self.__enemy.height + random_number - 2 * spawn_area_width - spawn_area_height
+                )
+
+            new_enemy = self.__create_enemy(spawning_position)
+            self.__characters.add(new_enemy.sprite)
+            self.__all_sprites.add(new_enemy.sprite)
+
+            self.__spawning_timer -= self.__time_until_next_spawn
+            self.__time_until_next_spawn = randint(
+                ENEMY_MIN_TIME_BETWEEN_SPAWNING,
+                ENEMY_MAX_TIME_BETWEEN_SPAWNING
+            )
 
     @property
     def finished(self):
