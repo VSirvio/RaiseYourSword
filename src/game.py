@@ -25,6 +25,8 @@ import states.idle_state
 from utils import load_animation
 
 class Game:
+    """Responsible for the game's graphics and logic."""
+
     def __init__(self):
         self.__background = Background()
         self.__player = Character(
@@ -160,6 +162,12 @@ class Game:
             not self.__enemies)
 
     def draw(self, surface):
+        """Draws the current game screen on the given pygame surface.
+
+        Args:
+            surface: Pygame surface of the size DISPLAY_WIDTH x DISPLAY_HEIGHT.
+        """
+
         # Set each character sprite's layer value to be the same as its Y position so that the
         # sprites further away (the sprites that have a lower Y value) are shown behind the sprites
         # closer (i.e. the sprites further away have a lower layer value than the sprites closer)
@@ -174,6 +182,12 @@ class Game:
             surface.blit(self.__victory_screen, (0, 0))
 
     def update(self, dt):
+        """Updates the game logic.
+
+        Args:
+            dt: The time elapsed from the last call of this method.
+        """
+
         self.__all_sprites.update(
             dt, opponents_to={"enemy": [self.__player], "player": self.__enemies}
         )
@@ -190,6 +204,12 @@ class Game:
             self.__player.handle_event(events.Won(), self.__enemies)
 
     def handle(self, event):
+        """Sends an event to the player object.
+
+        Args:
+            event: Event object of one of the classes from the "events" module.
+        """
+
         self.__player.handle_event(event, self.__enemies)
 
     def __spawn_enemies(self, dt):
@@ -239,4 +259,6 @@ class Game:
 
     @property
     def finished(self):
+        """A boolean value indicating whether the game has finished."""
+
         return self.__all_enemies_have_been_defeated() or self.__player.has_been_defeated
