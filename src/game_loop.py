@@ -4,7 +4,18 @@ from arrow_keys import ArrowKeys
 import events
 
 class GameLoop:
+    """Calls the update methods of the game 60 times in a second."""
+
     def __init__(self, game, renderer, event_queue, clock):
+        """Creates a new game loop that utilizes the given services.
+
+        Args:
+            game: The game object.
+            renderer: A Renderer instance for rendering the game on the screen.
+            event_queue: An EventQueue instance for reading user input.
+            clock: A Clock instance for the timing.
+        """
+
         self.__game = game
         self.__renderer = renderer
         self.__event_queue = event_queue
@@ -15,6 +26,12 @@ class GameLoop:
         self.__arrow_keys = ArrowKeys()
 
     def start(self):
+        """Runs the game loop.
+
+        Returns:
+            A boolean value indicating whether to restart the game after this.
+        """
+
         while True:
             exit_action = self.__handle_events()
             if exit_action == "restart":
