@@ -93,12 +93,21 @@ class Game:
         self.__victory_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
         self.__victory_screen.fill(transparent_black)
         victory_screen_text = result_screen_font.render("YOU HAVE WON", True, Color("white"))
-        self.__victory_screen.blit(victory_screen_text, (60, 90))
+        self.__victory_screen.blit(victory_screen_text, (61, 90))
 
         self.__game_over_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
         self.__game_over_screen.fill(transparent_black)
         game_over_screen_text = result_screen_font.render("GAME OVER", True, Color("white"))
-        self.__game_over_screen.blit(game_over_screen_text, (80, 90))
+        self.__game_over_screen.blit(game_over_screen_text, (78, 90))
+
+        restart_instructions_font = pygame.font.SysFont(name="Sans", size=10)
+        restart_instructions_text = restart_instructions_font.render(
+            "Press ENTER to restart or ESC to exit",
+            False, # Antialiasing
+            Color(150, 150, 150)
+        )
+        for screen in (self.__victory_screen, self.__game_over_screen):
+            screen.blit(restart_instructions_text, (50, 175))
 
         sample_enemy = self.__create_enemy((0, 0))
         self.__enemy_width = sample_enemy.width

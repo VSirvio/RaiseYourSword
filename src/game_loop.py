@@ -16,8 +16,11 @@ class GameLoop:
 
     def start(self):
         while True:
-            if not self.__handle_events():
-                break
+            exit_action = self.__handle_events()
+            if exit_action == "restart":
+                return True
+            if exit_action == "exit":
+                return False
 
             self.__update()
 
@@ -27,12 +30,16 @@ class GameLoop:
 
     def __handle_events(self):
         for event in self.__event_queue.get():
-            if event.type == pygame.QUIT:
-                return False
+            if (event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE or
+                    event.type == pygame.QUIT):
+                return "exit"
 
             direction_changed = self.__arrow_keys.handle(event)
 
-            if not self.__game.finished:
+            if self.__game.finished:
+                if event.type == pygame.KEYUP and event.key in (pygame.K_SPACE, pygame.K_RETURN):
+                    return "restart"
+            else:
                 if direction_changed:
                     new_direction = self.__arrow_keys.current_direction
                     self.__game.handle(events.MovementDirectionChanged(new_direction))
@@ -40,7 +47,7 @@ class GameLoop:
                         event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT)):
                     self.__game.handle(events.AttackStarted())
 
-        return True
+        return "continue"
 
     def __update(self):
         self.__game.update(self.__dt)
