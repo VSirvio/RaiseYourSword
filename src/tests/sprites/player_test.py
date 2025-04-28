@@ -35,6 +35,7 @@ class TestPlayer(unittest.TestCase):
             },
             "attack": {
                 "framerate": 15,
+                "damage_frames": [],
                 DOWN: load_animation("warrior", 8, 6),
                 UP: load_animation("warrior", 9, 6),
                 LEFT: load_animation("warrior", 10, 6),

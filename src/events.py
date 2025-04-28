@@ -8,6 +8,9 @@ class AttackStarted:
 class AnimationFinished:
     pass
 
+class DealingDamage:
+    pass
+
 class WasDefeated:
     pass
 

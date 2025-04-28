@@ -17,6 +17,10 @@ class AnimationsComponent:
             if self.__index == 0:
                 owner.handle_event(events.AnimationFinished(), opponents)
 
+            if (owner.state == "attack" and
+                    self.__index in self.__animations["attack"]["damage_frames"]):
+                owner.handle_event(events.DealingDamage(), opponents)
+
             self.__timer -= frametime
 
     def current_frame(self, owner):

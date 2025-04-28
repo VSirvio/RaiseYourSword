@@ -26,12 +26,14 @@ class AttackState(state.State):
 
         owner.direction.moving = NONE
 
-        if owner.does_attack_hit(opponent):
-            opponent.defeat()
-
     def handle_event(self, **kwargs):
         event = kwargs["event"]
+        owner = kwargs["owner"] if event.__class__ == events.DealingDamage else None
+        opponent = kwargs["opponents"][0] if event.__class__ == events.DealingDamage else None
 
         match event.__class__:
             case events.AnimationFinished:
                 return ai.idle_state.IdleState()
+            case events.DealingDamage:
+                if owner.does_attack_hit(opponent):
+                    opponent.defeat()

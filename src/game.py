@@ -52,6 +52,7 @@ class Game:
                 },
                 "attack": {
                     "framerate": 15,
+                    "damage_frames": [2, 3],
                     DOWN: load_animation("warrior", 8, 6),
                     UP: load_animation("warrior", 9, 6),
                     LEFT: load_animation("warrior", 10, 6),
@@ -126,6 +127,7 @@ class Game:
                 },
                 "attack": {
                     "framerate": 10,
+                    "damage_frames": [6],
                     DOWN: load_animation("skeleton", 8, 8),
                     UP: load_animation("skeleton", 9, 8),
                     LEFT: load_animation("skeleton", 10, 8),

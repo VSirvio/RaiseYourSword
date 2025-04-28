@@ -53,6 +53,7 @@ class TestEnemy(unittest.TestCase):
             },
             "attack": {
                 "framerate": 10,
+                "damage_frames": [],
                 DOWN: load_animation("skeleton", 8, 8),
                 UP: load_animation("skeleton", 9, 8),
                 LEFT: load_animation("skeleton", 10, 8),
