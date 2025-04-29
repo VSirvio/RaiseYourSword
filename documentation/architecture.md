@@ -1,6 +1,8 @@
-# Architecture description
+# Architecture
 
 ## Structure
+
+*GameLoop* class runs the game loop and utilizes the classes *Renderer*, *EventQueue*, *Clock*, *ArrowKeys* and *Game*. The game logic is contained in the *Game* class. These relationships between the classes are depicted below:
 
 ```mermaid
 classDiagram
@@ -37,6 +39,8 @@ classDiagram
         release_all()
     }
 ```
+
+The game character logic is contained in the *Character* class. The directional data of the character is handled by the *CharacterDirection* class, the animations are handled by the *AnimationsComponent* class, and the character movement and collision detection is handled by the *PhysicsComponent* class. The state transitions of the character (*idle* -> *walking* -> *attacking* etc.) are handled by the subclasses of the *State* class (player states are inside the *states* directory and enemy states inside the *ai* directory). All these relationships are depicted below:
 
 ```mermaid
 classDiagram
@@ -112,7 +116,9 @@ classDiagram
     }
 ```
 
-## Game loop
+## Game logic
+
+### Game loop
 
 The basic function of the game loop is presented as a sequence diagram below. The diagram includes the initialization of the game loop and one iteration. Animation states and AI states are excluded from the diagram.
 
@@ -159,3 +165,11 @@ sequenceDiagram
     game_loop->>clock: tick(60)
     clock-->>game_loop: dt
 ```
+
+### Player and AI states
+
+The initial state of the game character is passed to the *Character* constructor in the *initial_state* parameter (for a player character the initial state is usually *states.idle_state.IdleState()* and for an enemy character *ai.idle_state.IdleState()*). The *update()* method of the current state is called each game loop iteration and the *handle_event()* method of the state when another game component sends a game event to the character (e.g. the *Game* object sends a *PlayerWon* event).
+
+Both the *update()* method and the *handle_event()* either return another state or *None*. When they return another state, the character will change its current state to that state. So for example if the player character's current state is *IdleState* and it receives the *AttackStarted* event in its *handle_event()* method, then the *handle_event()* method would return an *AttackState* and the player character would change its state to that state.
+
+The *enter()* method of a state is called the first thing when a character has changed its current state to that state. It does any preparatory tasks required by the state such as update the movement direction of the character if the new state is a *WalkState*.
