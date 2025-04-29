@@ -1,6 +1,6 @@
-import pygame
-
 import direction
+import events
+import state
 import states.attack_state   # pylint: disable=cyclic-import
 import states.walk_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing animation state management
@@ -8,28 +8,17 @@ import states.walk_state   # pylint: disable=cyclic-import
 # necessary to use cyclic imports (like in the example given, state1 would need to import state2
 # and state2 would also need to import state1).
 
-class IdleState:
-    @property
-    def type(self):
-        return "idle"
-
+class IdleState(state.State):
     def enter(self, **kwargs):
-        kwargs["player"].walk(direction.NONE)
+        owner = kwargs["owner"]
 
-    def handle_input(self, **kwargs):
+        owner.direction.moving = direction.NONE
+
+    def handle_event(self, **kwargs):
         event = kwargs["event"]
-        direction_pressed = kwargs["direction_pressed"]
 
-        if event.type == pygame.KEYDOWN and event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT):
-            return states.attack_state.AttackState(direction_pressed)
-
-        if direction_pressed != direction.NONE:
-            return states.walk_state.WalkState(direction_pressed)
-
-        return None
-
-    def animation_finished(self):
-        return None
-
-    def has_been_defeated(self):
-        return None
+        match event.__class__:
+            case events.AttackStarted:
+                return states.attack_state.AttackState()
+            case events.MovementDirectionChanged:
+                return states.walk_state.WalkState(event.new_direction)

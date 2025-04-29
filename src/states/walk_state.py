@@ -1,6 +1,6 @@
-import pygame
-
 import direction
+import events
+import state
 import states.attack_state   # pylint: disable=cyclic-import
 import states.idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing animation state management
@@ -8,33 +8,26 @@ import states.idle_state   # pylint: disable=cyclic-import
 # necessary to use cyclic imports (like in the example given, state1 would need to import state2
 # and state2 would also need to import state1).
 
-class WalkState:
+class WalkState(state.State):
     def __init__(self, walk_direction):
         self.__direction = walk_direction
 
-    @property
-    def type(self):
-        return "walk"
-
     def enter(self, **kwargs):
-        kwargs["player"].walk(self.__direction)
+        owner = kwargs["owner"]
 
-    def handle_input(self, **kwargs):
+        owner.direction.moving = self.__direction
+
+    def handle_event(self, **kwargs):
         event = kwargs["event"]
-        direction_pressed = kwargs["direction_pressed"]
 
-        if event.type == pygame.KEYDOWN and event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT):
-            return states.attack_state.AttackState(direction_pressed)
-
-        if direction_pressed != self.__direction:
-            if direction_pressed == direction.NONE:
+        match event.__class__:
+            case events.AttackStarted:
+                return states.attack_state.AttackState()
+            case events.WasDefeated:
                 return states.idle_state.IdleState()
-            return WalkState(direction_pressed)
-
-        return None
-
-    def animation_finished(self):
-        return None
-
-    def has_been_defeated(self):
-        return states.idle_state.IdleState()
+            case events.MovementDirectionChanged:
+                if event.new_direction == direction.NONE:
+                    return states.idle_state.IdleState()
+                return WalkState(event.new_direction)
+            case events.Won:
+                return states.idle_state.IdleState()

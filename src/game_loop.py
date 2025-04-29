@@ -1,9 +1,21 @@
 import pygame
 
 from arrow_keys import ArrowKeys
+import events
 
 class GameLoop:
+    """Calls the update methods of the game 60 times in a second."""
+
     def __init__(self, game, renderer, event_queue, clock):
+        """Creates a new game loop that utilizes the given services.
+
+        Args:
+            game: The game object.
+            renderer: A Renderer instance for rendering the game on the screen.
+            event_queue: An EventQueue instance for reading user input.
+            clock: A Clock instance for the timing.
+        """
+
         self.__game = game
         self.__renderer = renderer
         self.__event_queue = event_queue
@@ -14,9 +26,18 @@ class GameLoop:
         self.__arrow_keys = ArrowKeys()
 
     def start(self):
+        """Runs the game loop.
+
+        Returns:
+            A boolean value indicating whether to restart the game after this.
+        """
+
         while True:
-            if not self.__handle_events():
-                break
+            exit_action = self.__handle_events()
+            if exit_action == "restart":
+                return True
+            if exit_action == "exit":
+                return False
 
             self.__update()
 
@@ -26,15 +47,24 @@ class GameLoop:
 
     def __handle_events(self):
         for event in self.__event_queue.get():
-            if event.type == pygame.QUIT:
-                return False
+            if (event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE or
+                    event.type == pygame.QUIT):
+                return "exit"
 
-            self.__arrow_keys.handle(event)
+            direction_changed = self.__arrow_keys.handle(event)
 
-            if not self.__game.finished:
-                self.__game.handle_input(event, self.__arrow_keys.current_direction)
+            if self.__game.finished:
+                if event.type == pygame.KEYUP and event.key in (pygame.K_SPACE, pygame.K_RETURN):
+                    return "restart"
+            else:
+                if direction_changed:
+                    new_direction = self.__arrow_keys.current_direction
+                    self.__game.handle(events.MovementDirectionChanged(new_direction))
+                elif (event.type == pygame.KEYDOWN and
+                        event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT)):
+                    self.__game.handle(events.AttackStarted())
 
-        return True
+        return "continue"
 
     def __update(self):
         self.__game.update(self.__dt)

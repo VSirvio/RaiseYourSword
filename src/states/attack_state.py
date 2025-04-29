@@ -1,4 +1,6 @@
 import direction
+import events
+import state
 import states.idle_state   # pylint: disable=cyclic-import
 import states.walk_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing animation state management
@@ -6,29 +8,29 @@ import states.walk_state   # pylint: disable=cyclic-import
 # necessary to use cyclic imports (like in the example given, state1 would need to import state2
 # and state2 would also need to import state1).
 
-class AttackState:
-    def __init__(self, direction_pressed):
-        self.__enemy_was_hit = False
-        self.__direction_pressed = direction_pressed
-
-    @property
-    def type(self):
-        return "attack"
-
+class AttackState(state.State):
     def enter(self, **kwargs):
-        self.__enemy_was_hit = kwargs["player"].attack(kwargs["enemy"])
+        owner = kwargs["owner"]
 
-    def handle_input(self, **kwargs):
-        self.__direction_pressed = kwargs["direction_pressed"]
+        owner.direction.moving = direction.NONE
 
-    def animation_finished(self):
-        if self.__enemy_was_hit or self.__direction_pressed == direction.NONE:
-            return states.idle_state.IdleState()
-        return states.walk_state.WalkState(self.__direction_pressed)
+    def handle_event(self, **kwargs):
+        event = kwargs["event"]
+        if event.__class__ in (events.AnimationFinished, events.DealingDamage):
+            owner = kwargs["owner"]
+            opponents = kwargs["opponents"]
+        else:
+            owner = None
+            opponents = None
 
-    def has_been_defeated(self):
-        return states.idle_state.IdleState()
-
-    @property
-    def enemy_was_hit(self):
-        return self.__enemy_was_hit
+        match event.__class__:
+            case events.AnimationFinished:
+                if owner.direction.controlled_toward == direction.NONE:
+                    return states.idle_state.IdleState()
+                return states.walk_state.WalkState(owner.direction.controlled_toward)
+            case events.DealingDamage:
+                for opponent in opponents:
+                    if owner.does_attack_hit(opponent):
+                        opponent.defeat()
+            case events.WasDefeated:
+                return states.idle_state.IdleState()

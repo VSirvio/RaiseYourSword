@@ -1,29 +1,39 @@
+from math import atan2, pi
+
 import ai.idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
 # imports (like in the example given, state1 would need to import state2 and state2 would also need
 # to import state1).
+from direction import NONE, DOWN, UP, RIGHT, LEFT
+import events
+import state
 
-class AttackState:
-    def __init__(self):
-        self.__player_was_hit = False
-
-    @property
-    def type(self):
-        return "attack"
-
+class AttackState(state.State):
     def enter(self, **kwargs):
-        self.__player_was_hit = kwargs["enemy"].attack(kwargs["player"])
+        owner = kwargs["owner"]
+        opponent = kwargs["opponents"][0]
 
-    def update(self, **kwargs):
-        return None
+        angle = atan2(owner.y - opponent.y, opponent.x - owner.x)
+        if -3*pi/4 <= angle < -pi/4:
+            owner.direction.moving = DOWN
+        elif -pi/4 <= angle < pi/4:
+            owner.direction.moving = RIGHT
+        elif pi/4 <= angle < 3*pi/4:
+            owner.direction.moving = UP
+        else:
+            owner.direction.moving = LEFT
 
-    def animation_finished(self):
-        return ai.idle_state.IdleState(game_finished=self.__player_was_hit)
+        owner.direction.moving = NONE
 
-    def close_enough_to_player(self):
-        return None
+    def handle_event(self, **kwargs):
+        event = kwargs["event"]
+        owner = kwargs["owner"] if event.__class__ == events.DealingDamage else None
+        opponent = kwargs["opponents"][0] if event.__class__ == events.DealingDamage else None
 
-    @property
-    def player_was_hit(self):
-        return self.__player_was_hit
+        match event.__class__:
+            case events.AnimationFinished:
+                return ai.idle_state.IdleState()
+            case events.DealingDamage:
+                if owner.does_attack_hit(opponent):
+                    opponent.defeat()

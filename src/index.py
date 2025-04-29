@@ -23,13 +23,16 @@ def main():
     win_icon = pygame.image.load(os.path.join(dirname, "assets", "icon_skull.png"))
     pygame.display.set_icon(win_icon)
 
-    game = Game()
-    renderer = Renderer(display, game, GRAPHICS_SCALING_FACTOR)
-    event_queue = EventQueue()
-    clock = Clock()
-    game_loop = GameLoop(game, renderer, event_queue, clock)
+    start_new_game = True
 
-    game_loop.start()
+    while start_new_game:
+        game = Game()
+        renderer = Renderer(display, game, GRAPHICS_SCALING_FACTOR)
+        event_queue = EventQueue()
+        clock = Clock()
+        game_loop = GameLoop(game, renderer, event_queue, clock)
+
+        start_new_game = game_loop.start()
 
 if __name__ == "__main__":
     main()
