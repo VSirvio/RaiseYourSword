@@ -34,3 +34,15 @@
 - Refactored animations to use `State` design pattern
 - Added an AI to the enemy that allows them to chase the player and try to attack them
 - Tested that the enemy moves
+
+## Week 6
+
+- Refactored parts of `Player` and `Enemy` classes into smaller component classes `CharacterDirection`, `PlayerDirection`, `AnimationsComponent`, `PhysicsComponent` and `PlayerPhysics`
+- Refactored `Player` and `Enemy` classes to be just one `Character` class
+- Refactored the player state classes and AI state classes to have a single `handle_event()` method that can handle all different types of events instead of having a separate method for each type of event
+- Changed the spawning behavior of enemies so that instead of there being just one enemy that is already there in the beginning of the game multiple enemies spawn off-screen at random times
+- Added to the game logic the capability to precisely set on which attack animation frames does the attack hit the other character
+- Added the capability to easily restart the game in the ending screen by pressing <kbd>Enter</kbd> or <kbd>Space</kbd>
+- Tested that the current direction in the `ArrowKeys` class is `NONE` by default
+- Tested that a key down event sets the current direction in the `ArrowKeys` class correctly
+- Tested that all keys are released correctly in the `ArrowKeys` class, when the `release_all()` method is called
