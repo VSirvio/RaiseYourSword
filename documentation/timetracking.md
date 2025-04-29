@@ -61,4 +61,8 @@
 | 27.4. | 3            | implementing enemy spawning off-screen at random intervals                        |
 |       | 0.5          | writing docstrings                                                                |
 |       | 0.5          | implementing setting the attack animation frames on which the damage is inflicted |
-| total | 79.5         |                                                                                   |
+| 28.4. | 0.5          | implementing setting the attack animation frames on which the damage is inflicted |
+|       | 1            | implementing restarting by pressing ENTER in the ending screen                    |
+|       | 0.5          | fixing the organization of unit tests                                             |
+|       | 3.5          | writing docstrings                                                                |
+| total | 85           |                                                                                   |
