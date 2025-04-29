@@ -5,31 +5,110 @@
 ```mermaid
 classDiagram
     GameLoop "1" -- "1" Game
-    Game "1" -- "1" Player
-    Game "1" -- "*" Enemy
     Game "1" -- "1" Background
-    pygame.sprite.Sprite <|-- Player
-    pygame.sprite.Sprite <|-- Enemy
     pygame.sprite.Sprite <|-- Background
+    Game "1" -- "*" Character
+    GameLoop "1" -- "1" Renderer
+    GameLoop "1" -- "1" EventQueue
+    GameLoop "1" -- "1" Clock
+    GameLoop "1" -- "1" ArrowKeys
     class GameLoop{
         start()
     }
     class Game{
+        player
+        enemies
         finished
         draw()
         update()
-        walk()
-        attack()
     }
-    class Player{
-        bounding_box
+    class Renderer{
+        render()
+    }
+    class EventQueue{
+        get()
+    }
+    class Clock{
+        tick()
+    }
+    class ArrowKeys{
+        current_direction
+        handle(event)
+        release_all()
+    }
+```
+
+```mermaid
+classDiagram
+    Game "1" -- "*" Character
+    Character "1" -- "1" State
+    State <|-- states.SomeState
+    State <|-- ai.SomeState
+    Character "1" -- "1" CharacterDirection
+    CharacterDirection "1" -- "*" Direction
+    CharacterDirection <|-- PlayerDirection
+    Character "1" -- "1" AnimationsComponent
+    Character "1" -- "1" PhysicsComponent
+    PhysicsComponent <|-- PlayerPhysics
+    class Game{
+    }
+    class Character{
+        sprite
         has_been_defeated
-        walk()
-        attack()
-        lose()
+        update()
+        handle_event()
+        does_attack_hit()
+        defeat()
     }
-    class Enemy{
+    class State{
+        type
+        enter()
+        update()
+        handle_event()
+    }
+    class states.SomeState{
+        type
+        enter()
+        update()
+        handle_event()
+    }
+    class ai.SomeState{
+        type
+        enter()
+        update()
+        handle_event()
+    }
+    class CharacterDirection{
+        facing
+        moving
+        handle(event)
+    }
+    class Direction{
+        vertical_component
+        horizontal_component
+        movement_vector()
+        clip_to_four_directions()
+    }
+    class PlayerDirection{
+        facing
+        moving
+        controlled_toward
+        handle(event)
+    }
+    class AnimationsComponent{
+        update()
+        current_frame()
+        reset()
+    }
+    class PhysicsComponent{
         bounding_box
+        update()
+        does_attack_hit()
+    }
+    class PlayerPhysics{
+        bounding_box
+        update()
+        does_attack_hit()
     }
 ```
 
