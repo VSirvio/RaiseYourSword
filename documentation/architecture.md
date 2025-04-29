@@ -124,9 +124,9 @@ sequenceDiagram
     create participant background
     game->>background: Background()
     create participant player
-    game->>player: Player(animations)
+    game->>player: Character("player", initial_state, starting_position, direction, animations, physics)
     create participant enemy
-    game->>enemy: Enemy(animations)
+    game->>enemy: Character("enemy", initial_state, starting_position, direction, animations, physics)
     create participant renderer
     main->>renderer: Renderer(display, game, GRAPHICS_SCALING_FACTOR)
     create participant event_queue
@@ -142,14 +142,14 @@ sequenceDiagram
     event_queue-->>game_loop: event
     game_loop->>arrow_keys: handle(event)
     arrow_keys-->>game_loop: 
-    game_loop->>game: handle_input(event, arrow_keys.current_direction)
-    game->>player: handle_input(event, arrow_keys.current_direction, enemy)
+    game_loop->>game: handle(event)
+    game->>player: handle(event, enemies)
     player-->>game: 
     game-->>game_loop: 
     game_loop->>game: update(dt)
-    game->>player: update(dt, player, enemy)
+    game->>player: update(dt, opponents_to)
     player-->>game: 
-    game->>enemy: update(dt, player, enemy)
+    game->>enemy: update(dt, opponents_to)
     enemy-->>game: 
     game-->>game_loop: 
     game_loop->>renderer: render()
