@@ -19,9 +19,8 @@
   - Walk: <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
   - Attack: <kbd>Shift</kbd>
 - Current functionality:
-  - There is only one enemy that slowly walks toward the player and tries to attack them
-  - You win the game by attacking the enemy and you lose the game by getting hit by the enemy
-  - The game can be started again from the beginning by closing the game window and then starting the game again
+  - 10 enemies emerge from off-screen
+  - You win the game by defeating all the enemies by striking each of them with your sword and lose the game by getting hit by any of them
 
 ## Installation
 
