@@ -4,7 +4,7 @@
 
 *Made for the software development methods project course at the University of Helsinki*
 
-[Latest release](https://github.com/VSirvio/RaiseYourSword/releases/latest)
+[Releases](https://github.com/VSirvio/RaiseYourSword/releases)
 
 ## Documentation
 
