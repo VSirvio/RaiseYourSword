@@ -8,6 +8,7 @@
 
 ## Documentation
 
+- [User manual](https://github.com/VSirvio/RaiseYourSword/tree/main/documentation/user_manual.md)
 - [Specification](https://github.com/VSirvio/RaiseYourSword/tree/main/documentation/specification.md)
 - [Architecture](https://github.com/VSirvio/RaiseYourSword/tree/main/documentation/architecture.md)
 - [Time tracking sheet](https://github.com/VSirvio/RaiseYourSword/tree/main/documentation/timetracking.md)
