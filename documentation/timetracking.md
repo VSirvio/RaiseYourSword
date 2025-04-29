@@ -65,4 +65,8 @@
 |       | 1            | implementing restarting by pressing ENTER in the ending screen                    |
 |       | 0.5          | fixing the organization of unit tests                                             |
 |       | 3.5          | writing docstrings                                                                |
-| total | 85           |                                                                                   |
+| 29.4. | 1            | writing docstrings                                                                |
+|       | 2.5          | improving architecture document                                                   |
+|       | 1            | creating user manual                                                              |
+|       | 1            | updating specification, changelog and readme                                      |
+| total | 90.5         |                                                                                   |
