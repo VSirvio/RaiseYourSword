@@ -40,6 +40,13 @@ class TestPlayer(unittest.TestCase):
                 UP: load_animation("warrior", 9, 6),
                 LEFT: load_animation("warrior", 10, 6),
                 RIGHT: load_animation("warrior", 11, 6)
+            },
+            "dying": {
+                "framerate": 12,
+                DOWN: load_animation("warrior", 12, 5),
+                UP: load_animation("warrior", 13, 6),
+                LEFT: load_animation("warrior", 14, 5),
+                RIGHT: load_animation("warrior", 15, 5)
             }
         }
         self.physics = PlayerPhysics(

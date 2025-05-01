@@ -59,6 +59,13 @@ class Game:
                     UP: load_animation("warrior", 9, 6),
                     LEFT: load_animation("warrior", 10, 6),
                     RIGHT: load_animation("warrior", 11, 6)
+                },
+                "dying": {
+                    "framerate": 12,
+                    DOWN: load_animation("warrior", 12, 5),
+                    UP: load_animation("warrior", 13, 6),
+                    LEFT: load_animation("warrior", 14, 5),
+                    RIGHT: load_animation("warrior", 15, 5)
                 }
             }),
             physics=PlayerPhysics(
@@ -143,6 +150,13 @@ class Game:
                     UP: load_animation("skeleton", 9, 8),
                     LEFT: load_animation("skeleton", 10, 8),
                     RIGHT: load_animation("skeleton", 11, 8)
+                },
+                "dying": {
+                    "framerate": 12,
+                    DOWN: load_animation("skeleton", 12, 8),
+                    UP: load_animation("skeleton", 13, 8),
+                    LEFT: load_animation("skeleton", 14, 8),
+                    RIGHT: load_animation("skeleton", 15, 8)
                 }
             }),
             physics=PhysicsComponent(
