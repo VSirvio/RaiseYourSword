@@ -7,6 +7,16 @@ class State:
 
         return self.__class__.__name__.removesuffix("State").lower()
 
+    def enter(self, **kwargs):
+        """A stub for initializing the state in subclasses of this class.
+
+        Args:
+            owner: A Character instance whose state this is.
+        """
+
+        if "owner" not in kwargs:
+            raise TypeError("State.enter() requires keyword argument \"owner\"")
+
     def update(self, **kwargs):
         """A stub for handling updating the state in subclasses of this class.
 
