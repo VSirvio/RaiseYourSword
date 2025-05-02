@@ -22,8 +22,6 @@ class Character:
 
         super().__init__()
 
-        self._has_been_defeated = False
-
         self.__role = role
 
         self._state = initial_state
@@ -57,7 +55,8 @@ class Character:
 
         opponents = opponents_to[self.__role]
 
-        self.__update_state(self._state.update(dt=dt, owner=self, opponents=opponents), opponents)
+        new_state = self._state.update(dt=dt, owner=self, opponents=opponents)
+        self.__update_state(new_state, opponents)
 
         self.__animations.update(dt, self, opponents)
         self.__sprite.image = self.__animations.current_frame(self)
@@ -74,7 +73,7 @@ class Character:
 
         self.direction.handle(event)
 
-        new_state = self._state.handle_event(owner=self, opponents=opponents, event=event)
+        new_state = self._state.handle_event(event=event, owner=self, opponents=opponents)
         self.__update_state(new_state, opponents)
 
     def does_attack_hit(self, target):
@@ -133,16 +132,8 @@ class Character:
 
         return self.__physics.bounding_box.move(self.x, self.y)
 
-    @property
-    def has_been_defeated(self):
-        """Boolean indicating whether the character has been defeated."""
-
-        return self._has_been_defeated
-
     def defeat(self):
         """Defeats this character."""
-
-        self._has_been_defeated = True
 
         new_state = self._state.handle_event(event=events.WasDefeated())
         self.__update_state(new_state, None)

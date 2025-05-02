@@ -1,6 +1,7 @@
 import direction
 import events
 import state
+import states.dying_state   # pylint: disable=cyclic-import
 import states.idle_state   # pylint: disable=cyclic-import
 import states.walk_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing animation state management
@@ -33,4 +34,4 @@ class AttackState(state.State):
                     if owner.does_attack_hit(opponent):
                         opponent.defeat()
             case events.WasDefeated:
-                return states.idle_state.IdleState()
+                return states.dying_state.DyingState()

@@ -17,7 +17,7 @@ def fill_with_tile(canvas, tile):
         for y in range(math.ceil(canvas.get_height() / tile.get_height())):
             canvas.blit(tile, (x * tile.get_width(), y * tile.get_height()))
 
-def load_animation(character, row, num_of_frames):
+def load_animation(character, row, num_of_frames, column=0):
     """Loads animation frames from a sprite sheet in the "assets" directory.
 
     Args:
@@ -35,6 +35,6 @@ def load_animation(character, row, num_of_frames):
 
     frames = []
     for frame_num in range(num_of_frames):
-        frames.append(sprite_sheet.subsurface((frame_num * 48, row * 48, 48, 48)))
+        frames.append(sprite_sheet.subsurface(((column + frame_num) * 48, row * 48, 48, 48)))
 
     return frames

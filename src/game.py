@@ -66,6 +66,13 @@ class Game:
                     UP: load_animation("warrior", 13, 6),
                     LEFT: load_animation("warrior", 14, 5),
                     RIGHT: load_animation("warrior", 15, 5)
+                },
+                "dead": {
+                    "framerate": 1,
+                    DOWN: load_animation("warrior", 12, 1, 4),
+                    UP: load_animation("warrior", 13, 1, 5),
+                    LEFT: load_animation("warrior", 14, 1, 4),
+                    RIGHT: load_animation("warrior", 15, 1, 4)
                 }
             }),
             physics=PlayerPhysics(
@@ -97,26 +104,33 @@ class Game:
         self.__number_of_enemies_spawned_so_far = 0
 
         transparent_black = Color(0, 0, 0, 190)
-        result_screen_font = pygame.font.SysFont(name="Sans", size=17, bold=True)
+        result_screen_font = pygame.font.SysFont(name="Sans", size=16, bold=True)
 
         self.__victory_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
         self.__victory_screen.fill(transparent_black)
-        victory_screen_text = result_screen_font.render("YOU HAVE WON", True, Color("white"))
-        self.__victory_screen.blit(victory_screen_text, (61, 90))
+        victory_screen_text = result_screen_font.render("YOU HAVE ACHIEVED VICTORY", True, Color("white"))
+        self.__victory_screen.blit(victory_screen_text, (5, 90))
 
         self.__game_over_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
         self.__game_over_screen.fill(transparent_black)
-        game_over_screen_text = result_screen_font.render("GAME OVER", True, Color("white"))
-        self.__game_over_screen.blit(game_over_screen_text, (78, 90))
+        game_over_screen_text = result_screen_font.render("YOU HAVE BEEN DEFEATED", True, Color("white"))
+        self.__game_over_screen.blit(game_over_screen_text, (18, 90))
 
-        restart_instructions_font = pygame.font.SysFont(name="Sans", size=10)
-        restart_instructions_text = restart_instructions_font.render(
-            "Press ENTER to restart or ESC to exit",
+        restart_instructions_font = pygame.font.SysFont(name="Sans", size=9)
+
+        restart_instructions_text_after_win = restart_instructions_font.render(
+            "Press ENTER if you wish to fight again or ESC to go savor your victory",
             False, # Antialiasing
             Color(150, 150, 150)
         )
-        for screen in (self.__victory_screen, self.__game_over_screen):
-            screen.blit(restart_instructions_text, (50, 175))
+        self.__victory_screen.blit(restart_instructions_text_after_win, (0, 175))
+
+        restart_instructions_text_after_lose = restart_instructions_font.render(
+            "Press ENTER for another chance or ESC to give up",
+            False, # Antialiasing
+            Color(150, 150, 150)
+        )
+        self.__game_over_screen.blit(restart_instructions_text_after_lose, (21, 175))
 
         sample_enemy = self.__create_enemy((0, 0))
         self.__enemy_width = sample_enemy.width
@@ -157,6 +171,13 @@ class Game:
                     UP: load_animation("skeleton", 13, 8),
                     LEFT: load_animation("skeleton", 14, 8),
                     RIGHT: load_animation("skeleton", 15, 8)
+                },
+                "dead": {
+                    "framerate": 1,
+                    DOWN: load_animation("skeleton", 12, 1, 7),
+                    UP: load_animation("skeleton", 13, 1, 7),
+                    LEFT: load_animation("skeleton", 14, 1, 7),
+                    RIGHT: load_animation("skeleton", 15, 1, 7)
                 }
             }),
             physics=PhysicsComponent(
@@ -172,8 +193,7 @@ class Game:
         )
 
     def __all_enemies_have_been_defeated(self):
-        return (self.__number_of_enemies_spawned_so_far >= NUMBER_OF_ENEMIES_TO_SPAWN and
-            not self.__enemies)
+        return self.__enemies and all(enemy.state == "dead" for enemy in self.__enemies)
 
     def draw(self, surface):
         """Draws the current game screen on the given pygame surface.
@@ -190,7 +210,7 @@ class Game:
 
         self.__all_sprites.draw(surface)
 
-        if self.__player.has_been_defeated:
+        if self.__player.state == "dead":
             surface.blit(self.__game_over_screen, (0, 0))
         elif self.__all_enemies_have_been_defeated():
             surface.blit(self.__victory_screen, (0, 0))
@@ -208,14 +228,12 @@ class Game:
 
         self.__spawn_enemies(dt)
 
-        for enemy in self.__enemies:
-            if enemy.has_been_defeated:
-                self.__enemies.remove(enemy)
-                self.__characters.remove(enemy.sprite)
-                self.__all_sprites.remove(enemy.sprite)
-
         if self.__all_enemies_have_been_defeated():
             self.__player.handle_event(events.Won(), self.__enemies)
+
+        if self.__player.state == "dead":
+            for enemy in self.__enemies:
+                enemy.handle_event(events.Won(), self.__enemies)
 
     def handle(self, event):
         """Sends an event to the player object.
@@ -275,4 +293,4 @@ class Game:
     def finished(self):
         """A boolean value indicating whether the game has finished."""
 
-        return self.__all_enemies_have_been_defeated() or self.__player.has_been_defeated
+        return self.__all_enemies_have_been_defeated() or self.__player.state == "dead"
