@@ -66,6 +66,13 @@ class Game:
                     UP: load_animation("warrior", 13, 6),
                     LEFT: load_animation("warrior", 14, 5),
                     RIGHT: load_animation("warrior", 15, 5)
+                },
+                "dead": {
+                    "framerate": 1,
+                    DOWN: load_animation("warrior", 12, 1, 4),
+                    UP: load_animation("warrior", 13, 1, 5),
+                    LEFT: load_animation("warrior", 14, 1, 4),
+                    RIGHT: load_animation("warrior", 15, 1, 4)
                 }
             }),
             physics=PlayerPhysics(
@@ -157,6 +164,13 @@ class Game:
                     UP: load_animation("skeleton", 13, 8),
                     LEFT: load_animation("skeleton", 14, 8),
                     RIGHT: load_animation("skeleton", 15, 8)
+                },
+                "dead": {
+                    "framerate": 1,
+                    DOWN: load_animation("skeleton", 12, 1, 7),
+                    UP: load_animation("skeleton", 13, 1, 7),
+                    LEFT: load_animation("skeleton", 14, 1, 7),
+                    RIGHT: load_animation("skeleton", 15, 1, 7)
                 }
             }),
             physics=PhysicsComponent(
@@ -172,8 +186,7 @@ class Game:
         )
 
     def __all_enemies_have_been_defeated(self):
-        return (self.__number_of_enemies_spawned_so_far >= NUMBER_OF_ENEMIES_TO_SPAWN and
-            not self.__enemies)
+        return self.__enemies and all(enemy.state == "dead" for enemy in self.__enemies)
 
     def draw(self, surface):
         """Draws the current game screen on the given pygame surface.
@@ -190,7 +203,7 @@ class Game:
 
         self.__all_sprites.draw(surface)
 
-        if self.__player.has_been_defeated:
+        if self.__player.state == "dead":
             surface.blit(self.__game_over_screen, (0, 0))
         elif self.__all_enemies_have_been_defeated():
             surface.blit(self.__victory_screen, (0, 0))
@@ -208,14 +221,11 @@ class Game:
 
         self.__spawn_enemies(dt)
 
-        for enemy in self.__enemies:
-            if enemy.has_been_defeated:
-                self.__enemies.remove(enemy)
-                self.__characters.remove(enemy.sprite)
-                self.__all_sprites.remove(enemy.sprite)
+        if self.finished:
+            self.__player.handle_event(events.GameEnded(), self.__enemies)
 
-        if self.__all_enemies_have_been_defeated():
-            self.__player.handle_event(events.Won(), self.__enemies)
+            for enemy in self.__enemies:
+                enemy.handle_event(events.GameEnded(), self.__enemies)
 
     def handle(self, event):
         """Sends an event to the player object.
@@ -275,4 +285,4 @@ class Game:
     def finished(self):
         """A boolean value indicating whether the game has finished."""
 
-        return self.__all_enemies_have_been_defeated() or self.__player.has_been_defeated
+        return self.__all_enemies_have_been_defeated() or self.__player.state == "dead"

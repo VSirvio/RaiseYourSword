@@ -1,5 +1,6 @@
 from math import atan2, pi
 
+import ai.dying_state   # pylint: disable=cyclic-import
 import ai.idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
@@ -37,3 +38,5 @@ class AttackState(state.State):
             case events.DealingDamage:
                 if owner.does_attack_hit(opponent):
                     opponent.defeat()
+            case events.WasDefeated:
+                return ai.dying_state.DyingState()

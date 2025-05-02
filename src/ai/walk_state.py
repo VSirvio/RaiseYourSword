@@ -3,6 +3,8 @@ from random import randrange
 
 from config import ENEMY_TO_PLAYER_MIN_DISTANCE, ENEMY_AI_WALK_TIME_MIN, ENEMY_AI_WALK_TIME_MAX
 import direction
+import events
+import ai.dying_state   # pylint: disable=cyclic-import
 import ai.idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
@@ -53,3 +55,10 @@ class WalkState(state.State):
             return ai.idle_state.IdleState()
 
         return None
+
+    def handle_event(self, **kwargs):
+        event = kwargs["event"]
+
+        match event.__class__:
+            case events.WasDefeated:
+                return ai.dying_state.DyingState()

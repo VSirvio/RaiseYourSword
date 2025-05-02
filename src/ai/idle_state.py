@@ -3,7 +3,10 @@ from random import randrange
 
 from config import ENEMY_TO_PLAYER_MIN_DISTANCE, ENEMY_AI_IDLE_TIME_MIN, ENEMY_AI_IDLE_TIME_MAX
 import direction
+import events
 import ai.attack_state   # pylint: disable=cyclic-import
+import ai.dying_state   # pylint: disable=cyclic-import
+import ai.perpetual_idle_state   # pylint: disable=cyclic-import
 import ai.walk_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
@@ -25,9 +28,6 @@ class IdleState(state.State):
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
 
-        if opponent.has_been_defeated:
-            return None
-
         self.__timer += kwargs["dt"]
 
         if self.__timer >= self.__duration:
@@ -38,3 +38,12 @@ class IdleState(state.State):
             return ai.walk_state.WalkState()
 
         return None
+
+    def handle_event(self, **kwargs):
+        event = kwargs["event"]
+
+        match event.__class__:
+            case events.WasDefeated:
+                return ai.dying_state.DyingState()
+            case events.GameEnded:
+                return ai.perpetual_idle_state.PerpetualIdleState()

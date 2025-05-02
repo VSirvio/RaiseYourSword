@@ -53,16 +53,16 @@ class GameLoop:
 
             direction_changed = self.__arrow_keys.handle(event)
 
-            if self.__game.finished:
-                if event.type == pygame.KEYUP and event.key in (pygame.K_SPACE, pygame.K_RETURN):
-                    return "restart"
-            else:
-                if direction_changed:
-                    new_direction = self.__arrow_keys.current_direction
-                    self.__game.handle(events.MovementDirectionChanged(new_direction))
-                elif (event.type == pygame.KEYDOWN and
-                        event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT)):
-                    self.__game.handle(events.AttackStarted())
+            if direction_changed:
+                new_direction = self.__arrow_keys.current_direction
+                self.__game.handle(events.MovementDirectionChanged(new_direction))
+            elif (event.type == pygame.KEYDOWN and
+                    event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT)):
+                self.__game.handle(events.AttackStarted())
+
+            if (self.__game.finished and event.type == pygame.KEYUP and
+                    event.key in (pygame.K_SPACE, pygame.K_RETURN)):
+                return "restart"
 
         return "continue"
 

@@ -16,19 +16,21 @@ class PlayerPhysics(PhysicsComponent):
         player = args[0]
         enemies = args[1]
 
+        living_enemies = list(filter(lambda enemy: enemy.state not in ("dead", "dying"), enemies))
+
         bbox_moved_horizontally = self.bounding_box.move(player.x + dx, player.y)
         collides_horizontally = any(
-            bbox_moved_horizontally.colliderect(enemy.bounding_box) for enemy in enemies
+            bbox_moved_horizontally.colliderect(enemy.bounding_box) for enemy in living_enemies
         )
 
         bbox_moved_vertically = self.bounding_box.move(player.x, player.y + dy)
         collides_vertically = any(
-            bbox_moved_vertically.colliderect(enemy.bounding_box) for enemy in enemies
+            bbox_moved_vertically.colliderect(enemy.bounding_box) for enemy in living_enemies
         )
 
         bbox_moved_diagonally = self.bounding_box.move(player.x + dx, player.y + dy)
         collides_diagonally = any(
-            bbox_moved_diagonally.colliderect(enemy.bounding_box) for enemy in enemies
+            bbox_moved_diagonally.colliderect(enemy.bounding_box) for enemy in living_enemies
         )
 
         # If diagonal movement causes a collision but horizontal and vertical movement

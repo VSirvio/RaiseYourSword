@@ -14,5 +14,5 @@ class DealingDamage:
 class WasDefeated:
     pass
 
-class Won:
+class GameEnded:
     pass

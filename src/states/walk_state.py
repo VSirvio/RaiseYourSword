@@ -2,7 +2,9 @@ import direction
 import events
 import state
 import states.attack_state   # pylint: disable=cyclic-import
+import states.dying_state   # pylint: disable=cyclic-import
 import states.idle_state   # pylint: disable=cyclic-import
+import states.perpetual_idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing animation state management
 # in games. It often requires transitions like state1->state2->state1, and for that reason it is
 # necessary to use cyclic imports (like in the example given, state1 would need to import state2
@@ -24,10 +26,10 @@ class WalkState(state.State):
             case events.AttackStarted:
                 return states.attack_state.AttackState()
             case events.WasDefeated:
-                return states.idle_state.IdleState()
+                return states.dying_state.DyingState()
             case events.MovementDirectionChanged:
                 if event.new_direction == direction.NONE:
                     return states.idle_state.IdleState()
                 return WalkState(event.new_direction)
-            case events.Won:
-                return states.idle_state.IdleState()
+            case events.GameEnded:
+                return states.perpetual_idle_state.PerpetualIdleState()
