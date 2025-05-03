@@ -188,6 +188,10 @@ class Game:
     def __all_enemies_have_been_defeated(self):
         return self.__enemies and all(enemy.state == "dead" for enemy in self.__enemies)
 
+    def __last_enemy_is_dying(self):
+        return (self.__enemies and not all(enemy.state == "dead" for enemy in self.__enemies) and
+            all(enemy.state in ("dead", "dying") for enemy in self.__enemies))
+
     def draw(self, surface):
         """Draws the current game screen on the given pygame surface.
 
@@ -220,6 +224,9 @@ class Game:
         )
 
         self.__spawn_enemies(dt)
+
+        if self.__last_enemy_is_dying():
+            self.__player.handle_event(events.LastEnemyDying(), self.__enemies)
 
         if self.finished:
             self.__player.handle_event(events.GameEnded(), self.__enemies)

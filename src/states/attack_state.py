@@ -3,6 +3,7 @@ import events
 import state
 import states.dying_state   # pylint: disable=cyclic-import
 import states.idle_state   # pylint: disable=cyclic-import
+import states.perpetual_idle_state   # pylint: disable=cyclic-import
 import states.walk_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing animation state management
 # in games. It often requires transitions like state1->state2->state1, and for that reason it is
@@ -10,6 +11,9 @@ import states.walk_state   # pylint: disable=cyclic-import
 # and state2 would also need to import state1).
 
 class AttackState(state.State):
+    def __init__(self):
+        self.__last_enemy_is_dying = False
+
     def enter(self, **kwargs):
         owner = kwargs["owner"]
 
@@ -26,6 +30,8 @@ class AttackState(state.State):
 
         match event.__class__:
             case events.AnimationFinished:
+                if self.__last_enemy_is_dying:
+                    return states.perpetual_idle_state.PerpetualIdleState()
                 if owner.direction.controlled_toward == direction.NONE:
                     return states.idle_state.IdleState()
                 return states.walk_state.WalkState(owner.direction.controlled_toward)
@@ -35,3 +41,5 @@ class AttackState(state.State):
                         opponent.defeat()
             case events.WasDefeated:
                 return states.dying_state.DyingState()
+            case events.LastEnemyDying:
+                self.__last_enemy_is_dying = True

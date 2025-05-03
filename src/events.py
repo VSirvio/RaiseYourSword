@@ -16,3 +16,6 @@ class WasDefeated:
 
 class GameEnded:
     pass
+
+class LastEnemyDying:
+    pass
