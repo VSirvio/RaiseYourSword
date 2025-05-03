@@ -186,10 +186,12 @@ class Game:
         )
 
     def __all_enemies_have_been_defeated(self):
-        return self.__enemies and all(enemy.state == "dead" for enemy in self.__enemies)
+        return (len(self.__enemies) == NUMBER_OF_ENEMIES_TO_SPAWN and
+            all(enemy.state == "dead" for enemy in self.__enemies))
 
     def __last_enemy_is_dying(self):
-        return (self.__enemies and not all(enemy.state == "dead" for enemy in self.__enemies) and
+        return (len(self.__enemies) == NUMBER_OF_ENEMIES_TO_SPAWN and
+            not all(enemy.state == "dead" for enemy in self.__enemies) and
             all(enemy.state in ("dead", "dying") for enemy in self.__enemies))
 
     def draw(self, surface):
