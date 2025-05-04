@@ -18,37 +18,7 @@ class TestPlayer(unittest.TestCase):
         self.initial_state = states.idle_state.IdleState()
         self.starting_position = ((260 - 48) // 2, (190 - 48) // 2 - 7)
         self.direction = PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE)
-        self.animations = {
-            "idle": {
-                "framerate": 4,
-                DOWN: load_animation("warrior", 0, 5),
-                UP: load_animation("warrior", 1, 5),
-                LEFT: load_animation("warrior", 2, 5),
-                RIGHT: load_animation("warrior", 3, 5)
-            },
-            "walk": {
-                "framerate": 12,
-                DOWN: load_animation("warrior", 4, 8),
-                UP: load_animation("warrior", 5, 8),
-                LEFT: load_animation("warrior", 6, 8),
-                RIGHT: load_animation("warrior", 7, 8)
-            },
-            "attack": {
-                "framerate": 15,
-                "damage_frames": [],
-                DOWN: load_animation("warrior", 8, 6),
-                UP: load_animation("warrior", 9, 6),
-                LEFT: load_animation("warrior", 10, 6),
-                RIGHT: load_animation("warrior", 11, 6)
-            },
-            "dying": {
-                "framerate": 12,
-                DOWN: load_animation("warrior", 12, 5),
-                UP: load_animation("warrior", 13, 6),
-                LEFT: load_animation("warrior", 14, 5),
-                RIGHT: load_animation("warrior", 15, 5)
-            }
-        }
+        self.animations = load_animation("assets/character_warrior_animations.yaml")
         self.physics = PlayerPhysics(
             walking_speed=75,
             bounding_box=pygame.Rect((11, 6), (25, 36)),
@@ -91,14 +61,14 @@ class TestPlayer(unittest.TestCase):
             self.__turn_to_direction(player, direction_facing)
 
             # Test frame 0 again in the end to check that the animation loops correctly
-            for frame in list(range(len(self.animations["idle"][direction_facing]))) + [0]:
+            for frame in list(range(len(self.animations["idle"][direction_facing].frames))) + [0]:
                 with self.subTest(direction=direction_facing, frame=frame):
                     self.assertEqual(
                         player.sprite.image,
-                        self.animations["idle"][direction_facing][frame]
+                        self.animations["idle"][direction_facing].frames[frame]
                     )
                 player.update(
-                    dt=1000/self.animations["idle"]["framerate"],
+                    dt=1000/self.animations["idle"][direction_facing].framerate,
                     opponents_to={"player": self.enemies}
                 )
 
@@ -132,14 +102,14 @@ class TestPlayer(unittest.TestCase):
 
             self.__attack_an_enemy(player, self.enemies)
 
-            for frame in range(len(self.animations["attack"][direction_facing])):
+            for frame in range(len(self.animations["attack"][direction_facing].frames)):
                 with self.subTest(direction=direction_facing, frame=frame):
                     self.assertEqual(
                         player.sprite.image,
-                        self.animations["attack"][direction_facing][frame]
+                        self.animations["attack"][direction_facing].frames[frame]
                     )
                 player.update(
-                    dt=1000/self.animations["attack"]["framerate"],
+                    dt=1000/self.animations["attack"][direction_facing].framerate,
                     opponents_to={"player": self.enemies}
                 )
 
@@ -154,8 +124,9 @@ class TestPlayer(unittest.TestCase):
 
                 self.__walk_to_direction(player, walk_direction)
 
-                attack_frame_count = len(self.animations["attack"][attack_direction])
-                attack_single_frame_duration = 1000 / self.animations["attack"]["framerate"]
+                current_animation = self.animations["attack"][attack_direction]
+                attack_frame_count = len(current_animation.frames)
+                attack_single_frame_duration = 1000 / current_animation.framerate
                 attack_total_duration = attack_frame_count * attack_single_frame_duration
                 player.update(dt=attack_total_duration-1, opponents_to={"player": self.enemies})
 

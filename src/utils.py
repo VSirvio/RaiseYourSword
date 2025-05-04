@@ -2,6 +2,12 @@ import os
 import math
 
 import pygame
+import yaml
+
+from animation import Animation
+from animation_set import AnimationSet
+from attack_animation import AttackAnimation
+from character_animation import CharacterAnimation
 
 dirname = os.path.dirname(__file__)
 
@@ -17,33 +23,54 @@ def fill_with_tile(canvas, tile):
         for y in range(math.ceil(canvas.get_height() / tile.get_height())):
             canvas.blit(tile, (x * tile.get_width(), y * tile.get_height()))
 
-def load_animation(character, row, num_of_frames, column=0):
-    """Loads animation frames from a sprite sheet in the "assets" directory.
+def load_animation(animation_config_file):
+    with open(os.path.join(dirname, animation_config_file), "r", encoding="UTF-8") as file:
+        yaml_data = yaml.safe_load(file)
 
-    Args:
-        character: Character name as a string (e.g. "warrior", "skeleton").
-        row: Number of the row where the animation is in the sprite sheet.
-        num_of_frames: Total number of frames in the animation.
-        column: Number of the column where the animation is in the sprite sheet.
+    frame_width = yaml_data["frame_size"]["width"]
+    frame_height = yaml_data["frame_size"]["height"]
 
-    Returns:
-        A list of pygame surfaces. The length of the list is <num_of_frames>.
-    """
+    sprite_sheet = pygame.image.load(
+        os.path.join(dirname, os.path.dirname(animation_config_file), yaml_data["sprite_sheet"])
+    )
 
-    global sprite_sheets
+    animation_sets = {}
+    for set_name, set_data in yaml_data["animations"].items():
+        animations_for_each_direction = {}
+        for direction in ("down", "up", "left", "right"):
+            frames = []
+            for frame in set_data[direction]["frames"]:
+                frames.append(
+                    sprite_sheet.subsurface(
+                        frame["x"] * frame_width,
+                        frame["y"] * frame_height,
+                        frame_width,
+                        frame_height
+                    )
+                )
 
-    try:
-        sprite_sheets
-    except NameError:
-        sprite_sheets = {}
+            if set_name == "attack":
+                animations_for_each_direction[direction] = AttackAnimation(
+                    framerate=set_data[direction]["framerate"],
+                    damage_frames=set_data[direction]["damage_frames"],
+                    frames=frames
+                )
+            else:
+                animations_for_each_direction[direction] = Animation(
+                    framerate=set_data[direction]["framerate"],
+                    frames=frames
+                )
 
-    if character not in sprite_sheets:
-        sprite_sheets[character] = pygame.image.load(
-            os.path.join(dirname, "assets", f"character_{character}_animations.png")
+        animation_sets[set_name] = AnimationSet(
+            down=animations_for_each_direction["down"],
+            up=animations_for_each_direction["up"],
+            left=animations_for_each_direction["left"],
+            right=animations_for_each_direction["right"],
         )
 
-    frames = []
-    for frame_num in range(num_of_frames):
-        frames.append(sprite_sheets[character].subsurface(((column + frame_num) * 48, row * 48, 48, 48)))
-
-    return frames
+    return CharacterAnimation(
+        sprite_sheet=sprite_sheet,
+        frame_width=frame_width,
+        frame_height=frame_height,
+        animation_sets=animation_sets
+    )

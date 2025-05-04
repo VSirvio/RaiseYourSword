@@ -37,44 +37,9 @@ class Game:
                 (DISPLAY_HEIGHT - 48) // 2 - 7
             ),
             direction=PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE),
-            animations=AnimationsComponent({
-                "idle": {
-                    "framerate": 4,
-                    DOWN: load_animation("warrior", 0, 5),
-                    UP: load_animation("warrior", 1, 5),
-                    LEFT: load_animation("warrior", 2, 5),
-                    RIGHT: load_animation("warrior", 3, 5)
-                },
-                "walk": {
-                    "framerate": 12,
-                    DOWN: load_animation("warrior", 4, 8),
-                    UP: load_animation("warrior", 5, 8),
-                    LEFT: load_animation("warrior", 6, 8),
-                    RIGHT: load_animation("warrior", 7, 8)
-                },
-                "attack": {
-                    "framerate": 15,
-                    "damage_frames": [2, 3],
-                    DOWN: load_animation("warrior", 8, 6),
-                    UP: load_animation("warrior", 9, 6),
-                    LEFT: load_animation("warrior", 10, 6),
-                    RIGHT: load_animation("warrior", 11, 6)
-                },
-                "dying": {
-                    "framerate": 12,
-                    DOWN: load_animation("warrior", 12, 5),
-                    UP: load_animation("warrior", 13, 6),
-                    LEFT: load_animation("warrior", 14, 5),
-                    RIGHT: load_animation("warrior", 15, 5)
-                },
-                "dead": {
-                    "framerate": 1,
-                    DOWN: load_animation("warrior", 12, 1, 4),
-                    UP: load_animation("warrior", 13, 1, 5),
-                    LEFT: load_animation("warrior", 14, 1, 4),
-                    RIGHT: load_animation("warrior", 15, 1, 4)
-                }
-            }),
+            animations=AnimationsComponent(
+                load_animation("assets/character_warrior_animations.yaml")
+            ),
             physics=PlayerPhysics(
                 walking_speed=75,
                 bounding_box=pygame.Rect((11, 6), (25, 36)),
@@ -135,44 +100,9 @@ class Game:
             initial_state=ai.idle_state.IdleState(),
             starting_position=starting_position,
             direction=CharacterDirection(facing=DOWN, moving=NONE),
-            animations=AnimationsComponent({
-                "idle": {
-                    "framerate": 4,
-                    DOWN: load_animation("skeleton", 0, 6),
-                    UP: load_animation("skeleton", 1, 6),
-                    LEFT: load_animation("skeleton", 2, 6),
-                    RIGHT: load_animation("skeleton", 3, 6)
-                },
-                "walk": {
-                    "framerate": 12,
-                    DOWN: load_animation("skeleton", 4, 6),
-                    UP: load_animation("skeleton", 5, 6),
-                    LEFT: load_animation("skeleton", 6, 6),
-                    RIGHT: load_animation("skeleton", 7, 6)
-                },
-                "attack": {
-                    "framerate": 10,
-                    "damage_frames": [6],
-                    DOWN: load_animation("skeleton", 8, 8),
-                    UP: load_animation("skeleton", 9, 8),
-                    LEFT: load_animation("skeleton", 10, 8),
-                    RIGHT: load_animation("skeleton", 11, 8)
-                },
-                "dying": {
-                    "framerate": 12,
-                    DOWN: load_animation("skeleton", 12, 8),
-                    UP: load_animation("skeleton", 13, 8),
-                    LEFT: load_animation("skeleton", 14, 8),
-                    RIGHT: load_animation("skeleton", 15, 8)
-                },
-                "dead": {
-                    "framerate": 1,
-                    DOWN: load_animation("skeleton", 12, 1, 7),
-                    UP: load_animation("skeleton", 13, 1, 7),
-                    LEFT: load_animation("skeleton", 14, 1, 7),
-                    RIGHT: load_animation("skeleton", 15, 1, 7)
-                }
-            }),
+            animations=AnimationsComponent(
+                load_animation("assets/character_skeleton_animations.yaml")
+            ),
             physics=PhysicsComponent(
                 walking_speed=ENEMY_WALKING_SPEED,
                 bounding_box=pygame.Rect((20, 22), (8, 11)),
