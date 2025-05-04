@@ -30,12 +30,20 @@ def load_animation(character, row, num_of_frames, column=0):
         A list of pygame surfaces. The length of the list is <num_of_frames>.
     """
 
-    sprite_sheet = pygame.image.load(
-        os.path.join(dirname, "assets", f"character_{character}_animations.png")
-    )
+    global sprite_sheets
+
+    try:
+        sprite_sheets
+    except NameError:
+        sprite_sheets = {}
+
+    if character not in sprite_sheets:
+        sprite_sheets[character] = pygame.image.load(
+            os.path.join(dirname, "assets", f"character_{character}_animations.png")
+        )
 
     frames = []
     for frame_num in range(num_of_frames):
-        frames.append(sprite_sheet.subsurface(((column + frame_num) * 48, row * 48, 48, 48)))
+        frames.append(sprite_sheets[character].subsurface(((column + frame_num) * 48, row * 48, 48, 48)))
 
     return frames
