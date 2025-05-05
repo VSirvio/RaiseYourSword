@@ -59,7 +59,7 @@ animations:
       frames: [{x: 0, y: 12}, {x: 1, y: 12}, {x: 2, y: 12}, {x: 3, y: 12}, {x: 4, y: 12}, {x: 5, y: 12}, {x: 6, y: 12}, {x: 7, y: 12}]
     up:
       framerate: 12
-      frames: [{x: 0, y: 13}, {x: 1, y: 13}, {x: 2, y: 13}, {x: 3, y: 13}, {x: 4, y: 13}, {x: 5, y: 13}, {x: 6, y: 13}, {x: 7, y: 13}]
+      frames: [{x: 0, y: 14}, {x: 1, y: 14}, {x: 2, y: 14}, {x: 3, y: 14}, {x: 4, y: 14}, {x: 5, y: 14}, {x: 6, y: 14}, {x: 7, y: 14}]
     left:
       framerate: 12
       frames: [{x: 0, y: 14}, {x: 1, y: 14}, {x: 2, y: 14}, {x: 3, y: 14}, {x: 4, y: 14}, {x: 5, y: 14}, {x: 6, y: 14}, {x: 7, y: 14}]
@@ -73,7 +73,7 @@ animations:
       frames: [{x: 7, y: 12}]
     up:
       framerate: 1
-      frames: [{x: 7, y: 13}]
+      frames: [{x: 7, y: 14}]
     left:
       framerate: 1
       frames: [{x: 7, y: 14}]
