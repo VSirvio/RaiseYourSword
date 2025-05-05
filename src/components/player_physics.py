@@ -1,16 +1,15 @@
 from .physics_component import PhysicsComponent
 
 class PlayerPhysics(PhysicsComponent):
-    def __init__(self, walking_speed, bounding_box, weapon_hitbox, game_area_size):
-        super().__init__(walking_speed, bounding_box, weapon_hitbox)
+    def __init__(self, walking_speed, bounding_box, character_hitbox, weapon_hitbox,
+            game_area_bounds):
+        super().__init__(walking_speed, bounding_box, character_hitbox, weapon_hitbox)
 
-        game_area_width, game_area_height = game_area_size
+        self.__min_x = game_area_bounds.x - bounding_box.x
+        self.__max_x = game_area_bounds.right - bounding_box.x - bounding_box.width
 
-        self.__min_x = -bounding_box.x
-        self.__max_x = game_area_width - bounding_box.x - bounding_box.width
-
-        self.__min_y = -bounding_box.y
-        self.__max_y = game_area_height - bounding_box.y - bounding_box.height
+        self.__min_y = game_area_bounds.y - bounding_box.y
+        self.__max_y = game_area_bounds.bottom - bounding_box.y - bounding_box.height
 
     def _move(self, dx, dy, *args):
         player = args[0]

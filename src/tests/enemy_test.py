@@ -27,8 +27,8 @@ class StubPlayer:
         return self.__y
 
     @property
-    def has_been_defeated(self):
-        return False
+    def bounding_box(self):
+        return pygame.Rect(0, 0, 0, 0)
 
 
 class TestEnemy(unittest.TestCase):
@@ -39,13 +39,15 @@ class TestEnemy(unittest.TestCase):
         self.animations = load_animation("assets/character_skeleton_animations.yaml")
         self.physics=PhysicsComponent(
             walking_speed=50,
-            bounding_box=pygame.Rect((20, 22), (8, 11)),
+            bounding_box=pygame.Rect((16, 19), (16, 21)),
+            character_hitbox=pygame.Rect((14, 10), (20, 33)),
             weapon_hitbox={
-                DOWN: pygame.Rect((0, 26), (48, 22)),
-                UP: pygame.Rect((0, 0), (48, 22)),
-                LEFT: pygame.Rect((0, 0), (22, 48)),
-                RIGHT: pygame.Rect((26, 0), (22, 48))
+                DOWN: pygame.Rect((7, 26), (25, 17)),
+                UP: pygame.Rect((16, 5), (25, 16)),
+                LEFT: pygame.Rect((6, 16), (14, 25)),
+                RIGHT: pygame.Rect((29, 14), (14, 27))
             }
+
         )
 
         self.player = StubPlayer(x=0, y=0)

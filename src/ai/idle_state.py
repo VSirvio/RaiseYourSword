@@ -1,7 +1,7 @@
 from math import sqrt
 from random import randrange
 
-from config import ENEMY_TO_PLAYER_MIN_DISTANCE, ENEMY_AI_IDLE_TIME_MIN, ENEMY_AI_IDLE_TIME_MAX
+from config import ENEMY_ATTACK_INITIATION_DISTANCE, ENEMY_AI_IDLE_TIME_MIN, ENEMY_AI_IDLE_TIME_MAX
 import direction
 import events
 import ai.attack_state   # pylint: disable=cyclic-import
@@ -31,9 +31,15 @@ class IdleState(state.State):
         self.__timer += kwargs["dt"]
 
         if self.__timer >= self.__duration:
-            dist_x = opponent.x - owner.x
-            dist_y = opponent.y - owner.y
-            if sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_TO_PLAYER_MIN_DISTANCE:
+            owner_bbox = owner.bounding_box
+            opponent_bbox = opponent.bounding_box
+            dist_x = abs(opponent_bbox.centerx - owner_bbox.centerx)
+            dist_y = abs(opponent_bbox.centery - owner_bbox.centery)
+            if ((owner_bbox.left <= opponent_bbox.left <= owner_bbox.right or
+                    owner_bbox.left <= opponent_bbox.right <= owner_bbox.right) and
+                    (owner_bbox.top <= opponent_bbox.top <= owner_bbox.bottom or
+                    owner_bbox.top <= opponent_bbox.bottom <= owner_bbox.bottom) or
+                    sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_ATTACK_INITIATION_DISTANCE):
                 return ai.attack_state.AttackState()
             return ai.walk_state.WalkState()
 

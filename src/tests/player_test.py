@@ -21,14 +21,15 @@ class TestPlayer(unittest.TestCase):
         self.animations = load_animation("assets/character_warrior_animations.yaml")
         self.physics = PlayerPhysics(
             walking_speed=75,
-            bounding_box=pygame.Rect((11, 6), (25, 36)),
+            bounding_box=pygame.Rect((16, 13), (16, 26)),
+            character_hitbox=pygame.Rect((17, 7), (14, 32)),
             weapon_hitbox={
-                DOWN: pygame.Rect((0, 24), (48, 24)),
-                UP: pygame.Rect((0, 0), (48, 24)),
-                LEFT: pygame.Rect((0, 0), (24, 48)),
-                RIGHT: pygame.Rect((24, 0), (24, 48))
+                DOWN: pygame.Rect((0, 24), (41, 24)),
+                UP: pygame.Rect((7, 0), (41, 24)),
+                LEFT: pygame.Rect((0, 7), (24, 41)),
+                RIGHT: pygame.Rect((24, 6), (24, 42))
             },
-            game_area_size=(260, 190)
+            game_area_bounds=pygame.Rect(5, 7, 251, 180)
         )
 
         self.enemies = []

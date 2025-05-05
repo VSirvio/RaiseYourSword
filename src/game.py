@@ -29,6 +29,7 @@ class Game:
 
     def __init__(self):
         self.__background = Background()
+        game_area_bounds = pygame.Rect(5, 7, DISPLAY_WIDTH - 5 - 4, DISPLAY_HEIGHT - 7 - 3)
         self.__player = Character(
             role="player",
             initial_state=states.idle_state.IdleState(),
@@ -42,14 +43,15 @@ class Game:
             ),
             physics=PlayerPhysics(
                 walking_speed=75,
-                bounding_box=pygame.Rect((11, 6), (25, 36)),
+                bounding_box=pygame.Rect((16, 13), (16, 26)),
+                character_hitbox=pygame.Rect((17, 7), (14, 32)),
                 weapon_hitbox={
-                    DOWN: pygame.Rect((0, 24), (48, 24)),
-                    UP: pygame.Rect((0, 0), (48, 24)),
-                    LEFT: pygame.Rect((0, 0), (24, 48)),
-                    RIGHT: pygame.Rect((24, 0), (24, 48))
+                    DOWN: pygame.Rect((0, 24), (41, 24)),
+                    UP: pygame.Rect((7, 0), (41, 24)),
+                    LEFT: pygame.Rect((0, 7), (24, 41)),
+                    RIGHT: pygame.Rect((24, 6), (24, 42))
                 },
-                game_area_size=(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                game_area_bounds=game_area_bounds
             )
         )
         self.__enemies = []
@@ -105,12 +107,13 @@ class Game:
             ),
             physics=PhysicsComponent(
                 walking_speed=ENEMY_WALKING_SPEED,
-                bounding_box=pygame.Rect((20, 22), (8, 11)),
+                bounding_box=pygame.Rect((16, 19), (16, 21)),
+                character_hitbox=pygame.Rect((14, 10), (20, 33)),
                 weapon_hitbox={
-                    DOWN: pygame.Rect((0, 26), (48, 22)),
-                    UP: pygame.Rect((0, 0), (48, 22)),
-                    LEFT: pygame.Rect((0, 0), (22, 48)),
-                    RIGHT: pygame.Rect((26, 0), (22, 48))
+                    DOWN: pygame.Rect((7, 26), (25, 17)),
+                    UP: pygame.Rect((16, 5), (25, 16)),
+                    LEFT: pygame.Rect((6, 16), (14, 25)),
+                    RIGHT: pygame.Rect((29, 14), (14, 27))
                 }
             )
         )

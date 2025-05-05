@@ -132,6 +132,12 @@ class Character:
 
         return self.__physics.bounding_box.move(self.x, self.y)
 
+    @property
+    def character_hitbox(self):
+        """A pygame.Rect representing the hittable area of the character."""
+
+        return self.__physics.character_hitbox.move(self.x, self.y)
+
     def defeat(self):
         """Defeats this character."""
 

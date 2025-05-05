@@ -1,5 +1,3 @@
-from math import atan2, pi
-
 import ai.dying_state   # pylint: disable=cyclic-import
 import ai.idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
@@ -15,15 +13,16 @@ class AttackState(state.State):
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
 
-        angle = atan2(owner.y - opponent.y, opponent.x - owner.x)
-        if -3*pi/4 <= angle < -pi/4:
+        owner_bbox = owner.bounding_box
+        opponent_bbox = opponent.bounding_box
+        if owner_bbox.bottom <= opponent_bbox.top and owner_bbox.right > opponent_bbox.left:
             owner.direction.moving = DOWN
-        elif -pi/4 <= angle < pi/4:
-            owner.direction.moving = RIGHT
-        elif pi/4 <= angle < 3*pi/4:
+        elif owner_bbox.left >= opponent_bbox.right and owner_bbox.bottom > opponent_bbox.top:
+            owner.direction.moving = LEFT
+        elif owner_bbox.top >= opponent_bbox.bottom and owner_bbox.left < opponent_bbox.right:
             owner.direction.moving = UP
         else:
-            owner.direction.moving = LEFT
+            owner.direction.moving = RIGHT
 
         owner.direction.moving = NONE
 
