@@ -210,6 +210,16 @@ class Game:
                 )
 
             new_enemy = self.__create_enemy(spawning_position)
+
+            overlaps = False
+            for enemy in self.__enemies:
+                if new_enemy.bounding_box.colliderect(enemy.bounding_box):
+                    overlaps = True
+                    break
+
+            if overlaps:
+                continue
+
             self.__enemies.append(new_enemy)
             self.__characters.add(new_enemy.sprite)
             self.__all_sprites.add(new_enemy.sprite)
