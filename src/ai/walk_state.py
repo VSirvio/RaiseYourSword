@@ -21,7 +21,12 @@ class WalkState(state.State):
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
 
-        angle = atan2(owner.y - opponent.y, opponent.x - owner.x)
+        owner_bbox = owner.bounding_box
+        opponent_bbox = opponent.bounding_box
+        angle = atan2(
+            owner_bbox.centery - opponent_bbox.centery,
+            opponent_bbox.centerx - owner_bbox.centerx
+        )
         if -7*pi/8 <= angle < -5*pi/8:
             owner.direction.moving = direction.DOWN_LEFT
         elif -5*pi/8 <= angle < -3*pi/8:
