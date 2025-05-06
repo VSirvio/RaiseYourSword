@@ -54,13 +54,13 @@ class TestEnemy(unittest.TestCase):
 
     def test_enemy_moves(self):
         enemy = Character(
-            role="enemy", initial_state=self.initial_state,
-            starting_position=self.starting_position, direction=self.direction,
-            animations=AnimationsComponent(self.animations), physics=self.physics
+            initial_state=self.initial_state, starting_position=self.starting_position,
+            direction=self.direction, animations=AnimationsComponent(self.animations),
+            physics=self.physics
         )
         starting_position = (enemy.x, enemy.y)
 
         for _ in range(0, ceil((ENEMY_AI_IDLE_TIME_MAX + ENEMY_AI_WALK_TIME_MAX) * 60 / 1000)):
-            enemy.update(dt=ceil(1000/60), opponents_to={"enemy": [self.player]})
+            enemy.update(dt=ceil(1000/60), opponents=[self.player], other_characters=[])
 
         self.assertNotEqual((enemy.x, enemy.y), starting_position)

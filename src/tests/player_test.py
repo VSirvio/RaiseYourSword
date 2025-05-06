@@ -37,9 +37,9 @@ class TestPlayer(unittest.TestCase):
 
     def __create_new_player(self):
         return Character(
-            role="player", initial_state=self.initial_state,
-            starting_position=self.starting_position, direction=self.direction,
-            animations=AnimationsComponent(self.animations), physics=self.physics
+            initial_state=self.initial_state, starting_position=self.starting_position,
+            direction=self.direction, animations=AnimationsComponent(self.animations),
+            physics=self.physics
         )
 
     def __turn_to_direction(self, player, new_direction):
@@ -70,7 +70,7 @@ class TestPlayer(unittest.TestCase):
                     )
                 player.update(
                     dt=1000/self.animations["idle"][direction_facing].framerate,
-                    opponents_to={"player": self.enemies}
+                    opponents=self.enemies, other_characters=[]
                 )
 
     def test_walking_moves_player_to_the_correct_direction(self):
@@ -79,7 +79,7 @@ class TestPlayer(unittest.TestCase):
             starting_position = {"x": player.x, "y": player.y}
 
             self.__walk_to_direction(player, walk_direction)
-            player.update(dt=1000, opponents_to={"player": self.enemies})
+            player.update(dt=1000, opponents=self.enemies, other_characters=[])
 
             with self.subTest(direction=walk_direction):
                 if walk_direction.vertical_component == VerticalDirection.UP:
@@ -111,7 +111,7 @@ class TestPlayer(unittest.TestCase):
                     )
                 player.update(
                     dt=1000/self.animations["attack"][direction_facing].framerate,
-                    opponents_to={"player": self.enemies}
+                    opponents=self.enemies, other_characters=[]
                 )
 
     def test_player_cannot_move_while_attacking(self):
@@ -129,7 +129,9 @@ class TestPlayer(unittest.TestCase):
                 attack_frame_count = len(current_animation.frames)
                 attack_single_frame_duration = 1000 / current_animation.framerate
                 attack_total_duration = attack_frame_count * attack_single_frame_duration
-                player.update(dt=attack_total_duration-1, opponents_to={"player": self.enemies})
+                player.update(
+                    dt=attack_total_duration-1, opponents=self.enemies, other_characters=[]
+                )
 
                 with self.subTest(attack_direction=attack_direction, walk_direction=walk_direction):
                     self.assertEqual(player.x, starting_position["x"])
