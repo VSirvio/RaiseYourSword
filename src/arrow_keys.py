@@ -50,16 +50,16 @@ class ArrowKeys:
     def current_direction(self):
         """A Direction object giving the direction according to pressed keys."""
 
-        vertical_direction = VerticalDirection.NONE
-        if self.__up_key_pressed and not self.__down_key_pressed:
-            vertical_direction = VerticalDirection.UP
-        elif self.__down_key_pressed and not self.__up_key_pressed:
-            vertical_direction = VerticalDirection.DOWN
-
         horizontal_direction = HorizontalDirection.NONE
         if self.__left_key_pressed and not self.__right_key_pressed:
             horizontal_direction = HorizontalDirection.LEFT
         elif self.__right_key_pressed and not self.__left_key_pressed:
             horizontal_direction = HorizontalDirection.RIGHT
 
-        return Direction(vertical_direction, horizontal_direction)
+        vertical_direction = VerticalDirection.NONE
+        if self.__up_key_pressed and not self.__down_key_pressed:
+            vertical_direction = VerticalDirection.UP
+        elif self.__down_key_pressed and not self.__up_key_pressed:
+            vertical_direction = VerticalDirection.DOWN
+
+        return Direction(horizontal_direction, vertical_direction)

@@ -36,6 +36,7 @@ class AttackState(state.State):
                 return ai.idle_state.IdleState()
             case events.DealingDamage:
                 if owner.does_attack_hit(opponent):
-                    opponent.defeat()
+                    #opponent.defeat()
+                    pass
             case events.WasDefeated:
                 return ai.dying_state.DyingState()

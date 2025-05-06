@@ -6,7 +6,7 @@ class AnimationsComponent:
         self.__index = 0
         self.__timer = 0
 
-    def update(self, dt, owner, opponents):
+    def update(self, dt, owner, opponents, other_characters):
         self.__timer += dt
 
         current_animation = self.__animations[owner.state][owner.direction.facing]
@@ -17,10 +17,10 @@ class AnimationsComponent:
             self.__index = (self.__index + 1) % num_of_frames
 
             if self.__index == 0:
-                owner.handle_event(events.AnimationFinished(), opponents)
+                owner.handle_event(events.AnimationFinished(), opponents, other_characters)
 
             if owner.state == "attack" and self.__index in current_animation.damage_frames:
-                owner.handle_event(events.DealingDamage(), opponents)
+                owner.handle_event(events.DealingDamage(), opponents, other_characters)
 
             self.__timer -= frametime
 

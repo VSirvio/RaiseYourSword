@@ -154,20 +154,22 @@ class Game:
             dt: The time elapsed from the last call of this method.
         """
 
-        self.__all_sprites.update(
-            dt, opponents_to={"enemy": [self.__player], "player": self.__enemies}
-        )
+        self.__player.update(dt, opponents=self.__enemies, other_characters=[])
+        for enemy in self.__enemies:
+            other_enemies = list(filter(lambda x: x != enemy, self.__enemies))
+            enemy.update(dt, opponents=[self.__player], other_characters=other_enemies)
 
         self.__spawn_enemies(dt)
 
         if self.__last_enemy_is_dying():
-            self.__player.handle_event(events.LastEnemyDying(), self.__enemies)
+            self.__player.handle_event(events.LastEnemyDying(), self.__enemies, [])
 
         if self.finished:
-            self.__player.handle_event(events.GameEnded(), self.__enemies)
+            self.__player.handle_event(events.GameEnded(), self.__enemies, [])
 
             for enemy in self.__enemies:
-                enemy.handle_event(events.GameEnded(), self.__enemies)
+                other_enemies = list(filter(lambda x: x != enemy, self.__enemies))
+                enemy.handle_event(events.GameEnded(), [self.__player], other_enemies)
 
     def handle(self, event):
         """Sends an event to the player object.
@@ -176,7 +178,7 @@ class Game:
             event: Event object of one of the classes from the "events" module.
         """
 
-        self.__player.handle_event(event, self.__enemies)
+        self.__player.handle_event(event, self.__enemies, [])
 
     def __spawn_enemies(self, dt):
         if self.__number_of_enemies_spawned_so_far >= NUMBER_OF_ENEMIES_TO_SPAWN:

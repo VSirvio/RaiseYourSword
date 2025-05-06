@@ -38,43 +38,44 @@ class Character:
 
         self.__physics = physics
 
-    def __update_state(self, state, opponents):
+    def __update_state(self, state, opponents, other_characters):
         if state is not None:
             self._state = state
-            self._state.enter(owner=self, opponents=opponents)
+            self._state.enter(owner=self, opponents=opponents, other_characters=other_characters)
             self.__animations.reset()
             self.__sprite.image = self.__animations.current_frame(self)
 
-    def update(self, dt, opponents_to):
+    def update(self, dt, opponents, other_characters):
         """Updates game logic that is directly related to the player.
 
         Args:
             dt: The time elapsed from the last call in milliseconds.
-            opponents_to: A dict like {"player": enemy_list, "enemy": [player]}.
+            opponents: A list of Character objects (usually enemies or player).
+            other_characters: [] for the player and other enemies for an enemy.
         """
 
-        opponents = opponents_to[self.__role]
+        new_state = self._state.update(dt=dt, owner=self, opponents=opponents,
+            other_characters=other_characters)
+        self.__update_state(new_state, opponents, other_characters)
 
-        new_state = self._state.update(dt=dt, owner=self, opponents=opponents)
-        self.__update_state(new_state, opponents)
-
-        self.__animations.update(dt, self, opponents)
+        self.__animations.update(dt, self, opponents, other_characters)
         self.__sprite.image = self.__animations.current_frame(self)
 
         self.__physics.update(dt, self, opponents)
 
-    def handle_event(self, event, opponents):
+    def handle_event(self, event, opponents, other_characters):
         """Handles a game event.
 
         Args:
             event: Event object of one of the classes from the "events" module.
             opponents: A list of Character objects (usually enemies or player).
+            other_characters: [] for the player and other enemies for an enemy.
         """
 
         self.direction.handle(event)
 
         new_state = self._state.handle_event(event=event, owner=self, opponents=opponents)
-        self.__update_state(new_state, opponents)
+        self.__update_state(new_state, opponents, other_characters)
 
     def does_attack_hit(self, target):
         """Checks if an attack by the character hits the target.
@@ -142,7 +143,7 @@ class Character:
         """Defeats this character."""
 
         new_state = self._state.handle_event(event=events.WasDefeated())
-        self.__update_state(new_state, None)
+        self.__update_state(new_state, None, None)
 
     @property
     def state(self):
