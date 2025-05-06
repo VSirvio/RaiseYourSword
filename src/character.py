@@ -42,12 +42,13 @@ class Character:
             self.__animations.reset()
             self.__sprite.image = self.__animations.current_frame(self)
 
-    def update(self, dt, opponents):
+    def update(self, dt, opponents, other_characters):
         """Updates game logic that is directly related to the player.
 
         Args:
             dt: The time elapsed from the last call in milliseconds.
             opponents: A list of Character objects (usually enemies or player).
+            other_characters: [] for the player and other enemies for an enemy.
         """
 
         new_state = self._state.update(dt=dt, owner=self, opponents=opponents)
@@ -56,7 +57,7 @@ class Character:
         self.__animations.update(dt, self, opponents)
         self.__sprite.image = self.__animations.current_frame(self)
 
-        self.__physics.update(dt, self, opponents)
+        self.__physics.update(dt, self, opponents, other_characters)
 
     def handle_event(self, event, opponents):
         """Handles a game event.

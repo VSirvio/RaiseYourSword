@@ -1,5 +1,7 @@
 from math import sqrt
 
+import events
+
 class PhysicsComponent:
     def __init__(self, walking_speed, bounding_box, character_hitbox, weapon_hitbox):
         self.__bounding_box = bounding_box
@@ -32,6 +34,17 @@ class PhysicsComponent:
 
     def _move(self, dx, dy, *args):
         owner = args[0]
+        opponents = args[1]
+        other_characters = args[2]
+
+        for character in other_characters:
+            if character.state in ("dead", "dying"):
+                continue
+
+            dx, dy = owner.direction.moving.movement_vector
+            if owner.bounding_box.move(dx, dy).colliderect(character.bounding_box):
+                owner.handle_event(events.MovementObstructed(), opponents)
+                return
 
         owner.x += dx
         owner.y += dy

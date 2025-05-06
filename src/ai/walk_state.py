@@ -73,3 +73,5 @@ class WalkState(state.State):
         match event.__class__:
             case events.WasDefeated:
                 return ai.dying_state.DyingState()
+            case events.MovementObstructed:
+                return ai.idle_state.IdleState()

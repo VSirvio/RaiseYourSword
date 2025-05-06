@@ -152,9 +152,10 @@ class Game:
             dt: The time elapsed from the last call of this method.
         """
 
-        self.__player.update(dt, opponents=self.__enemies)
+        self.__player.update(dt, opponents=self.__enemies, other_characters=[])
         for enemy in self.__enemies:
-            enemy.update(dt, opponents=[self.__player])
+            other_enemies = list(filter(lambda x: x != enemy, self.__enemies))
+            enemy.update(dt, opponents=[self.__player], other_characters=other_enemies)
 
         self.__spawn_enemies(dt)
 

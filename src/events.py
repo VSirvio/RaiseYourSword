@@ -19,3 +19,6 @@ class GameEnded:
 
 class LastEnemyDying:
     pass
+
+class MovementObstructed:
+    pass
