@@ -165,7 +165,7 @@ class Game:
             self.__player.handle_event(events.GameEnded(), self.__enemies)
 
             for enemy in self.__enemies:
-                enemy.handle_event(events.GameEnded(), self.__enemies)
+                enemy.handle_event(events.GameEnded(), [self.__player])
 
     def handle(self, event):
         """Sends an event to the player object.
