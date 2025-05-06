@@ -42,7 +42,7 @@ class Game:
             ),
             physics=PlayerPhysics(
                 walking_speed=75,
-                bounding_box=pygame.Rect((16, 13), (16, 26)),
+                bounding_box=pygame.Rect((16, 14), (16, 25)),
                 character_hitbox=pygame.Rect((17, 7), (14, 32)),
                 weapon_hitbox={
                     DOWN: pygame.Rect((0, 24), (41, 24)),
@@ -105,7 +105,7 @@ class Game:
             ),
             physics=PhysicsComponent(
                 walking_speed=ENEMY_WALKING_SPEED,
-                bounding_box=pygame.Rect((16, 19), (16, 21)),
+                bounding_box=pygame.Rect((16, 20), (16, 20)),
                 character_hitbox=pygame.Rect((14, 10), (20, 33)),
                 weapon_hitbox={
                     DOWN: pygame.Rect((7, 26), (25, 17)),
