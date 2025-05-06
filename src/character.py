@@ -8,11 +8,10 @@ class Character:
         direction: A CharacterDirection instance or instance of its subclass.
     """
 
-    def __init__(self, *, role, initial_state, starting_position, direction, animations, physics):
+    def __init__(self, *, initial_state, starting_position, direction, animations, physics):
         """Creates a new character with the given parameters.
 
         Args:
-            role: Role of the character in the game as a string (e.g. "player").
             initial_state: An instance of a state.State subclass.
             starting_position: A tuple of the form (X coordinate, Y coordinate).
             direction: A CharacterDirection (or its subclass) instance.
@@ -21,8 +20,6 @@ class Character:
         """
 
         super().__init__()
-
-        self.__role = role
 
         self._state = initial_state
 
@@ -45,15 +42,13 @@ class Character:
             self.__animations.reset()
             self.__sprite.image = self.__animations.current_frame(self)
 
-    def update(self, dt, opponents_to):
+    def update(self, dt, opponents):
         """Updates game logic that is directly related to the player.
 
         Args:
             dt: The time elapsed from the last call in milliseconds.
-            opponents_to: A dict like {"player": enemy_list, "enemy": [player]}.
+            opponents: A list of Character objects (usually enemies or player).
         """
-
-        opponents = opponents_to[self.__role]
 
         new_state = self._state.update(dt=dt, owner=self, opponents=opponents)
         self.__update_state(new_state, opponents)

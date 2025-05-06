@@ -31,7 +31,6 @@ class Game:
         self.__background = Background()
         game_area_bounds = pygame.Rect(5, 7, DISPLAY_WIDTH - 5 - 4, DISPLAY_HEIGHT - 7 - 3)
         self.__player = Character(
-            role="player",
             initial_state=states.idle_state.IdleState(),
             starting_position=(
                 (DISPLAY_WIDTH - 48) // 2,
@@ -98,7 +97,6 @@ class Game:
 
     def __create_enemy(self, starting_position):
         return Character(
-            role="enemy",
             initial_state=ai.idle_state.IdleState(),
             starting_position=starting_position,
             direction=CharacterDirection(facing=DOWN, moving=NONE),
@@ -154,9 +152,9 @@ class Game:
             dt: The time elapsed from the last call of this method.
         """
 
-        self.__all_sprites.update(
-            dt, opponents_to={"enemy": [self.__player], "player": self.__enemies}
-        )
+        self.__player.update(dt, opponents=self.__enemies)
+        for enemy in self.__enemies:
+            enemy.update(dt, opponents=[self.__player])
 
         self.__spawn_enemies(dt)
 
