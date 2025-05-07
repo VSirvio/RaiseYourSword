@@ -15,7 +15,7 @@ from config import (
     ENEMY_WALKING_SPEED,
     ENEMY_MIN_TIME_BETWEEN_SPAWNING,
     ENEMY_MAX_TIME_BETWEEN_SPAWNING,
-    NUMBER_OF_ENEMIES_TO_SPAWN
+    TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
 )
 from direction import NONE, DOWN, UP, LEFT, RIGHT
 import events
@@ -117,11 +117,11 @@ class Game:
         )
 
     def __all_enemies_have_been_defeated(self):
-        return (len(self.__enemies) == NUMBER_OF_ENEMIES_TO_SPAWN and
+        return (len(self.__enemies) == TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN and
             all(enemy.state == "dead" for enemy in self.__enemies))
 
     def __last_enemy_is_dying(self):
-        return (len(self.__enemies) == NUMBER_OF_ENEMIES_TO_SPAWN and
+        return (len(self.__enemies) == TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN and
             not all(enemy.state == "dead" for enemy in self.__enemies) and
             all(enemy.state in ("dead", "dying") for enemy in self.__enemies))
 
@@ -178,13 +178,13 @@ class Game:
         self.__player.handle_event(event, self.__enemies)
 
     def __spawn_enemies(self, dt):
-        if self.__number_of_enemies_spawned_so_far >= NUMBER_OF_ENEMIES_TO_SPAWN:
+        if self.__number_of_enemies_spawned_so_far >= TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN:
             return
 
         self.__spawning_timer += dt
 
         while (self.__spawning_timer >= self.__time_until_next_spawn and
-                self.__number_of_enemies_spawned_so_far < NUMBER_OF_ENEMIES_TO_SPAWN):
+                self.__number_of_enemies_spawned_so_far < TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN):
             spawn_area_width = DISPLAY_WIDTH + self.__enemy_width
             spawn_area_height = DISPLAY_HEIGHT + self.__enemy_height
 
