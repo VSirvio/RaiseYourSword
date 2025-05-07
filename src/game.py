@@ -29,7 +29,7 @@ class Game:
 
     def __init__(self):
         self.__background = Background()
-        game_area_bounds = pygame.Rect(5, 7, DISPLAY_WIDTH - 5 - 4, DISPLAY_HEIGHT - 7 - 3)
+        game_area_bounds = pygame.Rect(-5, -13, DISPLAY_WIDTH + 5 + 6, DISPLAY_HEIGHT + 13 + 17)
         self.__player = Character(
             initial_state=states.idle_state.IdleState(),
             starting_position=(
