@@ -1,3 +1,4 @@
+import os
 from random import randint
 
 import pygame
@@ -26,6 +27,8 @@ from player_direction import PlayerDirection
 from sprites.background import Background
 import states.idle_state
 from utils import load_animation
+
+dirname = os.path.dirname(__file__)
 
 class Game:
     """Responsible for the game's graphics and logic."""
@@ -79,26 +82,28 @@ class Game:
         self.__number_of_enemies_waiting_for_spawning = 0
 
         transparent_black = Color(0, 0, 0, 190)
-        result_screen_font = pygame.font.SysFont(name="Sans", size=17, bold=True)
 
         self.__victory_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
         self.__victory_screen.fill(transparent_black)
-        victory_screen_text = result_screen_font.render("YOU HAVE WON", True, Color("white"))
-        self.__victory_screen.blit(victory_screen_text, (61, 90))
+        victory_screen_text = pygame.image.load(
+            os.path.join(dirname, "assets", "victory_message.png")
+        )
+        self.__victory_screen.blit(victory_screen_text, (36, 100))
+        victory_screen_instructions = pygame.image.load(
+            os.path.join(dirname, "assets", "victory_instructions.png")
+        )
+        self.__victory_screen.blit(victory_screen_instructions, (36, 167))
 
         self.__game_over_screen = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
         self.__game_over_screen.fill(transparent_black)
-        game_over_screen_text = result_screen_font.render("GAME OVER", True, Color("white"))
-        self.__game_over_screen.blit(game_over_screen_text, (78, 90))
-
-        restart_instructions_font = pygame.font.SysFont(name="Sans", size=10)
-        restart_instructions_text = restart_instructions_font.render(
-            "Press ENTER to restart or ESC to exit",
-            False, # Antialiasing
-            Color(150, 150, 150)
+        game_over_screen_text = pygame.image.load(
+            os.path.join(dirname, "assets", "defeat_message.png")
         )
-        for screen in (self.__victory_screen, self.__game_over_screen):
-            screen.blit(restart_instructions_text, (50, 175))
+        self.__game_over_screen.blit(game_over_screen_text, (38, 100))
+        game_over_screen_instructions = pygame.image.load(
+            os.path.join(dirname, "assets", "defeat_instructions.png")
+        )
+        self.__game_over_screen.blit(game_over_screen_instructions, (55, 170))
 
         sample_enemy = self.__create_enemy((0, 0))
         self.__enemy_width = sample_enemy.width
