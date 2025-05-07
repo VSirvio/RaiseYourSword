@@ -13,8 +13,11 @@ from config import (
     DISPLAY_WIDTH,
     DISPLAY_HEIGHT,
     ENEMY_WALKING_SPEED,
-    ENEMY_MIN_TIME_BETWEEN_SPAWNING,
-    ENEMY_MAX_TIME_BETWEEN_SPAWNING,
+    ENEMY_MIN_TIME_BETWEEN_SPAWNING_A_GROUP,
+    ENEMY_MAX_TIME_BETWEEN_SPAWNING_A_GROUP,
+    ENEMY_MIN_TIME_BETWEEN_SPAWNING_ONE,
+    ENEMY_MAX_TIME_BETWEEN_SPAWNING_ONE,
+    NUMBER_OF_ENEMIES_TO_SPAWN_AT_ONCE,
     TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
 )
 from direction import NONE, DOWN, UP, LEFT, RIGHT
@@ -62,12 +65,18 @@ class Game:
         # Move background to layer -1000 to make sure that it is behind all other sprites
         self.__all_sprites.change_layer(self.__background, -1000)
 
-        self.__spawning_timer = 0
-        self.__time_until_next_spawn = randint(
-            ENEMY_MIN_TIME_BETWEEN_SPAWNING,
-            ENEMY_MAX_TIME_BETWEEN_SPAWNING
+        self.__group_spawning_timer = 0
+        self.__single_spawning_timer = 0
+        self.__time_until_next_group_spawn = randint(
+            ENEMY_MIN_TIME_BETWEEN_SPAWNING_A_GROUP,
+            ENEMY_MAX_TIME_BETWEEN_SPAWNING_A_GROUP
+        )
+        self.__time_until_next_single_spawn = randint(
+            ENEMY_MIN_TIME_BETWEEN_SPAWNING_ONE,
+            ENEMY_MAX_TIME_BETWEEN_SPAWNING_ONE
         )
         self.__number_of_enemies_spawned_so_far = 0
+        self.__number_of_enemies_waiting_for_spawning = 0
 
         transparent_black = Color(0, 0, 0, 190)
         result_screen_font = pygame.font.SysFont(name="Sans", size=17, bold=True)
@@ -178,13 +187,35 @@ class Game:
         self.__player.handle_event(event, self.__enemies)
 
     def __spawn_enemies(self, dt):
-        if self.__number_of_enemies_spawned_so_far >= TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN:
-            return
+        self.__group_spawning_timer += dt
+        self.__single_spawning_timer += dt
 
-        self.__spawning_timer += dt
-
-        while (self.__spawning_timer >= self.__time_until_next_spawn and
+        while (self.__group_spawning_timer >= self.__time_until_next_group_spawn and
                 self.__number_of_enemies_spawned_so_far < TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN):
+            self.__number_of_enemies_waiting_for_spawning += NUMBER_OF_ENEMIES_TO_SPAWN_AT_ONCE
+            if (self.__number_of_enemies_spawned_so_far +
+                    self.__number_of_enemies_waiting_for_spawning >
+                    TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN):
+                self.__number_of_enemies_waiting_for_spawning = (TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN -
+                    self.__number_of_enemies_spawned_so_far)
+
+            self.__group_spawning_timer -= self.__time_until_next_group_spawn
+            self.__time_until_next_group_spawn = randint(
+                ENEMY_MIN_TIME_BETWEEN_SPAWNING_A_GROUP,
+                ENEMY_MAX_TIME_BETWEEN_SPAWNING_A_GROUP
+            )
+
+        tries = 0
+        while self.__single_spawning_timer >= self.__time_until_next_single_spawn:
+            self.__single_spawning_timer -= self.__time_until_next_single_spawn
+            self.__time_until_next_single_spawn = randint(
+                ENEMY_MIN_TIME_BETWEEN_SPAWNING_ONE,
+                ENEMY_MAX_TIME_BETWEEN_SPAWNING_ONE
+            )
+
+            if self.__number_of_enemies_waiting_for_spawning <= 0 or tries >= 5:
+                continue
+
             spawn_area_width = DISPLAY_WIDTH + self.__enemy_width
             spawn_area_height = DISPLAY_HEIGHT + self.__enemy_height
 
@@ -213,6 +244,7 @@ class Game:
             new_enemy = self.__create_enemy(spawning_position)
 
             if new_enemy.bounding_box.colliderect(self.__player.bounding_box):
+                tries += 1
                 continue
 
             overlaps = False
@@ -222,18 +254,16 @@ class Game:
                     break
 
             if overlaps:
+                tries += 1
                 continue
 
             self.__enemies.append(new_enemy)
             self.__characters.add(new_enemy.sprite)
             self.__all_sprites.add(new_enemy.sprite)
 
-            self.__spawning_timer -= self.__time_until_next_spawn
-            self.__time_until_next_spawn = randint(
-                ENEMY_MIN_TIME_BETWEEN_SPAWNING,
-                ENEMY_MAX_TIME_BETWEEN_SPAWNING
-            )
             self.__number_of_enemies_spawned_so_far += 1
+            self.__number_of_enemies_waiting_for_spawning -= 1
+            tries = 0
 
     @property
     def finished(self):
