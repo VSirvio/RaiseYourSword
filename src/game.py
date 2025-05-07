@@ -212,6 +212,9 @@ class Game:
 
             new_enemy = self.__create_enemy(spawning_position)
 
+            if new_enemy.bounding_box.colliderect(self.__player.bounding_box):
+                continue
+
             overlaps = False
             for enemy in self.__enemies:
                 if new_enemy.bounding_box.colliderect(enemy.bounding_box):
