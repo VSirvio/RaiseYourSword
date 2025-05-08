@@ -21,7 +21,7 @@ class Character:
 
         super().__init__()
 
-        self._state = initial_state
+        self.__state = initial_state
 
         self.direction = direction
 
@@ -37,8 +37,8 @@ class Character:
 
     def __update_state(self, state, opponents):
         if state is not None:
-            self._state = state
-            self._state.enter(owner=self, opponents=opponents)
+            self.__state = state
+            self.__state.enter(owner=self, opponents=opponents)
             self.__animations.reset()
             self.__sprite.image = self.__animations.current_frame(self)
 
@@ -51,7 +51,7 @@ class Character:
             other_characters: [] for the player and other enemies for an enemy.
         """
 
-        new_state = self._state.update(dt=dt, owner=self, opponents=opponents)
+        new_state = self.__state.update(dt=dt, owner=self, opponents=opponents)
         self.__update_state(new_state, opponents)
 
         self.__animations.update(dt, self, opponents)
@@ -69,7 +69,7 @@ class Character:
 
         self.direction.handle(event)
 
-        new_state = self._state.handle_event(event=event, owner=self, opponents=opponents)
+        new_state = self.__state.handle_event(event=event, owner=self, opponents=opponents)
         self.__update_state(new_state, opponents)
 
     def does_attack_hit(self, target):
@@ -137,11 +137,11 @@ class Character:
     def defeat(self):
         """Defeats this character."""
 
-        new_state = self._state.handle_event(event=events.WasDefeated())
+        new_state = self.__state.handle_event(event=events.WasDefeated())
         self.__update_state(new_state, None)
 
     @property
     def state(self):
         """A string indicating the type of the current state."""
 
-        return self._state.type
+        return self.__state.type

@@ -8,13 +8,13 @@ class PhysicsComponent:
         self.__character_hitbox = character_hitbox
         self.__weapon_hitbox = weapon_hitbox
 
-        self._walk_timer = 0
+        self.__walk_timer = 0
         self.__walking_speed = walking_speed
 
     def update(self, dt, *args):
         owner = args[0]
 
-        self._walk_timer += dt
+        self.__walk_timer += dt
 
         dx, dy = owner.direction.moving.movement_vector
 
@@ -28,11 +28,11 @@ class PhysicsComponent:
         if dx != 0 and dy != 0:
             time_per_px *= sqrt(2)
 
-        while self._walk_timer >= time_per_px:
-            self._walk_timer -= time_per_px
-            self._move(dx, dy, *args)
+        while self.__walk_timer >= time_per_px:
+            self.__walk_timer -= time_per_px
+            self.__move(dx, dy, *args)
 
-    def _move(self, dx, dy, *args):
+    def __move(self, dx, dy, *args):
         owner = args[0]
         opponents = args[1]
         other_characters = args[2]
