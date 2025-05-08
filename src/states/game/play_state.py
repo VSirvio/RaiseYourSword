@@ -35,7 +35,7 @@ class PlayState:
             ENEMY_MIN_TIME_BETWEEN_SPAWNING_ONE,
             ENEMY_MAX_TIME_BETWEEN_SPAWNING_ONE
         )
-        self.__number_of_enemies_spawned_so_far = 0
+        self.__number_of_enemies_to_still_spawn = TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
         self.__number_of_enemies_waiting_for_spawning = 0
 
     def draw(self, surface):
@@ -84,13 +84,12 @@ class PlayState:
         self.__single_spawning_timer += dt
 
         while (self.__group_spawning_timer >= self.__time_until_next_group_spawn and
-                self.__number_of_enemies_spawned_so_far < TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN):
-            self.__number_of_enemies_waiting_for_spawning += NUMBER_OF_ENEMIES_TO_SPAWN_AT_ONCE
-            if (self.__number_of_enemies_spawned_so_far +
-                    self.__number_of_enemies_waiting_for_spawning >
-                    TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN):
-                self.__number_of_enemies_waiting_for_spawning = (TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN -
-                    self.__number_of_enemies_spawned_so_far)
+                self.__number_of_enemies_to_still_spawn > 0):
+            self.__number_of_enemies_waiting_for_spawning = min(
+                self.__number_of_enemies_waiting_for_spawning + NUMBER_OF_ENEMIES_TO_SPAWN_AT_ONCE,
+                self.__number_of_enemies_to_still_spawn,
+                1000
+            )
 
             self.__group_spawning_timer -= self.__time_until_next_group_spawn
             self.__time_until_next_group_spawn = randint(
@@ -143,6 +142,6 @@ class PlayState:
 
             game.add_enemy(new_enemy)
 
-            self.__number_of_enemies_spawned_so_far += 1
+            self.__number_of_enemies_to_still_spawn -= 1
             self.__number_of_enemies_waiting_for_spawning -= 1
             tries = 0

@@ -70,16 +70,25 @@ class Game:
         # Move background to layer -1000 to make sure that it is behind all other sprites
         self.__all_sprites.change_layer(self.__background, -1000)
 
-        self.__enemies_removed = 0
+        self.__enemies_spawned_but_not_yet_removed = 0
+        self.__enemies_to_still_spawn = TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
 
     def __all_enemies_have_been_defeated(self):
-        enemies_spawned = len(self.__enemies) + self.__enemies_removed
-        return (enemies_spawned == TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN and
+        if len(self.__enemies) > self.__enemies_spawned_but_not_yet_removed:
+            self.__enemies_to_still_spawn -= (len(self.__enemies) -
+                self.__enemies_spawned_but_not_yet_removed)
+            self.__enemies_spawned_but_not_yet_removed = len(self.__enemies)
+
+        return (self.__enemies_to_still_spawn == 0 and
             all(enemy.state == "dead" for enemy in self.__enemies))
 
     def __last_enemy_is_dying(self):
-        enemies_spawned = len(self.__enemies) + self.__enemies_removed
-        return (enemies_spawned == TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN and
+        if len(self.__enemies) > self.__enemies_spawned_but_not_yet_removed:
+            self.__enemies_to_still_spawn -= (len(self.__enemies) -
+                self.__enemies_spawned_but_not_yet_removed)
+            self.__enemies_spawned_but_not_yet_removed = len(self.__enemies)
+
+        return (self.__enemies_to_still_spawn == 0 and
             not all(enemy.state == "dead" for enemy in self.__enemies) and
             all(enemy.state in ("dead", "dying") for enemy in self.__enemies))
 
@@ -114,7 +123,7 @@ class Game:
             self.__characters.remove(removed_enemy.sprite)
             self.__all_sprites.remove(removed_enemy.sprite)
             dead_enemies -= 1
-            self.__enemies_removed += 1
+            self.__enemies_spawned_but_not_yet_removed -= 1
 
         self.__player.update(dt, opponents=self.__enemies, other_characters=[])
         for enemy in self.__enemies:
