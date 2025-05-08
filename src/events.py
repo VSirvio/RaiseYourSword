@@ -22,3 +22,12 @@ class LastEnemyDying:
 
 class MovementObstructed:
     pass
+
+class Accept:
+    pass
+
+class PlayerWon:
+    pass
+
+class PlayerLost:
+    pass
