@@ -5,7 +5,12 @@ import pygame
 from character import Character
 from components.animations_component import AnimationsComponent
 from components.player_physics import PlayerPhysics
-from config import DISPLAY_HEIGHT, DISPLAY_WIDTH, TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
+from config import (
+    DISPLAY_HEIGHT,
+    DISPLAY_WIDTH,
+    MAX_NUM_OF_DEAD_ENEMIES_ON_THE_SCREEN,
+    TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
+)
 from direction import NONE, DOWN, UP, LEFT, RIGHT
 import events
 from player_direction import PlayerDirection
@@ -65,12 +70,16 @@ class Game:
         # Move background to layer -1000 to make sure that it is behind all other sprites
         self.__all_sprites.change_layer(self.__background, -1000)
 
+        self.__enemies_removed = 0
+
     def __all_enemies_have_been_defeated(self):
-        return (len(self.__enemies) == TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN and
+        enemies_spawned = len(self.__enemies) + self.__enemies_removed
+        return (enemies_spawned == TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN and
             all(enemy.state == "dead" for enemy in self.__enemies))
 
     def __last_enemy_is_dying(self):
-        return (len(self.__enemies) == TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN and
+        enemies_spawned = len(self.__enemies) + self.__enemies_removed
+        return (enemies_spawned == TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN and
             not all(enemy.state == "dead" for enemy in self.__enemies) and
             all(enemy.state in ("dead", "dying") for enemy in self.__enemies))
 
@@ -97,6 +106,15 @@ class Game:
         Args:
             dt: The time elapsed from the last call of this method.
         """
+
+        self.__enemies.sort(key=lambda enemy: enemy.state != "dead")
+        dead_enemies = sum(1 if enemy.state == "dead" else 0 for enemy in self.__enemies)
+        while dead_enemies > MAX_NUM_OF_DEAD_ENEMIES_ON_THE_SCREEN:
+            removed_enemy = self.__enemies.pop(0)
+            self.__characters.remove(removed_enemy.sprite)
+            self.__all_sprites.remove(removed_enemy.sprite)
+            dead_enemies -= 1
+            self.__enemies_removed += 1
 
         self.__player.update(dt, opponents=self.__enemies, other_characters=[])
         for enemy in self.__enemies:
