@@ -16,7 +16,7 @@ class DefeatScreenState:
         defeat_text = pygame.image.load(
             os.path.join(dirname, "..", "..", "assets", "defeat_message.png")
         )
-        self.__surface.blit(defeat_text, (38, 100))
+        self.__surface.blit(defeat_text, (38, 90))
 
         instructions = pygame.image.load(
             os.path.join(dirname, "..", "..", "assets", "defeat_instructions.png")

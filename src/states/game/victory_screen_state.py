@@ -16,7 +16,7 @@ class VictoryScreenState:
         victory_text = pygame.image.load(
             os.path.join(dirname, "..", "..", "assets", "victory_message.png")
         )
-        self.__surface.blit(victory_text, (36, 100))
+        self.__surface.blit(victory_text, (36, 90))
 
         instructions = pygame.image.load(
             os.path.join(dirname, "..", "..", "assets", "victory_instructions.png")
