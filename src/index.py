@@ -24,15 +24,18 @@ def main():
     pygame.display.set_icon(win_icon)
 
     start_new_game = True
+    is_first_game = True
 
     while start_new_game:
-        game = Game()
+        game = Game(skip_intro=not is_first_game)
         renderer = Renderer(display, game, GRAPHICS_SCALING_FACTOR)
         event_queue = EventQueue()
         clock = Clock()
         game_loop = GameLoop(game, renderer, event_queue, clock)
 
         start_new_game = game_loop.start()
+
+        is_first_game = False
 
 if __name__ == "__main__":
     main()

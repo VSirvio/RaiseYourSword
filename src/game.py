@@ -12,6 +12,7 @@ from player_direction import PlayerDirection
 from sprites.background import Background
 import states.idle_state
 import states.game.cinematic_texts_state
+import states.game.play_state
 from utils import load_animation
 
 dirname = os.path.dirname(__file__)
@@ -19,13 +20,16 @@ dirname = os.path.dirname(__file__)
 class Game:
     """Responsible for the game's graphics and logic."""
 
-    def __init__(self):
-        self.__state = states.game.cinematic_texts_state.CinematicTextsState([
-            os.path.join(dirname, "assets", "cinematic_text_1.png"),
-            os.path.join(dirname, "assets", "cinematic_text_2.png"),
-            os.path.join(dirname, "assets", "cinematic_text_3.png"),
-            os.path.join(dirname, "assets", "cinematic_text_4.png")
-        ])
+    def __init__(self, skip_intro):
+        if skip_intro:
+            self.__state = states.game.play_state.PlayState()
+        else:
+            self.__state = states.game.cinematic_texts_state.CinematicTextsState([
+                os.path.join(dirname, "assets", "cinematic_text_1.png"),
+                os.path.join(dirname, "assets", "cinematic_text_2.png"),
+                os.path.join(dirname, "assets", "cinematic_text_3.png"),
+                os.path.join(dirname, "assets", "cinematic_text_4.png")
+            ])
 
         self.__background = Background()
         game_area_bounds = pygame.Rect(-5, -13, DISPLAY_WIDTH + 5 + 6, DISPLAY_HEIGHT + 13 + 17)
