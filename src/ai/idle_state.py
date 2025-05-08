@@ -34,11 +34,12 @@ class IdleState(state.State):
         opponent_bbox = opponent.bounding_box
         dist_x = abs(opponent_bbox.centerx - owner_bbox.centerx)
         dist_y = abs(opponent_bbox.centery - owner_bbox.centery)
-        if ((owner_bbox.left <= opponent_bbox.left <= owner_bbox.right or
-                owner_bbox.left <= opponent_bbox.right <= owner_bbox.right) and
-                (owner_bbox.top <= opponent_bbox.top <= owner_bbox.bottom or
-                owner_bbox.top <= opponent_bbox.bottom <= owner_bbox.bottom) or
-                sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_ATTACK_INITIATION_DISTANCE):
+        bounding_boxes_touching = ((owner_bbox.left <= opponent_bbox.left <= owner_bbox.right or
+            owner_bbox.left <= opponent_bbox.right <= owner_bbox.right) and
+            (owner_bbox.top <= opponent_bbox.top <= owner_bbox.bottom or
+            owner_bbox.top <= opponent_bbox.bottom <= owner_bbox.bottom))
+        if (opponent.state not in ("dead", "dying") and (bounding_boxes_touching or
+                sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_ATTACK_INITIATION_DISTANCE)):
             return ai.attack_state.AttackState()
 
         if self.__timer >= self.__duration:

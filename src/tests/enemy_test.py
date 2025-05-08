@@ -30,6 +30,10 @@ class StubPlayer:
     def bounding_box(self):
         return pygame.Rect(0, 0, 0, 0)
 
+    @property
+    def state(self):
+        return "idle"
+
 
 class TestEnemy(unittest.TestCase):
     def setUp(self):
