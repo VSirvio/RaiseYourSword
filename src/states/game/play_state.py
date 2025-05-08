@@ -30,10 +30,7 @@ class PlayState:
 
         self.__group_spawning_timer = 0
         self.__single_spawning_timer = 0
-        self.__time_until_next_group_spawn = randint(
-            ENEMY_MIN_TIME_BETWEEN_SPAWNING_A_GROUP,
-            ENEMY_MAX_TIME_BETWEEN_SPAWNING_A_GROUP
-        )
+        self.__time_until_next_group_spawn = 0
         self.__time_until_next_single_spawn = randint(
             ENEMY_MIN_TIME_BETWEEN_SPAWNING_ONE,
             ENEMY_MAX_TIME_BETWEEN_SPAWNING_ONE
