@@ -1,0 +1,3 @@
+raise_your_sword:
+  configuration:
+    total_number_of_enemies_to_spawn: 30

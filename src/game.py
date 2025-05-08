@@ -79,7 +79,7 @@ class Game:
                 self.__enemies_spawned_but_not_yet_removed)
             self.__enemies_spawned_but_not_yet_removed = len(self.__enemies)
 
-        return (self.__enemies_to_still_spawn == 0 and
+        return (self.__enemies_to_still_spawn <= 0 and
             all(enemy.state == "dead" for enemy in self.__enemies))
 
     def __last_enemy_is_dying(self):
@@ -88,7 +88,7 @@ class Game:
                 self.__enemies_spawned_but_not_yet_removed)
             self.__enemies_spawned_but_not_yet_removed = len(self.__enemies)
 
-        return (self.__enemies_to_still_spawn == 0 and
+        return (self.__enemies_to_still_spawn <= 0 and
             not all(enemy.state == "dead" for enemy in self.__enemies) and
             all(enemy.state in ("dead", "dying") for enemy in self.__enemies))
 
