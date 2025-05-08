@@ -59,8 +59,8 @@ class GameLoop:
             elif (event.type == pygame.KEYDOWN and
                     event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT, pygame.K_SPACE, pygame.K_x)):
                 self.__game.handle(events.AttackStarted())
-            elif (event.type == pygame.KEYUP and
-                    event.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_x, pygame.K_z)):
+            elif (event.type == pygame.KEYUP and event.key in (pygame.K_LSHIFT, pygame.K_RETURN,
+                    pygame.K_RSHIFT, pygame.K_SPACE, pygame.K_x, pygame.K_z)):
                 self.__game.handle(events.Accept())
 
             if (self.__game.finished and event.type == pygame.KEYUP and
