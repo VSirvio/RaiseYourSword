@@ -1,28 +1,18 @@
 import os
 from random import randint
 
-import pygame
-
 from animation.utils import load_animation
-from components.animations_component import AnimationsComponent
-from components.physics_component import PhysicsComponent
-from direction.character_direction import CharacterDirection
-from direction.direction import DOWN, LEFT, NONE, RIGHT, UP
-from game.character import Character
-from game.config import (
+from .character_creation import create_enemy
+from .config import (
     DISPLAY_WIDTH,
     DISPLAY_HEIGHT,
     ENEMY_MAX_TIME_BETWEEN_SPAWNING_A_GROUP,
     ENEMY_MAX_TIME_BETWEEN_SPAWNING_ONE,
     ENEMY_MIN_TIME_BETWEEN_SPAWNING_A_GROUP,
     ENEMY_MIN_TIME_BETWEEN_SPAWNING_ONE,
-    ENEMY_WALKING_SPEED,
     NUMBER_OF_ENEMIES_TO_SPAWN_AT_ONCE,
     TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
 )
-import states.ai.idle_state
-import states.game.defeat_screen_state
-import states.game.victory_screen_state
 
 dirname = os.path.dirname(__file__)
 
@@ -41,25 +31,6 @@ class EnemySpawner:
         )
         self.__number_of_enemies_to_still_spawn = TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
         self.__number_of_enemies_waiting_for_spawning = 0
-
-    def __create_enemy(self, starting_position):
-        return Character(
-            initial_state=states.ai.idle_state.IdleState(),
-            starting_position=starting_position,
-            direction=CharacterDirection(facing=DOWN, moving=NONE),
-            animations=AnimationsComponent(self.__enemy_animation),
-            physics=PhysicsComponent(
-                walking_speed=ENEMY_WALKING_SPEED,
-                bounding_box=pygame.Rect((16, 20), (16, 20)),
-                character_hitbox=pygame.Rect((14, 10), (20, 33)),
-                weapon_hitbox={
-                    DOWN: pygame.Rect((7, 26), (25, 17)),
-                    UP: pygame.Rect((16, 5), (25, 16)),
-                    LEFT: pygame.Rect((6, 16), (14, 25)),
-                    RIGHT: pygame.Rect((29, 14), (14, 27))
-                }
-            )
-        )
 
     def __pick_random_spawning_position(self):
         spawn_area_width = DISPLAY_WIDTH + self.__enemy_animation.frame_width
@@ -119,7 +90,10 @@ class EnemySpawner:
             if self.__number_of_enemies_waiting_for_spawning <= 0 or tries >= 5:
                 continue
 
-            new_enemy = self.__create_enemy(self.__pick_random_spawning_position())
+            new_enemy = create_enemy(
+                self.__pick_random_spawning_position(),
+                self.__enemy_animation
+            )
 
             if game.another_character_overlaps_with(new_enemy):
                 tries += 1

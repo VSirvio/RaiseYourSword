@@ -2,17 +2,12 @@ import os
 
 import pygame
 
-from animation.utils import load_animation
-from components.animations_component import AnimationsComponent
-from components.player_physics import PlayerPhysics
-from direction.direction import NONE, DOWN, UP, LEFT, RIGHT
-from direction.player_direction import PlayerDirection
 import states.game.cinematic_texts_state
 import states.game.play_state
 import states.player.idle_state
 from . import events
 from .background import Background
-from .character import Character
+from .character_creation import create_player
 from .config import (
     DISPLAY_HEIGHT,
     DISPLAY_WIDTH,
@@ -36,29 +31,7 @@ class Game:
 
         self.__background = Background()
         game_area_bounds = pygame.Rect(-5, -13, DISPLAY_WIDTH + 5 + 6, DISPLAY_HEIGHT + 13 + 17)
-        self.__player = Character(
-            initial_state=states.player.idle_state.IdleState(),
-            starting_position=(
-                (DISPLAY_WIDTH - 48) // 2,
-                (DISPLAY_HEIGHT - 48) // 2 - 7
-            ),
-            direction=PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE),
-            animations=AnimationsComponent(
-                load_animation("../assets/character_warrior_animations.yaml")
-            ),
-            physics=PlayerPhysics(
-                walking_speed=75,
-                bounding_box=pygame.Rect((16, 14), (16, 25)),
-                character_hitbox=pygame.Rect((17, 7), (14, 32)),
-                weapon_hitbox={
-                    DOWN: pygame.Rect((0, 24), (41, 24)),
-                    UP: pygame.Rect((7, 0), (41, 24)),
-                    LEFT: pygame.Rect((0, 7), (24, 41)),
-                    RIGHT: pygame.Rect((24, 6), (24, 42))
-                },
-                game_area_bounds=game_area_bounds
-            )
-        )
+        self.__player = create_player(game_area_bounds)
         self.__enemies = []
 
         self.__characters = pygame.sprite.Group(self.__player.sprite)
