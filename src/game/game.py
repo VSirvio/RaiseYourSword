@@ -29,12 +29,10 @@ class Game:
         if skip_intro:
             self.__state = states.game.play_state.PlayState()
         else:
-            self.__state = states.game.cinematic_texts_state.CinematicTextsState([
-                os.path.join(dirname, "..", "assets", "cinematic_text_1.png"),
-                os.path.join(dirname, "..", "assets", "cinematic_text_2.png"),
-                os.path.join(dirname, "..", "assets", "cinematic_text_3.png"),
-                os.path.join(dirname, "..", "assets", "cinematic_text_4.png")
-            ])
+            image_files = [f"cinematic_text_{i}.png" for i in range(1, 5)]
+            self.__state = states.game.cinematic_texts_state.CinematicTextsState(
+                [os.path.join(dirname, "..", "assets", file) for file in image_files]
+            )
 
         self.__background = Background()
         game_area_bounds = pygame.Rect(-5, -13, DISPLAY_WIDTH + 5 + 6, DISPLAY_HEIGHT + 13 + 17)
