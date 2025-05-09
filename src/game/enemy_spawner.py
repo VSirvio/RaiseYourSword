@@ -61,6 +61,35 @@ class EnemySpawner:
             )
         )
 
+    def __pick_random_spawning_position(self):
+        spawn_area_width = DISPLAY_WIDTH + self.__enemy_animation.frame_width
+        spawn_area_height = DISPLAY_HEIGHT + self.__enemy_animation.frame_height
+
+        random_number = randint(1, 2 * spawn_area_width + 2 * spawn_area_height)
+        if random_number < spawn_area_width:
+            spawning_position = (
+                -self.__enemy_animation.frame_width + random_number,
+                -self.__enemy_animation.frame_height
+            )
+        elif random_number < 2 * spawn_area_width:
+            spawning_position = (
+                -self.__enemy_animation.frame_width + random_number - spawn_area_width,
+                DISPLAY_HEIGHT
+            )
+        elif random_number < 2 * spawn_area_width + spawn_area_height:
+            spawning_position = (
+                -self.__enemy_animation.frame_width,
+                -self.__enemy_animation.frame_height + random_number - 2 * spawn_area_width
+            )
+        else:
+            spawning_position = (
+                DISPLAY_WIDTH,
+                -self.__enemy_animation.frame_height + random_number -
+                    2 * spawn_area_width - spawn_area_height
+            )
+
+        return spawning_position
+
     def spawn_enemies(self, dt, game):
         self.__group_spawning_timer += dt
         self.__single_spawning_timer += dt
@@ -90,33 +119,7 @@ class EnemySpawner:
             if self.__number_of_enemies_waiting_for_spawning <= 0 or tries >= 5:
                 continue
 
-            spawn_area_width = DISPLAY_WIDTH + self.__enemy_animation.frame_width
-            spawn_area_height = DISPLAY_HEIGHT + self.__enemy_animation.frame_height
-
-            random_number = randint(1, 2 * spawn_area_width + 2 * spawn_area_height)
-            if random_number < spawn_area_width:
-                spawning_position = (
-                    -self.__enemy_animation.frame_width + random_number,
-                    -self.__enemy_animation.frame_height
-                )
-            elif random_number < 2 * spawn_area_width:
-                spawning_position = (
-                    -self.__enemy_animation.frame_width + random_number - spawn_area_width,
-                    DISPLAY_HEIGHT
-                )
-            elif random_number < 2 * spawn_area_width + spawn_area_height:
-                spawning_position = (
-                    -self.__enemy_animation.frame_width,
-                    -self.__enemy_animation.frame_height + random_number - 2 * spawn_area_width
-                )
-            else:
-                spawning_position = (
-                    DISPLAY_WIDTH,
-                    -self.__enemy_animation.frame_height + random_number -
-                        2 * spawn_area_width - spawn_area_height
-                )
-
-            new_enemy = self.__create_enemy(spawning_position)
+            new_enemy = self.__create_enemy(self.__pick_random_spawning_position())
 
             if game.another_character_overlaps_with(new_enemy):
                 tries += 1
