@@ -39,7 +39,7 @@ class AttackState(states.state.State):
                 for opponent in opponents:
                     if owner.does_attack_hit(opponent):
                         opponent.defeat()
-                    else:
+                    elif opponent.state not in ("dead", "dying"):
                         hits_all_remaining_enemies = False
                 self.__last_enemy_is_dying = hits_all_remaining_enemies
             case events.WasDefeated:
