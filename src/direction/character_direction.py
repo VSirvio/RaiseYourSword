@@ -39,5 +39,3 @@ class CharacterDirection:
         Args:
             event: Event object of one of the classes from the "events" module.
         """
-
-        pass
