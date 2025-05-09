@@ -3,7 +3,7 @@ from math import sqrt
 from game import events
 
 class PhysicsComponent:
-    def __init__(self, walking_speed, bounding_box, character_hitbox, weapon_hitbox):
+    def __init__(self, *, walking_speed, bounding_box, character_hitbox, weapon_hitbox):
         self.__bounding_box = bounding_box
         self.__character_hitbox = character_hitbox
         self.__weapon_hitbox = weapon_hitbox

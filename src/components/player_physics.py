@@ -1,9 +1,14 @@
 from .physics_component import PhysicsComponent
 
 class PlayerPhysics(PhysicsComponent):
-    def __init__(self, walking_speed, bounding_box, character_hitbox, weapon_hitbox,
+    def __init__(self, *, walking_speed, bounding_box, character_hitbox, weapon_hitbox,
             game_area_bounds):
-        super().__init__(walking_speed, bounding_box, character_hitbox, weapon_hitbox)
+        super().__init__(
+            walking_speed=walking_speed,
+            bounding_box=bounding_box,
+            character_hitbox=character_hitbox,
+            weapon_hitbox=weapon_hitbox
+        )
 
         self.__min_x = game_area_bounds.x - bounding_box.x
         self.__max_x = game_area_bounds.right - bounding_box.x - bounding_box.width
