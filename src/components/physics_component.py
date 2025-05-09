@@ -30,9 +30,9 @@ class PhysicsComponent:
 
         while self.__walk_timer >= time_per_px:
             self.__walk_timer -= time_per_px
-            self.__move(dx, dy, *args)
+            self._move(dx, dy, *args)
 
-    def __move(self, dx, dy, *args):
+    def _move(self, dx, dy, *args):
         owner = args[0]
         opponents = args[1]
         other_characters = args[2]
