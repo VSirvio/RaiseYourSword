@@ -2,12 +2,12 @@ import os
 
 import pygame
 
-from clock import Clock
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, GRAPHICS_SCALING_FACTOR
-from event_queue import EventQueue
-from game import Game
-from game_loop import GameLoop
-from renderer import Renderer
+from game.config import DISPLAY_WIDTH, DISPLAY_HEIGHT, GRAPHICS_SCALING_FACTOR
+from game.game import Game
+from game.game_loop import GameLoop
+from services.clock import Clock
+from services.event_queue import EventQueue
+from services.renderer import Renderer
 
 dirname = os.path.dirname(__file__)
 

@@ -1,7 +1,7 @@
-import direction
-import state
+from direction import direction
+import states.state
 
-class PerpetualIdleState(state.State):
+class PerpetualIdleState(states.state.State):
     @property
     def type(self):
         return "idle"

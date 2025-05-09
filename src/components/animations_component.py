@@ -1,4 +1,4 @@
-import events
+from game import events
 
 class AnimationsComponent:
     def __init__(self, animations):

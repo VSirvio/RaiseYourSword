@@ -1,6 +1,6 @@
 from math import sqrt
 
-import events
+from game import events
 
 class PhysicsComponent:
     def __init__(self, walking_speed, bounding_box, character_hitbox, weapon_hitbox):

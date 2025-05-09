@@ -1,7 +1,7 @@
 import pygame
 
-from arrow_keys import ArrowKeys
-import events
+from . import events
+from .arrow_keys import ArrowKeys
 
 class GameLoop:
     """Calls the update methods of the game 60 times in a second."""

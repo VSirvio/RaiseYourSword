@@ -2,23 +2,23 @@ import unittest
 
 import pygame
 
-from character import Character
+from animation.utils import load_animation
 from components.animations_component import AnimationsComponent
 from components.player_physics import PlayerPhysics
-import direction
-from direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
-import events
-from player_direction import PlayerDirection
-import states.idle_state
-from utils import load_animation
+from direction import direction
+from direction.direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
+from direction.player_direction import PlayerDirection
+from game import events
+from game.character import Character
+import states.player.idle_state
 
 
 class TestPlayer(unittest.TestCase):
     def setUp(self):
-        self.initial_state = states.idle_state.IdleState()
+        self.initial_state = states.player.idle_state.IdleState()
         self.starting_position = ((260 - 48) // 2, (190 - 48) // 2 - 7)
         self.direction = PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE)
-        self.animations = load_animation("assets/character_warrior_animations.yaml")
+        self.animations = load_animation("../assets/character_warrior_animations.yaml")
         self.physics = PlayerPhysics(
             walking_speed=75,
             bounding_box=pygame.Rect((16, 13), (16, 26)),

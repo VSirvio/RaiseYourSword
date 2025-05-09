@@ -1,5 +1,5 @@
-import events
-from sprites.custom_sprite import CustomSprite
+from . import events
+from .custom_sprite import CustomSprite
 
 class Character:
     """Represents a character in the game (e.g. player or enemy).

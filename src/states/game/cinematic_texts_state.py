@@ -2,8 +2,8 @@ import os
 
 import pygame
 
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
-import events
+from game import events
+from game.config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 import states.game.play_state
 
 dirname = os.path.dirname(__file__)

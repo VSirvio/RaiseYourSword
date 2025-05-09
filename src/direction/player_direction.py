@@ -1,5 +1,5 @@
-from character_direction import CharacterDirection
-import events
+from game import events
+from .character_direction import CharacterDirection
 
 class PlayerDirection(CharacterDirection):
     """A CharacterDirection with the "controlled_toward" attribute added to it.

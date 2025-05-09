@@ -1,6 +1,6 @@
 import pygame
 
-from direction import Direction, HorizontalDirection, VerticalDirection
+from direction.direction import Direction, HorizontalDirection, VerticalDirection
 
 class ArrowKeys:
     """Decides which direction to move based on the arrow/WASD keys pressed."""

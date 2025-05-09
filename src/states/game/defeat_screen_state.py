@@ -2,7 +2,7 @@ import os
 
 import pygame
 
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
+from game.config import DISPLAY_WIDTH, DISPLAY_HEIGHT
 
 dirname = os.path.dirname(__file__)
 

@@ -2,12 +2,14 @@ from random import randint
 
 import pygame
 
-import ai.idle_state
-from character import Character
-from character_direction import CharacterDirection
+from animation.utils import load_animation
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
-from config import (
+from direction.character_direction import CharacterDirection
+from direction.direction import DOWN, LEFT, NONE, RIGHT, UP
+from game import events
+from game.character import Character
+from game.config import (
     DISPLAY_WIDTH,
     DISPLAY_HEIGHT,
     ENEMY_MAX_TIME_BETWEEN_SPAWNING_A_GROUP,
@@ -18,15 +20,13 @@ from config import (
     NUMBER_OF_ENEMIES_TO_SPAWN_AT_ONCE,
     TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
 )
-from direction import DOWN, LEFT, NONE, RIGHT, UP
-import events
+import states.ai.idle_state
 import states.game.defeat_screen_state
 import states.game.victory_screen_state
-from utils import load_animation
 
 class PlayState:
     def __init__(self):
-        self.__enemy_animation = load_animation("assets/character_skeleton_animations.yaml")
+        self.__enemy_animation = load_animation("../assets/character_skeleton_animations.yaml")
 
         self.__group_spawning_timer = 0
         self.__single_spawning_timer = 0
@@ -62,7 +62,7 @@ class PlayState:
 
     def __create_enemy(self, starting_position):
         return Character(
-            initial_state=ai.idle_state.IdleState(),
+            initial_state=states.ai.idle_state.IdleState(),
             starting_position=starting_position,
             direction=CharacterDirection(facing=DOWN, moving=NONE),
             animations=AnimationsComponent(self.__enemy_animation),

@@ -1,20 +1,24 @@
 from math import sqrt
 from random import randrange
 
-from config import ENEMY_ATTACK_INITIATION_DISTANCE, ENEMY_AI_IDLE_TIME_MIN, ENEMY_AI_IDLE_TIME_MAX
-import direction
-import events
-import ai.attack_state   # pylint: disable=cyclic-import
-import ai.dying_state   # pylint: disable=cyclic-import
-import ai.perpetual_idle_state   # pylint: disable=cyclic-import
-import ai.walk_state   # pylint: disable=cyclic-import
+from direction import direction
+from game import events
+from game.config import (
+    ENEMY_ATTACK_INITIATION_DISTANCE,
+    ENEMY_AI_IDLE_TIME_MIN,
+    ENEMY_AI_IDLE_TIME_MAX
+)
+import states.state
+import states.ai.attack_state   # pylint: disable=cyclic-import
+import states.ai.dying_state   # pylint: disable=cyclic-import
+import states.ai.perpetual_idle_state   # pylint: disable=cyclic-import
+import states.ai.walk_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
 # imports (like in the example given, state1 would need to import state2 and state2 would also need
 # to import state1).
-import state
 
-class IdleState(state.State):
+class IdleState(states.state.State):
     def __init__(self):
         self.__duration = randrange(ENEMY_AI_IDLE_TIME_MIN, ENEMY_AI_IDLE_TIME_MAX)
         self.__timer = 0
@@ -40,10 +44,10 @@ class IdleState(state.State):
             owner_bbox.top <= opponent_bbox.bottom <= owner_bbox.bottom))
         if (opponent.state not in ("dead", "dying") and (bounding_boxes_touching or
                 sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_ATTACK_INITIATION_DISTANCE)):
-            return ai.attack_state.AttackState()
+            return states.ai.attack_state.AttackState()
 
         if self.__timer >= self.__duration:
-            return ai.walk_state.WalkState()
+            return states.ai.walk_state.WalkState()
 
         return None
 
@@ -52,6 +56,6 @@ class IdleState(state.State):
 
         match event.__class__:
             case events.WasDefeated:
-                return ai.dying_state.DyingState()
+                return states.ai.dying_state.DyingState()
             case events.GameEnded:
-                return ai.perpetual_idle_state.PerpetualIdleState()
+                return states.ai.perpetual_idle_state.PerpetualIdleState()

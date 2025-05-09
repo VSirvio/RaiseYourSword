@@ -2,8 +2,8 @@ import os
 
 import pygame
 
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT
-from utils import fill_with_tile
+from game.config import DISPLAY_WIDTH, DISPLAY_HEIGHT
+from .graphics_utils import fill_with_tile
 
 dirname = os.path.dirname(__file__)
 

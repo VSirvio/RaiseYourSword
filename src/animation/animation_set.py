@@ -1,4 +1,4 @@
-from direction import DOWN, UP, LEFT, RIGHT
+from direction.direction import DOWN, UP, LEFT, RIGHT
 
 class AnimationSet:
     def __init__(self, down, up, left, right):

@@ -1,18 +1,22 @@
 from math import atan2, pi, sqrt
 from random import randrange
 
-from config import ENEMY_ATTACK_INITIATION_DISTANCE, ENEMY_AI_WALK_TIME_MIN, ENEMY_AI_WALK_TIME_MAX
-import direction
-import events
-import ai.dying_state   # pylint: disable=cyclic-import
-import ai.idle_state   # pylint: disable=cyclic-import
+from direction import direction
+from game import events
+from game.config import (
+    ENEMY_ATTACK_INITIATION_DISTANCE,
+    ENEMY_AI_WALK_TIME_MIN,
+    ENEMY_AI_WALK_TIME_MAX
+)
+import states.state
+import states.ai.dying_state   # pylint: disable=cyclic-import
+import states.ai.idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
 # imports (like in the example given, state1 would need to import state2 and state2 would also need
 # to import state1).
-import state
 
-class WalkState(state.State):
+class WalkState(states.state.State):
     def __init__(self):
         self.__duration = randrange(ENEMY_AI_WALK_TIME_MIN, ENEMY_AI_WALK_TIME_MAX)
         self.__timer = 0
@@ -52,7 +56,7 @@ class WalkState(state.State):
         self.__timer += dt
 
         if self.__timer >= self.__duration:
-            return ai.idle_state.IdleState()
+            return states.ai.idle_state.IdleState()
 
         owner_bbox = owner.bounding_box
         opponent_bbox = opponent.bounding_box
@@ -63,7 +67,7 @@ class WalkState(state.State):
                 (owner_bbox.top <= opponent_bbox.top <= owner_bbox.bottom or
                 owner_bbox.top <= opponent_bbox.bottom <= owner_bbox.bottom) or
                 sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_ATTACK_INITIATION_DISTANCE):
-            return ai.idle_state.IdleState()
+            return states.ai.idle_state.IdleState()
 
         return None
 
@@ -72,6 +76,6 @@ class WalkState(state.State):
 
         match event.__class__:
             case events.WasDefeated:
-                return ai.dying_state.DyingState()
+                return states.ai.dying_state.DyingState()
             case events.MovementObstructed:
-                return ai.idle_state.IdleState()
+                return states.ai.idle_state.IdleState()

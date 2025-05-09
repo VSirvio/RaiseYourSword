@@ -1,6 +1,6 @@
 import unittest
 
-from utils import fill_with_tile
+from game.graphics_utils import fill_with_tile
 
 
 class StubSurface:

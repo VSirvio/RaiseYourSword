@@ -2,23 +2,23 @@ import os
 
 import pygame
 
-from character import Character
+from animation.utils import load_animation
 from components.animations_component import AnimationsComponent
 from components.player_physics import PlayerPhysics
-from config import (
+from direction.direction import NONE, DOWN, UP, LEFT, RIGHT
+from direction.player_direction import PlayerDirection
+import states.game.cinematic_texts_state
+import states.game.play_state
+import states.player.idle_state
+from . import events
+from .background import Background
+from .character import Character
+from .config import (
     DISPLAY_HEIGHT,
     DISPLAY_WIDTH,
     MAX_NUM_OF_DEAD_ENEMIES_ON_THE_SCREEN,
     TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
 )
-from direction import NONE, DOWN, UP, LEFT, RIGHT
-import events
-from player_direction import PlayerDirection
-from sprites.background import Background
-import states.idle_state
-import states.game.cinematic_texts_state
-import states.game.play_state
-from utils import load_animation
 
 dirname = os.path.dirname(__file__)
 
@@ -30,23 +30,23 @@ class Game:
             self.__state = states.game.play_state.PlayState()
         else:
             self.__state = states.game.cinematic_texts_state.CinematicTextsState([
-                os.path.join(dirname, "assets", "cinematic_text_1.png"),
-                os.path.join(dirname, "assets", "cinematic_text_2.png"),
-                os.path.join(dirname, "assets", "cinematic_text_3.png"),
-                os.path.join(dirname, "assets", "cinematic_text_4.png")
+                os.path.join(dirname, "..", "assets", "cinematic_text_1.png"),
+                os.path.join(dirname, "..", "assets", "cinematic_text_2.png"),
+                os.path.join(dirname, "..", "assets", "cinematic_text_3.png"),
+                os.path.join(dirname, "..", "assets", "cinematic_text_4.png")
             ])
 
         self.__background = Background()
         game_area_bounds = pygame.Rect(-5, -13, DISPLAY_WIDTH + 5 + 6, DISPLAY_HEIGHT + 13 + 17)
         self.__player = Character(
-            initial_state=states.idle_state.IdleState(),
+            initial_state=states.player.idle_state.IdleState(),
             starting_position=(
                 (DISPLAY_WIDTH - 48) // 2,
                 (DISPLAY_HEIGHT - 48) // 2 - 7
             ),
             direction=PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE),
             animations=AnimationsComponent(
-                load_animation("assets/character_warrior_animations.yaml")
+                load_animation("../assets/character_warrior_animations.yaml")
             ),
             physics=PlayerPhysics(
                 walking_speed=75,

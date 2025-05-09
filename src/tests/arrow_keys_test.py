@@ -2,8 +2,8 @@ import unittest
 
 import pygame
 
-from arrow_keys import ArrowKeys
-import direction
+from direction import direction
+from game.arrow_keys import ArrowKeys
 
 
 class StubEvent:

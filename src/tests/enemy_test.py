@@ -3,14 +3,14 @@ import unittest
 
 import pygame
 
-import ai.idle_state
-from character import Character
-from character_direction import CharacterDirection
+from animation.utils import load_animation
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
-from config import ENEMY_AI_IDLE_TIME_MAX, ENEMY_AI_WALK_TIME_MAX
-from direction import NONE, DOWN, UP, LEFT, RIGHT
-from utils import load_animation
+from direction.direction import NONE, DOWN, UP, LEFT, RIGHT
+from direction.character_direction import CharacterDirection
+from game.character import Character
+from game.config import ENEMY_AI_IDLE_TIME_MAX, ENEMY_AI_WALK_TIME_MAX
+import states.ai.idle_state
 
 
 class StubPlayer:
@@ -37,10 +37,10 @@ class StubPlayer:
 
 class TestEnemy(unittest.TestCase):
     def setUp(self):
-        self.initial_state = ai.idle_state.IdleState()
+        self.initial_state = states.ai.idle_state.IdleState()
         self.starting_position = (200, 27)
         self.direction = CharacterDirection(facing=DOWN, moving=NONE)
-        self.animations = load_animation("assets/character_skeleton_animations.yaml")
+        self.animations = load_animation("../assets/character_skeleton_animations.yaml")
         self.physics=PhysicsComponent(
             walking_speed=50,
             bounding_box=pygame.Rect((16, 19), (16, 21)),

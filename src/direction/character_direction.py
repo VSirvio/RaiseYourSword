@@ -1,4 +1,4 @@
-from direction import NONE
+from direction import direction
 
 class CharacterDirection:
     """Contains the directions a character is facing to and moving to.
@@ -30,7 +30,7 @@ class CharacterDirection:
 
         self.__moving = new_movement_direction
 
-        if new_movement_direction != NONE:
+        if new_movement_direction != direction.NONE:
             self.facing = new_movement_direction.clip_to_four_directions()
 
     def handle(self, event):
