@@ -17,9 +17,6 @@ class WasDefeated:
 class GameEnded:
     pass
 
-class LastEnemyDying:
-    pass
-
 class MovementObstructed:
     pass
 

@@ -82,16 +82,6 @@ class Game:
         return (self.__enemies_to_still_spawn <= 0 and
             all(enemy.state == "dead" for enemy in self.__enemies))
 
-    def __last_enemy_is_dying(self):
-        if len(self.__enemies) > self.__enemies_spawned_but_not_yet_removed:
-            self.__enemies_to_still_spawn -= (len(self.__enemies) -
-                self.__enemies_spawned_but_not_yet_removed)
-            self.__enemies_spawned_but_not_yet_removed = len(self.__enemies)
-
-        return (self.__enemies_to_still_spawn <= 0 and
-            not all(enemy.state == "dead" for enemy in self.__enemies) and
-            all(enemy.state in ("dead", "dying") for enemy in self.__enemies))
-
     def draw(self, surface):
         """Draws the current game screen on the given pygame surface.
 
@@ -131,9 +121,6 @@ class Game:
             enemy.update(dt, opponents=[self.__player], other_characters=other_enemies)
 
         self.__state.update(dt, self)
-
-        if self.__last_enemy_is_dying():
-            self.__player.handle_event(events.LastEnemyDying(), self.__enemies)
 
         if self.finished:
             if self.__player.state == "dead":

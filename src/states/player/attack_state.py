@@ -35,10 +35,12 @@ class AttackState(states.state.State):
                     return states.player.idle_state.IdleState()
                 return states.player.walk_state.WalkState(owner.direction.controlled_toward)
             case events.DealingDamage:
+                hits_all_remaining_enemies = True
                 for opponent in opponents:
                     if owner.does_attack_hit(opponent):
                         opponent.defeat()
+                    else:
+                        hits_all_remaining_enemies = False
+                self.__last_enemy_is_dying = hits_all_remaining_enemies
             case events.WasDefeated:
                 return states.character.dying_state.DyingState()
-            case events.LastEnemyDying:
-                self.__last_enemy_is_dying = True
