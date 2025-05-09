@@ -127,7 +127,7 @@ class Game:
 
         self.__player.update(dt, opponents=self.__enemies, other_characters=[])
         for enemy in self.__enemies:
-            other_enemies = list(filter(lambda x: x != enemy, self.__enemies))
+            other_enemies = [e for e in self.__enemies if e != enemy]
             enemy.update(dt, opponents=[self.__player], other_characters=other_enemies)
 
         self.__state.update(dt, self)
