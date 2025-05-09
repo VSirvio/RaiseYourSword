@@ -1,9 +1,9 @@
 from direction import direction
 from game import events
 import states.state
-import states.player.dying_state   # pylint: disable=cyclic-import
 import states.player.idle_state   # pylint: disable=cyclic-import
-import states.player.perpetual_idle_state   # pylint: disable=cyclic-import
+import states.character.dying_state   # pylint: disable=cyclic-import
+import states.character.perpetual_idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing animation state management
 # in games. It often requires transitions like state1->state2->state1, and for that reason it is
 # necessary to use cyclic imports (like in the example given, state1 would need to import state2
@@ -30,7 +30,7 @@ class AttackState(states.state.State):
         match event.__class__:
             case events.AnimationFinished:
                 if self.__last_enemy_is_dying:
-                    return states.player.perpetual_idle_state.PerpetualIdleState()
+                    return states.character.perpetual_idle_state.PerpetualIdleState()
                 if owner.direction.controlled_toward == direction.NONE:
                     return states.player.idle_state.IdleState()
                 return states.player.walk_state.WalkState(owner.direction.controlled_toward)
@@ -39,6 +39,6 @@ class AttackState(states.state.State):
                     if owner.does_attack_hit(opponent):
                         opponent.defeat()
             case events.WasDefeated:
-                return states.player.dying_state.DyingState()
+                return states.character.dying_state.DyingState()
             case events.LastEnemyDying:
                 self.__last_enemy_is_dying = True

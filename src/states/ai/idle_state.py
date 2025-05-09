@@ -4,15 +4,15 @@ from random import randrange
 from direction import direction
 from game import events
 from game.config import (
-    ENEMY_ATTACK_INITIATION_DISTANCE,
+    ENEMY_AI_IDLE_TIME_MAX,
     ENEMY_AI_IDLE_TIME_MIN,
-    ENEMY_AI_IDLE_TIME_MAX
+    ENEMY_ATTACK_INITIATION_DISTANCE
 )
 import states.state
 import states.ai.attack_state   # pylint: disable=cyclic-import
-import states.ai.dying_state   # pylint: disable=cyclic-import
-import states.ai.perpetual_idle_state   # pylint: disable=cyclic-import
 import states.ai.walk_state   # pylint: disable=cyclic-import
+import states.character.dying_state   # pylint: disable=cyclic-import
+import states.character.perpetual_idle_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
 # imports (like in the example given, state1 would need to import state2 and state2 would also need
@@ -55,7 +55,7 @@ class IdleState(states.state.State):
         event = kwargs["event"]
 
         match event.__class__:
-            case events.WasDefeated:
-                return states.ai.dying_state.DyingState()
             case events.GameEnded:
-                return states.ai.perpetual_idle_state.PerpetualIdleState()
+                return states.character.perpetual_idle_state.PerpetualIdleState()
+            case events.WasDefeated:
+                return states.character.dying_state.DyingState()

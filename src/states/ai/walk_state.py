@@ -4,13 +4,13 @@ from random import randrange
 from direction import direction
 from game import events
 from game.config import (
-    ENEMY_ATTACK_INITIATION_DISTANCE,
+    ENEMY_AI_WALK_TIME_MAX,
     ENEMY_AI_WALK_TIME_MIN,
-    ENEMY_AI_WALK_TIME_MAX
+    ENEMY_ATTACK_INITIATION_DISTANCE
 )
 import states.state
-import states.ai.dying_state   # pylint: disable=cyclic-import
 import states.ai.idle_state   # pylint: disable=cyclic-import
+import states.character.dying_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
 # imports (like in the example given, state1 would need to import state2 and state2 would also need
@@ -25,11 +25,9 @@ class WalkState(states.state.State):
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
 
-        owner_bbox = owner.bounding_box
-        opponent_bbox = opponent.bounding_box
         angle = atan2(
-            owner_bbox.centery - opponent_bbox.centery,
-            opponent_bbox.centerx - owner_bbox.centerx
+            owner.bounding_box.centery - opponent.bounding_box.centery,
+            opponent.bounding_box.centerx - owner.bounding_box.centerx
         )
         if -7*pi/8 <= angle < -5*pi/8:
             owner.direction.moving = direction.DOWN_LEFT
@@ -75,7 +73,7 @@ class WalkState(states.state.State):
         event = kwargs["event"]
 
         match event.__class__:
-            case events.WasDefeated:
-                return states.ai.dying_state.DyingState()
             case events.MovementObstructed:
                 return states.ai.idle_state.IdleState()
+            case events.WasDefeated:
+                return states.character.dying_state.DyingState()

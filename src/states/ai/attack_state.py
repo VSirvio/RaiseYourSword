@@ -1,8 +1,8 @@
 from direction.direction import NONE, DOWN, UP, RIGHT, LEFT
 from game import events
 import states.state
-import states.ai.dying_state   # pylint: disable=cyclic-import
 import states.ai.idle_state   # pylint: disable=cyclic-import
+import states.character.dying_state   # pylint: disable=cyclic-import
 # "State" design pattern is a well-known best practice for implementing game AIs. It often requires
 # transitions like state1->state2->state1, and for that reason it is necessary to use cyclic
 # imports (like in the example given, state1 would need to import state2 and state2 would also need
@@ -38,4 +38,4 @@ class AttackState(states.state.State):
                 if owner.does_attack_hit(opponent):
                     opponent.defeat()
             case events.WasDefeated:
-                return states.ai.dying_state.DyingState()
+                return states.character.dying_state.DyingState()
