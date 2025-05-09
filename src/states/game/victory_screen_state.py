@@ -2,32 +2,19 @@ import os
 
 import pygame
 
-from game.config import DISPLAY_WIDTH, DISPLAY_HEIGHT
+import states.game.ending_screen_state
 
 dirname = os.path.dirname(__file__)
 
-class VictoryScreenState:
+class VictoryScreenState(states.game.ending_screen_state.EndingScreenState):
     def __init__(self):
-        self.__surface = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
-
-        transparent_black = pygame.Color(0, 0, 0, 190)
-        self.__surface.fill(transparent_black)
-
-        victory_text = pygame.image.load(
-            os.path.join(dirname, "..", "..", "assets", "victory_message.png")
+        super().__init__(
+            message_image=pygame.image.load(
+                os.path.join(dirname, "..", "..", "assets", "victory_message.png")
+            ),
+            message_position=(36, 90),
+            instructions_image=pygame.image.load(
+                os.path.join(dirname, "..", "..", "assets", "victory_instructions.png")
+            ),
+            instructions_position=(36, 167)
         )
-        self.__surface.blit(victory_text, (36, 90))
-
-        instructions = pygame.image.load(
-            os.path.join(dirname, "..", "..", "assets", "victory_instructions.png")
-        )
-        self.__surface.blit(instructions, (36, 167))
-
-    def draw(self, surface):
-        surface.blit(self.__surface, (0, 0))
-
-    def update(self, *args):
-        pass
-
-    def handle_event(self, *args):
-        pass

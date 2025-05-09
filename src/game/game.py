@@ -74,7 +74,7 @@ class Game:
 
         self.__all_sprites.draw(surface)
 
-        self.__state.draw(surface)
+        self.__state.sprite_group.draw(surface)
 
     def update(self, dt):
         """Updates the game logic.

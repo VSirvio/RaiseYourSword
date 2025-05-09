@@ -1,3 +1,5 @@
+import pygame
+
 from game import events
 from game.enemy_spawner import EnemySpawner
 import states.game.defeat_screen_state
@@ -6,9 +8,7 @@ import states.game.victory_screen_state
 class PlayState:
     def __init__(self):
         self.__spawner = EnemySpawner()
-
-    def draw(self, surface):
-        pass
+        self.__sprite_group = pygame.sprite.Group()
 
     def update(self, *args):
         dt = args[0]
@@ -28,3 +28,7 @@ class PlayState:
                 return states.game.victory_screen_state.VictoryScreenState()
             case events.PlayerLost():
                 return states.game.defeat_screen_state.DefeatScreenState()
+
+    @property
+    def sprite_group(self):
+        return self.__sprite_group
