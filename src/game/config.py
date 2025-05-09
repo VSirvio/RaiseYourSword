@@ -10,7 +10,7 @@ CONFIG_FILE = "config.yaml"
 config = {}
 
 try:
-    with open(os.path.join(dirname, CONFIG_FILE), "r", encoding="UTF-8") as file:
+    with open(os.path.join(dirname, "..", CONFIG_FILE), "r", encoding="UTF-8") as file:
         yaml_data = yaml.safe_load(file)
 except FileNotFoundError:
     pass
