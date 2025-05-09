@@ -1,46 +1,26 @@
+import os
 import unittest
 
 import pygame
 
 from animation.utils import load_animation
-from components.animations_component import AnimationsComponent
-from components.player_physics import PlayerPhysics
 from direction import direction
 from direction.direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
-from direction.player_direction import PlayerDirection
 from game import events
-from game.character import Character
-import states.player.idle_state
+from game.character_creation import create_player
+
+dirname = os.path.dirname(__file__)
 
 
 class TestPlayer(unittest.TestCase):
     def setUp(self):
-        self.initial_state = states.player.idle_state.IdleState()
-        self.starting_position = ((260 - 48) // 2, (190 - 48) // 2 - 7)
-        self.direction = PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE)
-        self.animations = load_animation("../assets/character_warrior_animations.yaml")
-        self.physics = PlayerPhysics(
-            walking_speed=75,
-            bounding_box=pygame.Rect((16, 13), (16, 26)),
-            character_hitbox=pygame.Rect((17, 7), (14, 32)),
-            weapon_hitbox={
-                DOWN: pygame.Rect((0, 24), (41, 24)),
-                UP: pygame.Rect((7, 0), (41, 24)),
-                LEFT: pygame.Rect((0, 7), (24, 41)),
-                RIGHT: pygame.Rect((24, 6), (24, 42))
-            },
-            game_area_bounds=pygame.Rect(5, 7, 251, 180)
+        self.animations = load_animation(
+            os.path.join(dirname, "..", "assets", "character_warrior_animations.yaml")
         )
+        self.game_area_bounds = pygame.Rect(5, 7, 251, 180)
 
         self.enemies = []
         self.__walk_direction = NONE
-
-    def __create_new_player(self):
-        return Character(
-            initial_state=self.initial_state, starting_position=self.starting_position,
-            direction=self.direction, animations=AnimationsComponent(self.animations),
-            physics=self.physics
-        )
 
     def __turn_to_direction(self, player, new_direction):
         # Turn player to the given direction by activating walking to that direction and then
@@ -58,7 +38,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction_facing in (DOWN, UP, LEFT, RIGHT):
-            player = self.__create_new_player()
+            player = create_player(self.animations, self.game_area_bounds)
             self.__turn_to_direction(player, direction_facing)
 
             # Test frame 0 again in the end to check that the animation loops correctly
@@ -75,7 +55,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_walking_moves_player_to_the_correct_direction(self):
         for walk_direction in direction.ALL:
-            player = self.__create_new_player()
+            player = create_player(self.animations, self.game_area_bounds)
             starting_position = {"x": player.x, "y": player.y}
 
             self.__walk_to_direction(player, walk_direction)
@@ -98,7 +78,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_attack_animation_is_played_when_player_attacks(self):
         for direction_facing in (DOWN, UP, LEFT, RIGHT):
-            player = self.__create_new_player()
+            player = create_player(self.animations, self.game_area_bounds)
             self.__turn_to_direction(player, direction_facing)
 
             self.__attack_an_enemy(player, self.enemies)
@@ -117,7 +97,7 @@ class TestPlayer(unittest.TestCase):
     def test_player_cannot_move_while_attacking(self):
         for attack_direction in (DOWN, UP, LEFT, RIGHT):
             for walk_direction in (DOWN, UP, LEFT, RIGHT):
-                player = self.__create_new_player()
+                player = create_player(self.animations, self.game_area_bounds)
                 starting_position = {"x": player.x, "y": player.y}
 
                 self.__turn_to_direction(player, attack_direction)

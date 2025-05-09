@@ -2,7 +2,6 @@ import os
 
 import pygame
 
-from animation.utils import load_animation
 from components.animations_component import AnimationsComponent
 from components.physics_component import PhysicsComponent
 from components.player_physics import PlayerPhysics
@@ -35,7 +34,7 @@ def create_enemy(starting_position, animation):
         )
     )
 
-def create_player(game_area_bounds):
+def create_player(animation, game_area_bounds):
     return Character(
         initial_state=states.player.idle_state.IdleState(),
         starting_position=(
@@ -43,11 +42,7 @@ def create_player(game_area_bounds):
             (DISPLAY_HEIGHT - 48) // 2 - 7
         ),
         direction=PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE),
-        animations=AnimationsComponent(
-            load_animation(
-                os.path.join(dirname, "..", "assets", "character_warrior_animations.yaml")
-            )
-        ),
+        animations=AnimationsComponent(animation),
         physics=PlayerPhysics(
             walking_speed=75,
             bounding_box=pygame.Rect((16, 14), (16, 25)),

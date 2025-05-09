@@ -2,6 +2,7 @@ import os
 
 import pygame
 
+from animation.utils import load_animation
 import states.game.cinematic_texts_state
 import states.game.play_state
 import states.player.idle_state
@@ -31,7 +32,12 @@ class Game:
 
         self.__background = Background()
         game_area_bounds = pygame.Rect(-5, -13, DISPLAY_WIDTH + 5 + 6, DISPLAY_HEIGHT + 13 + 17)
-        self.__player = create_player(game_area_bounds)
+        self.__player = create_player(
+            load_animation(
+                os.path.join(dirname, "..", "assets", "character_warrior_animations.yaml")
+            ),
+            game_area_bounds
+        )
         self.__enemies = []
 
         self.__characters = pygame.sprite.Group(self.__player.sprite)
