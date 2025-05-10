@@ -7,7 +7,15 @@ from .character_creation import create_enemy
 dirname = os.path.dirname(__file__)
 
 class EnemySpawner:
+    """Responsible for creating new enemies according to the game's config."""
+
     def __init__(self, game):
+        """Creates an enemy spawner for the given Game instance.
+
+        Args:
+            game: The Game instance that is going to use this enemy spawner.
+        """
+
         config = game.config.spawning
 
         self.__enemy_animation = load_animation(
@@ -54,6 +62,13 @@ class EnemySpawner:
         return spawning_position
 
     def spawn_enemies(self, dt, game):
+        """Spawns enemies. It should be called once each game loop iteration.
+
+        Args:
+            dt: Time elapsed since the last game loop iteration in milliseconds.
+            game: The Game instance that this enemy spawner belongs to.
+        """
+
         self.__group_spawning_timer += dt
         self.__single_spawning_timer += dt
 

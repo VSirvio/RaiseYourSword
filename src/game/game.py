@@ -16,6 +16,13 @@ class Game:
     """Responsible for the game's graphics and logic."""
 
     def __init__(self, config, skip_intro):
+        """Creates a game with the given parameters.
+
+        Args:
+            config: A GameConfig instance.
+            skip_intro: Boolean indicating if the game intro should be skipped.
+        """
+
         self.__config = config
 
         if skip_intro:
@@ -130,10 +137,25 @@ class Game:
             self.__state.enter(self)
 
     def add_enemy(self, new_enemy):
+        """Adds a new enemy to the game.
+
+        Args:
+            new_enemy: A Character instance to add as enemy character.
+        """
+
         self.__enemies.append(new_enemy)
         self.__all_sprites.add(new_enemy.sprite)
 
     def another_character_overlaps_with(self, character):
+        """Checks if the bounding boxes of this and any other character overlap.
+
+        Args:
+            character: A Character instance to check for any overlapping.
+
+        Returns:
+            A boolean indicating if the given character overlaps with any other.
+        """
+
         if character.bounding_box.colliderect(self.__player.bounding_box):
             return True
 
@@ -145,6 +167,8 @@ class Game:
 
     @property
     def config(self):
+        """The GameConfig of this game."""
+
         return self.__config
 
     @property

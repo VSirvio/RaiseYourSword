@@ -15,6 +15,17 @@ from .character import Character
 dirname = os.path.dirname(__file__)
 
 def create_enemy(starting_position, animation, ai_config):
+    """Creates a Character instance configured as enemy character.
+
+    Args:
+        starting_position: (X,Y) tuple with the initial position for the enemy.
+        animation: The CharacterAnimation instance containing enemy animations.
+        ai_config: The AiConfig instance of the game.
+
+    Returns:
+        A Character instance that has been set up as enemy character.
+    """
+
     return Character(
         initial_state=states.ai.idle_state.IdleState(),
         starting_position=starting_position,
@@ -35,6 +46,17 @@ def create_enemy(starting_position, animation, ai_config):
     )
 
 def create_player(starting_position, animation, game_area_bounds):
+    """Creates a Character instance configured as player character.
+
+    Args:
+        starting_position: (X,Y) tuple with the initial position for the player.
+        animation: The CharacterAnimation instance containing player animations.
+        game_area_bounds: Pygame Rect of the screen area that player can't exit.
+
+    Returns:
+        A Character instance that has been set up as player character.
+    """
+
     return Character(
         initial_state=states.player.idle_state.IdleState(),
         starting_position=starting_position,
