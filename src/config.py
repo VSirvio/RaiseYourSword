@@ -9,6 +9,12 @@ from utils import Range
 dirname = os.path.dirname(__file__)
 
 def generate_configuration():
+    """Creates a GameConfig using the default configuration of the game.
+
+    Returns:
+        A GameConfig instance set up according to the default values.
+    """
+
     return GameConfig(
         GraphicsConfig(
             display_size=(260, 190),
