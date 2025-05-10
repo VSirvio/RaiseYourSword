@@ -3,21 +3,13 @@ from random import randint
 
 from animation.utils import load_animation
 from .character_creation import create_enemy
-from .config import (
-    DISPLAY_WIDTH,
-    DISPLAY_HEIGHT,
-    ENEMY_MAX_TIME_BETWEEN_SPAWNING_A_GROUP,
-    ENEMY_MAX_TIME_BETWEEN_SPAWNING_ONE,
-    ENEMY_MIN_TIME_BETWEEN_SPAWNING_A_GROUP,
-    ENEMY_MIN_TIME_BETWEEN_SPAWNING_ONE,
-    NUMBER_OF_ENEMIES_TO_SPAWN_AT_ONCE,
-    TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
-)
 
 dirname = os.path.dirname(__file__)
 
 class EnemySpawner:
-    def __init__(self):
+    def __init__(self, game):
+        config = game.config.spawning
+
         self.__enemy_animation = load_animation(
             os.path.join(dirname, "..", "assets", "character_skeleton_animations.yaml")
         )
@@ -26,15 +18,15 @@ class EnemySpawner:
         self.__single_spawning_timer = 0
         self.__time_until_next_group_spawn = 0
         self.__time_until_next_single_spawn = randint(
-            ENEMY_MIN_TIME_BETWEEN_SPAWNING_ONE,
-            ENEMY_MAX_TIME_BETWEEN_SPAWNING_ONE
+            config.time_between_spawning_one.minimum,
+            config.time_between_spawning_one.maximum
         )
-        self.__number_of_enemies_to_still_spawn = TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
+        self.__number_of_enemies_to_still_spawn = config.total_number_of_enemies_to_spawn
         self.__number_of_enemies_waiting_for_spawning = 0
 
-    def __pick_random_spawning_position(self):
-        spawn_area_width = DISPLAY_WIDTH + self.__enemy_animation.frame_width
-        spawn_area_height = DISPLAY_HEIGHT + self.__enemy_animation.frame_height
+    def __pick_random_spawning_position(self, display_width, display_height):
+        spawn_area_width = display_width + self.__enemy_animation.frame_width
+        spawn_area_height = display_height + self.__enemy_animation.frame_height
 
         random_number = randint(1, 2 * spawn_area_width + 2 * spawn_area_height)
         if random_number < spawn_area_width:
@@ -45,7 +37,7 @@ class EnemySpawner:
         elif random_number < 2 * spawn_area_width:
             spawning_position = (
                 -self.__enemy_animation.frame_width + random_number - spawn_area_width,
-                DISPLAY_HEIGHT
+                display_height
             )
         elif random_number < 2 * spawn_area_width + spawn_area_height:
             spawning_position = (
@@ -54,7 +46,7 @@ class EnemySpawner:
             )
         else:
             spawning_position = (
-                DISPLAY_WIDTH,
+                display_width,
                 -self.__enemy_animation.frame_height + random_number -
                     2 * spawn_area_width - spawn_area_height
             )
@@ -68,31 +60,36 @@ class EnemySpawner:
         while (self.__group_spawning_timer >= self.__time_until_next_group_spawn and
                 self.__number_of_enemies_to_still_spawn > 0):
             self.__number_of_enemies_waiting_for_spawning = min(
-                self.__number_of_enemies_waiting_for_spawning + NUMBER_OF_ENEMIES_TO_SPAWN_AT_ONCE,
+                self.__number_of_enemies_waiting_for_spawning +
+                    game.config.spawning.number_of_enemies_to_spawn_at_once,
                 self.__number_of_enemies_to_still_spawn,
                 1000
             )
 
             self.__group_spawning_timer -= self.__time_until_next_group_spawn
             self.__time_until_next_group_spawn = randint(
-                ENEMY_MIN_TIME_BETWEEN_SPAWNING_A_GROUP,
-                ENEMY_MAX_TIME_BETWEEN_SPAWNING_A_GROUP
+                game.config.spawning.time_between_spawning_a_group.minimum,
+                game.config.spawning.time_between_spawning_a_group.maximum
             )
 
         tries = 0
         while self.__single_spawning_timer >= self.__time_until_next_single_spawn:
             self.__single_spawning_timer -= self.__time_until_next_single_spawn
             self.__time_until_next_single_spawn = randint(
-                ENEMY_MIN_TIME_BETWEEN_SPAWNING_ONE,
-                ENEMY_MAX_TIME_BETWEEN_SPAWNING_ONE
+                game.config.spawning.time_between_spawning_one.minimum,
+                game.config.spawning.time_between_spawning_one.maximum
             )
 
             if self.__number_of_enemies_waiting_for_spawning <= 0 or tries >= 5:
                 continue
 
             new_enemy = create_enemy(
-                self.__pick_random_spawning_position(),
-                self.__enemy_animation
+                self.__pick_random_spawning_position(
+                    game.config.graphics.display_width,
+                    game.config.graphics.display_height
+                ),
+                self.__enemy_animation,
+                game.config.ai
             )
 
             if game.another_character_overlaps_with(new_enemy):

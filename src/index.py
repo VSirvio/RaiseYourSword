@@ -2,7 +2,7 @@ import os
 
 import pygame
 
-from game.config import DISPLAY_WIDTH, DISPLAY_HEIGHT, GRAPHICS_SCALING_FACTOR
+from config import generate_configuration
 from game.game import Game
 from game.game_loop import GameLoop
 from services.clock import Clock
@@ -12,10 +12,12 @@ from services.renderer import Renderer
 dirname = os.path.dirname(__file__)
 
 def main():
+    config = generate_configuration()
+
     pygame.init()
     display = pygame.display.set_mode((
-        DISPLAY_WIDTH * GRAPHICS_SCALING_FACTOR,
-        DISPLAY_HEIGHT * GRAPHICS_SCALING_FACTOR
+        config.graphics.display_width * config.graphics.scaling_factor,
+        config.graphics.display_height * config.graphics.scaling_factor
     ))
 
     pygame.display.set_caption("Raise Your Sword")
@@ -27,8 +29,8 @@ def main():
     is_first_game = True
 
     while start_new_game:
-        game = Game(skip_intro=not is_first_game)
-        renderer = Renderer(display, game, GRAPHICS_SCALING_FACTOR)
+        game = Game(config, skip_intro=not is_first_game)
+        renderer = Renderer(display, game, config.graphics.scaling_factor)
         event_queue = EventQueue()
         clock = Clock()
         game_loop = GameLoop(game, renderer, event_queue, clock)

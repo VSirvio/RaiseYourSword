@@ -3,11 +3,6 @@ from random import randrange
 
 from direction import direction
 from game import events
-from game.config import (
-    ENEMY_AI_WALK_TIME_MAX,
-    ENEMY_AI_WALK_TIME_MIN,
-    ENEMY_ATTACK_INITIATION_DISTANCE
-)
 import states.state
 import states.ai.idle_state   # pylint: disable=cyclic-import
 import states.character.dying_state   # pylint: disable=cyclic-import
@@ -18,38 +13,49 @@ import states.character.dying_state   # pylint: disable=cyclic-import
 
 class WalkState(states.state.State):
     def __init__(self):
-        self.__duration = randrange(ENEMY_AI_WALK_TIME_MIN, ENEMY_AI_WALK_TIME_MAX)
-        self.__timer = 0
+        self.__duration = None
+        self.__timer = None
 
     def enter(self, **kwargs):
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
+        config = kwargs["config"]
 
+        self.__duration = randrange(config.walk_time.minimum, config.walk_time.maximum)
+        self.__timer = 0
+
+        owner.direction.moving = self.__get_direction_toward_opponent(owner, opponent)
+
+    def __get_direction_toward_opponent(self, owner, opponent):
         angle = atan2(
             owner.bounding_box.centery - opponent.bounding_box.centery,
             opponent.bounding_box.centerx - owner.bounding_box.centerx
         )
+
         if -7*pi/8 <= angle < -5*pi/8:
-            owner.direction.moving = direction.DOWN_LEFT
+            direction_toward_opponent = direction.DOWN_LEFT
         elif -5*pi/8 <= angle < -3*pi/8:
-            owner.direction.moving = direction.DOWN
+            direction_toward_opponent = direction.DOWN
         elif -3*pi/8 <= angle < -pi/8:
-            owner.direction.moving = direction.DOWN_RIGHT
+            direction_toward_opponent = direction.DOWN_RIGHT
         elif -pi/8 <= angle < pi/8:
-            owner.direction.moving = direction.RIGHT
+            direction_toward_opponent = direction.RIGHT
         elif pi/8 <= angle < 3*pi/8:
-            owner.direction.moving = direction.UP_RIGHT
+            direction_toward_opponent = direction.UP_RIGHT
         elif 3*pi/8 <= angle < 5*pi/8:
-            owner.direction.moving = direction.UP
+            direction_toward_opponent = direction.UP
         elif 5*pi/8 <= angle < 7*pi/8:
-            owner.direction.moving = direction.UP_LEFT
+            direction_toward_opponent = direction.UP_LEFT
         else:
-            owner.direction.moving = direction.LEFT
+            direction_toward_opponent = direction.LEFT
+
+        return direction_toward_opponent
 
     def update(self, **kwargs):
         dt = kwargs["dt"]
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
+        config = kwargs["config"]
 
         self.__timer += dt
 
@@ -64,7 +70,7 @@ class WalkState(states.state.State):
                 owner_bbox.left <= opponent_bbox.right <= owner_bbox.right) and
                 (owner_bbox.top <= opponent_bbox.top <= owner_bbox.bottom or
                 owner_bbox.top <= opponent_bbox.bottom <= owner_bbox.bottom) or
-                sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_ATTACK_INITIATION_DISTANCE):
+                sqrt(dist_x ** 2 + dist_y ** 2) <= config.attack_initiation_distance):
             return states.ai.idle_state.IdleState()
 
         return None

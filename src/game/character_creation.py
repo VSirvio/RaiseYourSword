@@ -11,18 +11,17 @@ from direction.player_direction import PlayerDirection
 import states.ai.idle_state
 import states.player.idle_state
 from .character import Character
-from .config import DISPLAY_HEIGHT, DISPLAY_WIDTH, ENEMY_WALKING_SPEED
 
 dirname = os.path.dirname(__file__)
 
-def create_enemy(starting_position, animation):
+def create_enemy(starting_position, animation, ai_config):
     return Character(
         initial_state=states.ai.idle_state.IdleState(),
         starting_position=starting_position,
         direction=CharacterDirection(facing=DOWN, moving=NONE),
         animations=AnimationsComponent(animation),
         physics=PhysicsComponent(
-            walking_speed=ENEMY_WALKING_SPEED,
+            walking_speed=50,
             bounding_box=pygame.Rect((16, 20), (16, 20)),
             character_hitbox=pygame.Rect((14, 10), (20, 33)),
             weapon_hitbox={
@@ -31,16 +30,14 @@ def create_enemy(starting_position, animation):
                 LEFT: pygame.Rect((6, 16), (14, 25)),
                 RIGHT: pygame.Rect((29, 14), (14, 27))
             }
-        )
+        ),
+        config=ai_config
     )
 
-def create_player(animation, game_area_bounds):
+def create_player(starting_position, animation, game_area_bounds):
     return Character(
         initial_state=states.player.idle_state.IdleState(),
-        starting_position=(
-            (DISPLAY_WIDTH - 48) // 2,
-            (DISPLAY_HEIGHT - 48) // 2 - 7
-        ),
+        starting_position=starting_position,
         direction=PlayerDirection(facing=DOWN, moving=NONE, controlled_toward=NONE),
         animations=AnimationsComponent(animation),
         physics=PlayerPhysics(

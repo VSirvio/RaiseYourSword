@@ -3,11 +3,6 @@ from random import randrange
 
 from direction import direction
 from game import events
-from game.config import (
-    ENEMY_AI_IDLE_TIME_MAX,
-    ENEMY_AI_IDLE_TIME_MIN,
-    ENEMY_ATTACK_INITIATION_DISTANCE
-)
 import states.state
 import states.ai.attack_state   # pylint: disable=cyclic-import
 import states.ai.walk_state   # pylint: disable=cyclic-import
@@ -20,17 +15,22 @@ import states.character.perpetual_idle_state   # pylint: disable=cyclic-import
 
 class IdleState(states.state.State):
     def __init__(self):
-        self.__duration = randrange(ENEMY_AI_IDLE_TIME_MIN, ENEMY_AI_IDLE_TIME_MAX)
-        self.__timer = 0
+        self.__duration = None
+        self.__timer = None
 
     def enter(self, **kwargs):
         owner = kwargs["owner"]
+        config = kwargs["config"]
+
+        self.__duration = randrange(config.idle_time.minimum, config.idle_time.maximum)
+        self.__timer = 0
 
         owner.direction.moving = direction.NONE
 
     def update(self, **kwargs):
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
+        config = kwargs["config"]
 
         self.__timer += kwargs["dt"]
 
@@ -43,7 +43,7 @@ class IdleState(states.state.State):
             (owner_bbox.top <= opponent_bbox.top <= owner_bbox.bottom or
             owner_bbox.top <= opponent_bbox.bottom <= owner_bbox.bottom))
         if (opponent.state not in ("dead", "dying") and (bounding_boxes_touching or
-                sqrt(dist_x ** 2 + dist_y ** 2) <= ENEMY_ATTACK_INITIATION_DISTANCE)):
+                sqrt(dist_x ** 2 + dist_y ** 2) <= config.attack_initiation_distance)):
             return states.ai.attack_state.AttackState()
 
         if self.__timer >= self.__duration:

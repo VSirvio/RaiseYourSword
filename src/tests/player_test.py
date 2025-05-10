@@ -4,6 +4,7 @@ import unittest
 import pygame
 
 from animation.utils import load_animation
+from config import generate_configuration
 from direction import direction
 from direction.direction import HorizontalDirection, VerticalDirection, NONE, DOWN, UP, LEFT, RIGHT
 from game import events
@@ -14,6 +15,12 @@ dirname = os.path.dirname(__file__)
 
 class TestPlayer(unittest.TestCase):
     def setUp(self):
+        config = generate_configuration()
+
+        self.starting_pos = (
+            (config.graphics.display_width - 48) // 2,
+            (config.graphics.display_height - 48) // 2 - 7
+        )
         self.animations = load_animation(
             os.path.join(dirname, "..", "assets", "character_warrior_animations.yaml")
         )
@@ -38,7 +45,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_idle_animation_is_played_when_player_is_idle(self):
         for direction_facing in (DOWN, UP, LEFT, RIGHT):
-            player = create_player(self.animations, self.game_area_bounds)
+            player = create_player(self.starting_pos, self.animations, self.game_area_bounds)
             self.__turn_to_direction(player, direction_facing)
 
             # Test frame 0 again in the end to check that the animation loops correctly
@@ -55,7 +62,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_walking_moves_player_to_the_correct_direction(self):
         for walk_direction in direction.ALL:
-            player = create_player(self.animations, self.game_area_bounds)
+            player = create_player(self.starting_pos, self.animations, self.game_area_bounds)
             starting_position = {"x": player.x, "y": player.y}
 
             self.__walk_to_direction(player, walk_direction)
@@ -78,7 +85,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_attack_animation_is_played_when_player_attacks(self):
         for direction_facing in (DOWN, UP, LEFT, RIGHT):
-            player = create_player(self.animations, self.game_area_bounds)
+            player = create_player(self.starting_pos, self.animations, self.game_area_bounds)
             self.__turn_to_direction(player, direction_facing)
 
             self.__attack_an_enemy(player, self.enemies)
@@ -97,7 +104,7 @@ class TestPlayer(unittest.TestCase):
     def test_player_cannot_move_while_attacking(self):
         for attack_direction in (DOWN, UP, LEFT, RIGHT):
             for walk_direction in (DOWN, UP, LEFT, RIGHT):
-                player = create_player(self.animations, self.game_area_bounds)
+                player = create_player(self.starting_pos, self.animations, self.game_area_bounds)
                 starting_position = {"x": player.x, "y": player.y}
 
                 self.__turn_to_direction(player, attack_direction)

@@ -7,7 +7,11 @@ import states.game.victory_screen_state
 
 class PlayState:
     def __init__(self):
-        self.__spawner = EnemySpawner()
+        self.__spawner = None
+        self.__sprite_group = None
+
+    def enter(self, game):
+        self.__spawner = EnemySpawner(game)
         self.__sprite_group = pygame.sprite.Group()
 
     def update(self, *args):
@@ -18,8 +22,8 @@ class PlayState:
 
     def handle_event(self, *args):
         event = args[0]
-        player = args[1]
-        enemies = args[2]
+        player = args[2]
+        enemies = args[3]
 
         player.handle_event(event, enemies)
 

@@ -9,19 +9,15 @@ import states.player.idle_state
 from . import events
 from .background import Background
 from .character_creation import create_player
-from .config import (
-    DISPLAY_HEIGHT,
-    DISPLAY_WIDTH,
-    MAX_NUM_OF_DEAD_ENEMIES_ON_THE_SCREEN,
-    TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
-)
 
 dirname = os.path.dirname(__file__)
 
 class Game:
     """Responsible for the game's graphics and logic."""
 
-    def __init__(self, skip_intro):
+    def __init__(self, config, skip_intro):
+        self.__config = config
+
         if skip_intro:
             self.__state = states.game.play_state.PlayState()
         else:
@@ -30,25 +26,35 @@ class Game:
                 [os.path.join(dirname, "..", "assets", file) for file in image_files]
             )
 
-        self.__background = Background()
-        game_area_bounds = pygame.Rect(-5, -13, DISPLAY_WIDTH + 5 + 6, DISPLAY_HEIGHT + 13 + 17)
+        self.__state.enter(self)
+
+        self.__background = Background(
+            config.graphics.display_width,
+            config.graphics.display_height
+        )
+        game_area_bounds = pygame.Rect(
+            (-5, -13),
+            (config.graphics.display_width + 5 + 6, config.graphics.display_height + 13 + 17)
+        )
         self.__player = create_player(
-            load_animation(
+            starting_position=(
+                (config.graphics.display_width - 48) // 2,
+                (config.graphics.display_height - 48) // 2 - 7
+            ),
+            animation=load_animation(
                 os.path.join(dirname, "..", "assets", "character_warrior_animations.yaml")
             ),
-            game_area_bounds
+            game_area_bounds=game_area_bounds
         )
         self.__enemies = []
 
-        self.__characters = pygame.sprite.Group(self.__player.sprite)
-
-        self.__all_sprites = pygame.sprite.LayeredUpdates(self.__background, self.__characters)
+        self.__all_sprites = pygame.sprite.LayeredUpdates(self.__background, self.__player.sprite)
 
         # Move background to layer -1000 to make sure that it is behind all other sprites
         self.__all_sprites.change_layer(self.__background, -1000)
 
         self.__enemies_spawned_but_not_yet_removed = 0
-        self.__enemies_to_still_spawn = TOTAL_NUMBER_OF_ENEMIES_TO_SPAWN
+        self.__enemies_to_still_spawn = config.spawning.total_number_of_enemies_to_spawn
 
     def __all_enemies_have_been_defeated(self):
         if len(self.__enemies) > self.__enemies_spawned_but_not_yet_removed:
@@ -69,8 +75,9 @@ class Game:
         # Set each character sprite's layer value to be the same as its Y position so that the
         # sprites further away (the sprites that have a lower Y value) are shown behind the sprites
         # closer (i.e. the sprites further away have a lower layer value than the sprites closer)
-        for sprite in self.__characters:
-            self.__all_sprites.change_layer(sprite, sprite.rect.y)
+        self.__all_sprites.change_layer(self.__player.sprite, self.__player.y)
+        for enemy in self.__enemies:
+            self.__all_sprites.change_layer(enemy.sprite, enemy.y)
 
         self.__all_sprites.draw(surface)
 
@@ -85,9 +92,8 @@ class Game:
 
         self.__enemies.sort(key=lambda enemy: enemy.state != "dead")
         dead_enemies = sum(1 if enemy.state == "dead" else 0 for enemy in self.__enemies)
-        while dead_enemies > MAX_NUM_OF_DEAD_ENEMIES_ON_THE_SCREEN:
+        while dead_enemies > 50:
             removed_enemy = self.__enemies.pop(0)
-            self.__characters.remove(removed_enemy.sprite)
             self.__all_sprites.remove(removed_enemy.sprite)
             dead_enemies -= 1
             self.__enemies_spawned_but_not_yet_removed -= 1
@@ -95,7 +101,8 @@ class Game:
         self.__player.update(dt, opponents=self.__enemies, other_characters=[])
         for enemy in self.__enemies:
             other_enemies = [e for e in self.__enemies if e != enemy]
-            enemy.update(dt, opponents=[self.__player], other_characters=other_enemies)
+            enemy.update(dt, opponents=[self.__player], other_characters=other_enemies,
+                config=self.__config.ai)
 
         self.__state.update(dt, self)
 
@@ -117,13 +124,13 @@ class Game:
             event: Event object of one of the classes from the "events" module.
         """
 
-        new_state = self.__state.handle_event(event, self.__player, self.__enemies)
+        new_state = self.__state.handle_event(event, self, self.__player, self.__enemies)
         if new_state is not None:
             self.__state = new_state
+            self.__state.enter(self)
 
     def add_enemy(self, new_enemy):
         self.__enemies.append(new_enemy)
-        self.__characters.add(new_enemy.sprite)
         self.__all_sprites.add(new_enemy.sprite)
 
     def another_character_overlaps_with(self, character):
@@ -135,6 +142,10 @@ class Game:
                 return True
 
         return False
+
+    @property
+    def config(self):
+        return self.__config
 
     @property
     def finished(self):

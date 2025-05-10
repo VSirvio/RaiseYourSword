@@ -8,7 +8,8 @@ class Character:
         direction: A CharacterDirection instance or instance of its subclass.
     """
 
-    def __init__(self, *, initial_state, starting_position, direction, animations, physics):
+    def __init__(self, *, initial_state, starting_position, direction, animations, physics,
+            config=None):
         """Creates a new character with the given parameters.
 
         Args:
@@ -21,9 +22,10 @@ class Character:
 
         super().__init__()
 
-        self.__state = initial_state
-
         self.direction = direction
+
+        self.__state = initial_state
+        self.__state.enter(owner=self, opponents=[], config=config)
 
         self.__sprite = CustomSprite(self)
 
@@ -35,14 +37,14 @@ class Character:
 
         self.__physics = physics
 
-    def __update_state(self, state, opponents):
+    def __update_state(self, state, opponents, config=None):
         if state is not None:
             self.__state = state
-            self.__state.enter(owner=self, opponents=opponents)
+            self.__state.enter(owner=self, opponents=opponents, config=config)
             self.__animations.reset()
             self.__sprite.image = self.__animations.current_frame(self)
 
-    def update(self, dt, opponents, other_characters):
+    def update(self, dt, opponents, other_characters, config=None):
         """Updates game logic that is directly related to the player.
 
         Args:
@@ -51,15 +53,15 @@ class Character:
             other_characters: [] for the player and other enemies for an enemy.
         """
 
-        new_state = self.__state.update(dt=dt, owner=self, opponents=opponents)
-        self.__update_state(new_state, opponents)
+        new_state = self.__state.update(dt=dt, owner=self, opponents=opponents, config=config)
+        self.__update_state(new_state, opponents, config)
 
-        self.__animations.update(dt, self, opponents)
+        self.__animations.update(dt, self, opponents, config)
         self.__sprite.image = self.__animations.current_frame(self)
 
-        self.__physics.update(dt, self, opponents, other_characters)
+        self.__physics.update(dt, self, opponents, other_characters, config)
 
-    def handle_event(self, event, opponents):
+    def handle_event(self, event, opponents, config=None):
         """Handles a game event.
 
         Args:
@@ -69,8 +71,9 @@ class Character:
 
         self.direction.handle(event)
 
-        new_state = self.__state.handle_event(event=event, owner=self, opponents=opponents)
-        self.__update_state(new_state, opponents)
+        new_state = self.__state.handle_event(event=event, owner=self, opponents=opponents,
+            config=config)
+        self.__update_state(new_state, opponents, config)
 
     def does_attack_hit(self, target):
         """Checks if an attack by the character hits the target.

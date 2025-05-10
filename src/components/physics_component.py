@@ -36,6 +36,7 @@ class PhysicsComponent:
         owner = args[0]
         opponents = args[1]
         other_characters = args[2]
+        config = args[3]
 
         for character in other_characters:
             if character.state in ("dead", "dying"):
@@ -43,7 +44,7 @@ class PhysicsComponent:
 
             dx, dy = owner.direction.moving.movement_vector
             if owner.bounding_box.move(dx, dy).colliderect(character.bounding_box):
-                owner.handle_event(events.MovementObstructed(), opponents)
+                owner.handle_event(events.MovementObstructed(), opponents, config)
                 return
 
         owner.x += dx
