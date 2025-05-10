@@ -11,6 +11,15 @@ from .character_animation import CharacterAnimation
 dirname = os.path.dirname(__file__)
 
 def load_animation(animation_config_file):
+    """Creates a CharacterAnimation instance based on the given YAML file.
+
+    Args:
+        animation_config_file: Path to the animation config YAML file as string.
+
+    Returns:
+        A CharacterAnimation instance.
+    """
+
     with open(os.path.join(dirname, animation_config_file), "r", encoding="UTF-8") as file:
         yaml_data = yaml.safe_load(file)
 
