@@ -3,6 +3,15 @@ import sys
 import yaml
 
 def load_config(cfg_file_path):
+    """Creates a configuration dict based on the given YAML file.
+
+    Args:
+        cfg_file_path: The path to the game configuration YAML file as a string.
+
+    Returns:
+        A dict containing the game configuration that was loaded from the file.
+    """
+
     try:
         with open(cfg_file_path, "r", encoding="UTF-8") as file:
             yaml_data = yaml.safe_load(file)
