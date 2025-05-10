@@ -1,12 +1,29 @@
 from game import events
 
 class AnimationsComponent:
+    """Responsible of animation logic of a Character."""
+
     def __init__(self, animations):
+        """Creates an animation component with the given animations.
+
+        Args:
+            animations: A CharacterAnimation instance.
+        """
+
         self.__animations = animations
         self.__index = 0
         self.__timer = 0
 
     def update(self, dt, owner, opponents, config):
+        """Update method to be called each game loop iteration.
+
+        Args:
+            dt: Time passed since the last game loop iteration in milliseconds.
+            owner: A Character instance that owns this component.
+            opponents: List of Character instances that are opponents to owner.
+            config: Optional character configuration data.
+        """
+
         self.__timer += dt
 
         current_animation = self.__animations[owner.state][owner.direction.facing]
@@ -25,8 +42,19 @@ class AnimationsComponent:
             self.__timer -= frametime
 
     def current_frame(self, owner):
+        """The current frame in the current animation.
+
+        Args:
+            owner: A Character instance that owns this component.
+
+        Returns:
+            A pygame Surface containing the current animation frame.
+        """
+
         return self.__animations[owner.state][owner.direction.facing].frames[self.__index]
 
     def reset(self):
+        """Resets the current animation back to the start."""
+
         self.__index = 0
         self.__timer = 0

@@ -1,8 +1,20 @@
 from .physics_component import PhysicsComponent
 
 class PlayerPhysics(PhysicsComponent):
+    """PhysicsComponent sub class that stops character from exiting the area."""
+
     def __init__(self, *, walking_speed, bounding_box, character_hitbox, weapon_hitbox,
             game_area_bounds):
+        """Creates a new instance. The Rects are relative to character sprite.
+
+        Args:
+            walking_speed: An integer value giving the walking speed in px/s.
+            bounding_box: Pygame Rect that other characters can't walk through.
+            character_hitbox: Pygame Rect hittable by other character's attacks.
+            weapon_hitbox: A dict of four pygame Rects, one for each direction.
+            game_area_bounds: Pygame Rect of the area that character can't exit.
+        """
+
         super().__init__(
             walking_speed=walking_speed,
             bounding_box=bounding_box,
