@@ -12,11 +12,21 @@ import states.character.dying_state   # pylint: disable=cyclic-import
 # to import state1).
 
 class WalkState(states.state.State):
+    """Walking state for the finite state machine that implements enemy AI."""
+
     def __init__(self):
         self.__duration = None
         self.__timer = None
 
     def enter(self, **kwargs):
+        """Called right after transitioning to this state.
+
+        Args:
+            owner: The Character instance that this state belongs to.
+            opponents: A list containing only the player Character instance.
+            config: The AiConfig instance of the game.
+        """
+
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
         config = kwargs["config"]
@@ -52,6 +62,18 @@ class WalkState(states.state.State):
         return direction_toward_opponent
 
     def update(self, **kwargs):
+        """Called once each game loop iteration.
+
+        Args:
+            dt: Time elapsed since the last game loop iteration in milliseconds.
+            owner: The Character instance that this state belongs to.
+            opponents: A list containing only the player Character instance.
+            config: The AiConfig instance of the game.
+
+        Returns:
+            A new state that the Character should now transition to or None.
+        """
+
         dt = kwargs["dt"]
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
@@ -76,6 +98,15 @@ class WalkState(states.state.State):
         return None
 
     def handle_event(self, **kwargs):
+        """Called when the Character that owns this state receives a game event.
+
+        Args:
+            event: Event object of one of the classes from the "events" module.
+
+        Returns:
+            A new state that the Character should now transition to or None.
+        """
+
         event = kwargs["event"]
 
         match event.__class__:

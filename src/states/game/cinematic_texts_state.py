@@ -8,7 +8,15 @@ import states.game.play_state
 dirname = os.path.dirname(__file__)
 
 class CinematicTextsState:
+    """Game state in which game is paused and story related texts are shown."""
+
     def __init__(self, files):
+        """Create a cinematic texts state using the given image files.
+
+        Args:
+            files: A list of image file paths containing the texts to show.
+        """
+
         self.__files = files
 
         self.__continuation_indicator_y_offset = None
@@ -20,6 +28,12 @@ class CinematicTextsState:
         self.__sprite_group = None
 
     def enter(self, game):
+        """Called right after transitioning to this state.
+
+        Args:
+            game: The Game instance that this state belongs to.
+        """
+
         display_width = game.config.graphics.display_width
         display_height = game.config.graphics.display_height
 
@@ -69,6 +83,12 @@ class CinematicTextsState:
             self.__continuation_indicator_y_offset)
 
     def update(self, *args):
+        """Called once each game loop iteration.
+
+        Args:
+            dt: Time elapsed since the last game loop iteration in milliseconds.
+        """
+
         dt = args[0]
 
         self.__continuation_indicator_timer += dt
@@ -82,6 +102,16 @@ class CinematicTextsState:
                 self.__ind_sprite.rect.y -= 1
 
     def handle_event(self, *args):
+        """Called when the game receives a game event.
+
+        Args:
+            event: Event object of one of the classes from the "events" module.
+            game: The Game instance that this state belongs to.
+
+        Returns:
+            A new state that the game should now transition to or None.
+        """
+
         event = args[0]
         game = args[1]
 
@@ -102,4 +132,6 @@ class CinematicTextsState:
 
     @property
     def sprite_group(self):
+        """Sprite group related to the state to be rendered over game screen."""
+
         return self.__sprite_group

@@ -1,7 +1,18 @@
 import pygame
 
 class EndingScreenState:
+    """Base class for the game states whose purpose is to show ending screen."""
+
     def __init__(self, message_image, message_position, instructions_image, instructions_position):
+        """Creates a ending screen state with the given parameters.
+
+        Args:
+            message_image: A pygame Surface containing the message to show.
+            message_position: (X,Y) tuple for positioning the message on screen.
+            instructions_image: A pygame Surface containing button instructions.
+            instructions_position: (X,Y) tuple for positioning the instructions.
+        """
+
         self.__message_image = message_image
         self.__message_position = message_position
         self.__instructions_image = instructions_image
@@ -13,6 +24,12 @@ class EndingScreenState:
         self.__sprite_group = None
 
     def enter(self, game):
+        """Called right after transitioning to this state.
+
+        Args:
+            game: The Game instance that this state belongs to.
+        """
+
         display_width = game.config.graphics.display_width
         display_height = game.config.graphics.display_height
 
@@ -41,11 +58,13 @@ class EndingScreenState:
         self.__sprite_group.change_layer(self.__instr_sprite, 3)
 
     def update(self, *args):
-        pass
+        """Update method stub that does not do anything."""
 
     def handle_event(self, *args):
-        pass
+        """Handle_event method stub that does not do anything."""
 
     @property
     def sprite_group(self):
+        """Sprite group related to the state to be rendered over game screen."""
+
         return self.__sprite_group

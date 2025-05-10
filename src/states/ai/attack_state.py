@@ -9,7 +9,16 @@ import states.character.dying_state   # pylint: disable=cyclic-import
 # to import state1).
 
 class AttackState(states.state.State):
+    """Attack state for the finite state machine that implements enemy AI."""
+
     def enter(self, **kwargs):
+        """Called right after transitioning to this state.
+
+        Args:
+            owner: The Character instance that this state belongs to.
+            opponents: A list containing only the player Character instance.
+        """
+
         owner = kwargs["owner"]
         opponent = kwargs["opponents"][0]
 
@@ -27,6 +36,17 @@ class AttackState(states.state.State):
         owner.direction.moving = NONE
 
     def handle_event(self, **kwargs):
+        """Called when the Character that owns this state receives a game event.
+
+        Args:
+            event: Event object of one of the classes from the "events" module.
+            owner: The Character instance that this state belongs to.
+            opponents: A list containing only the player Character instance.
+
+        Returns:
+            A new state that the Character should now transition to or None.
+        """
+
         event = kwargs["event"]
         owner = kwargs["owner"] if event.__class__ == events.DealingDamage else None
         opponent = kwargs["opponents"][0] if event.__class__ == events.DealingDamage else None

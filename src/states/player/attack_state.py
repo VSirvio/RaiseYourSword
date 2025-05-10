@@ -10,15 +10,34 @@ import states.character.perpetual_idle_state   # pylint: disable=cyclic-import
 # and state2 would also need to import state1).
 
 class AttackState(states.state.State):
+    """Attack state for the player character."""
+
     def __init__(self):
         self.__last_enemy_is_dying = False
 
     def enter(self, **kwargs):
+        """Called right after transitioning to this state.
+
+        Args:
+            owner: The Character instance of the player character.
+        """
+
         owner = kwargs["owner"]
 
         owner.direction.moving = direction.NONE
 
     def handle_event(self, **kwargs):
+        """Called when the player character receives a game event.
+
+        Args:
+            event: Event object of one of the classes from the "events" module.
+            owner: The Character instance of the player character.
+            opponents: List of the Character instances of the enemy characters.
+
+        Returns:
+            A new state that the player should now transition to or None.
+        """
+
         event = kwargs["event"]
         if event.__class__ in (events.AnimationFinished, events.DealingDamage):
             owner = kwargs["owner"]
