@@ -123,3 +123,18 @@ class TestPlayer(unittest.TestCase):
                 with self.subTest(attack_direction=attack_direction, walk_direction=walk_direction):
                     self.assertEqual(player.x, starting_position["x"])
                     self.assertEqual(player.y, starting_position["y"])
+
+    def test_player_cannot_walk_out_of_the_game_area(self):
+        for walk_direction in (DOWN, UP, LEFT, RIGHT):
+            player = create_player(self.starting_pos, self.animations, self.game_area_bounds)
+
+            self.__walk_to_direction(player, walk_direction)
+            for _ in range(30*60):
+                player.update(dt=1000/60, opponents=[], other_characters=[])
+
+            with self.subTest(direction=walk_direction):
+                self.assertGreaterEqual(player.bounding_box.left, self.game_area_bounds.left)
+                self.assertLessEqual(player.bounding_box.right, self.game_area_bounds.right)
+
+                self.assertGreaterEqual(player.bounding_box.top, self.game_area_bounds.top)
+                self.assertLessEqual(player.bounding_box.bottom, self.game_area_bounds.bottom)
