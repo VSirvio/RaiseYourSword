@@ -93,4 +93,7 @@
 |       | 3.5          | refactoring Game class                                                            |
 | 10.5. | 5            | refactoring config.py                                                             |
 |       | 4            | writing docstrings                                                                |
-| total | 144.5        |                                                                                   |
+| 11.5. | 3.5          | writing unit tests                                                                |
+|       | 1.5          | writing testing document                                                          |
+|       | 3            | updating specification, changelog, readme, architecture document and user manual  |
+| total | 152.5        |                                                                                   |
