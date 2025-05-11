@@ -88,4 +88,7 @@
 |       | 1            | making some minor quality of life improvements                                    |
 |       | 1.5          | implementing automatic disappearing of old enemy bodies                           |
 |       | 1            | implementing the support for a game configuration file                            |
-| total | 127          |                                                                                   |
+| 9.5.  | 2.5          | dividing the .py files into further subdirectories                                |
+|       | 2.5          | fixing issues reported by pylint                                                  |
+|       | 3.5          | refactoring Game class                                                            |
+| total | 135.5        |                                                                                   |
