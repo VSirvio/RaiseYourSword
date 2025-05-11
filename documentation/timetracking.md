@@ -70,4 +70,5 @@
 |       | 1            | creating user manual                                                              |
 |       | 1            | updating specification, changelog and readme                                      |
 | 1.5.  | 2.5          | implementing death animations                                                     |
-| total | 93           |                                                                                   |
+| 2.5.  | 1            | implementing death animations                                                     |
+| total | 94           |                                                                                   |
