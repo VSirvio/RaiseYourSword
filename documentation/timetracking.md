@@ -81,4 +81,7 @@
 |       | 0.5          | making some minor quality of life improvements                                    |
 |       | 0.5          | fixing enemies being able to walk through each other                              |
 | 6.5.  | 5            | fixing enemies being able to walk through each other                              |
-| total | 113          |                                                                                   |
+| 7.5.  | 1            | implementing spawning multiple enemies at a time                                  |
+|       | 3            | fixing the ending screen texts to be more legible                                 |
+|       | 1.5          | implementing intro texts                                                          |
+| total | 118.5        |                                                                                   |
