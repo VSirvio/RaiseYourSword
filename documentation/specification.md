@@ -26,6 +26,9 @@ The application is a 2D fantasy action game viewed from a top-down perspective. 
 
 ## Extension ideas
 
+- [**done**] Showing narrative texts in the beginning.
+- [**done**] Death animations for all characters.
+- [**done**] Configuration file for configuring game settings.
 - Losing the game takes more than one hit by the enemies (the player character also has an animation to indicate they got hit)
 - Defeating enemies takes multiple hits (they also have an animation to indicate they got hit)
 - Hit points (HP) display that shows the amount of HP the player has left (HP decreases when the player gets hit by an enemy, and the player loses the game, when it reaches zero)
