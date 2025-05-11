@@ -71,4 +71,7 @@
 |       | 1            | updating specification, changelog and readme                                      |
 | 1.5.  | 2.5          | implementing death animations                                                     |
 | 2.5.  | 1            | implementing death animations                                                     |
-| total | 94           |                                                                                   |
+| 3.5.  | 0.5          | prioritizing features to implement                                                |
+|       | 1            | fixing the player being able to move during the last enemy's death animation      |
+|       | 2.5          | implementing animation configuration files                                        |
+| total | 98           |                                                                                   |
