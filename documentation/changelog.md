@@ -46,3 +46,18 @@
 - Tested that the current direction in the `ArrowKeys` class is `NONE` by default
 - Tested that a key down event sets the current direction in the `ArrowKeys` class correctly
 - Tested that all keys are released correctly in the `ArrowKeys` class, when the `release_all()` method is called
+
+## Week 7
+
+- Added support for game states (e.g. `VictoryScreenState` and `PlayState`)
+- Added intro texts
+- Added support for animation metadata YAML files
+- Added death animations for the characters
+- Added support for a game configuration file
+- Fine-tuned hitboxes and bounding boxes
+- Changed the enemy AI behavior so that enemies no longer walk through each other
+- Changed the spawning behavior of enemies so that multiple enemies are spawned at the same time
+- Updated the fonts used in the ending screen texts
+- Added the feature that old enemy bodies vanish
+- Added classes for storing game configuration to replace the use of global constants
+- Tested `Game`, `GameLoop`, `EnemySpawner` and `Direction` classes and `load_config()` function
