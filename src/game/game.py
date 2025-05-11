@@ -172,6 +172,12 @@ class Game:
         return self.__config
 
     @property
+    def state(self):
+        """The name of the class of the current game state as a string."""
+
+        return self.__state.__class__.__name__
+
+    @property
     def finished(self):
         """A boolean value indicating whether the game has finished."""
 
