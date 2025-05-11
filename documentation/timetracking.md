@@ -80,4 +80,5 @@
 | 5.5.  | 2            | fine-tuning hitboxes and bounding boxes                                           |
 |       | 0.5          | making some minor quality of life improvements                                    |
 |       | 0.5          | fixing enemies being able to walk through each other                              |
-| total | 108          |                                                                                   |
+| 6.5.  | 5            | fixing enemies being able to walk through each other                              |
+| total | 113          |                                                                                   |
