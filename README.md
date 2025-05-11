@@ -18,9 +18,9 @@
 
 - Controls:
   - Walk: <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
-  - Attack: <kbd>Shift</kbd>
+  - Attack: <kbd>X</kbd>, <kbd>Space</kbd> or <kbd>Shift</kbd>
 - Current functionality:
-  - 10 enemies emerge from off-screen
+  - 30 enemies emerge from off-screen
   - You win the game by defeating all the enemies by striking each of them with your sword and lose the game by getting hit by any of them
 
 ## Installation
