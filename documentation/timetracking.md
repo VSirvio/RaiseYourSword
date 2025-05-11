@@ -74,4 +74,7 @@
 | 3.5.  | 0.5          | prioritizing features to implement                                                |
 |       | 1            | fixing the player being able to move during the last enemy's death animation      |
 |       | 2.5          | implementing animation configuration files                                        |
-| total | 98           |                                                                                   |
+| 4.5.  | 2.5          | implementing animation configuration files                                        |
+|       | 0.5          | playtesting                                                                       |
+|       | 4            | fine-tuning hitboxes and bounding boxes                                           |
+| total | 105          |                                                                                   |
