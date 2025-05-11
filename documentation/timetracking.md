@@ -69,4 +69,5 @@
 |       | 2.5          | improving architecture document                                                   |
 |       | 1            | creating user manual                                                              |
 |       | 1            | updating specification, changelog and readme                                      |
-| total | 90.5         |                                                                                   |
+| 1.5.  | 2.5          | implementing death animations                                                     |
+| total | 93           |                                                                                   |
