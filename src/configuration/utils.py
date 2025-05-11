@@ -18,17 +18,18 @@ def load_config(cfg_file_path):
     except OSError:
         sys.exit(f"ERROR: Failed to read the file \"{cfg_file_path}\"")
 
-    if "raise_your_sword" not in yaml_data:
+    if not isinstance(yaml_data, dict) or "raise_your_sword" not in yaml_data:
         sys.exit(f"ERROR: \"{cfg_file_path}\" requires \"raise_your_sword\" key at the root level")
 
-    if "configuration" not in yaml_data["raise_your_sword"]:
+    if (not isinstance(yaml_data["raise_your_sword"], dict) or
+            "configuration" not in yaml_data["raise_your_sword"]):
         sys.exit(f"ERROR: \"{cfg_file_path}\" requires \"configuration\" key "
             "under the \"raise_your_sword\" key")
 
     config_data = yaml_data["raise_your_sword"]["configuration"]
     config = {}
 
-    if "total_number_of_enemies_to_spawn" in config_data:
+    if isinstance(config_data, dict) and "total_number_of_enemies_to_spawn" in config_data:
         total_number_of_enemies_to_spawn = config_data["total_number_of_enemies_to_spawn"]
 
         if type(total_number_of_enemies_to_spawn) not in (float, int):
