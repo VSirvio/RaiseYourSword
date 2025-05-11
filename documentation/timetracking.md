@@ -77,4 +77,7 @@
 | 4.5.  | 2.5          | implementing animation configuration files                                        |
 |       | 0.5          | playtesting                                                                       |
 |       | 4            | fine-tuning hitboxes and bounding boxes                                           |
-| total | 105          |                                                                                   |
+| 5.5.  | 2            | fine-tuning hitboxes and bounding boxes                                           |
+|       | 0.5          | making some minor quality of life improvements                                    |
+|       | 0.5          | fixing enemies being able to walk through each other                              |
+| total | 108          |                                                                                   |
