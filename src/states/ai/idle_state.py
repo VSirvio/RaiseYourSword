@@ -1,5 +1,5 @@
 from math import sqrt
-from random import randrange
+from random import randint
 
 from direction import direction
 from game import events
@@ -31,7 +31,7 @@ class IdleState(states.state.State):
         owner = kwargs["owner"]
         config = kwargs["config"]
 
-        self.__duration = randrange(config.idle_time.minimum, config.idle_time.maximum)
+        self.__duration = randint(config.idle_time.minimum, config.idle_time.maximum)
         self.__timer = 0
 
         owner.direction.moving = direction.NONE

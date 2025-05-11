@@ -1,5 +1,5 @@
 from math import atan2, pi, sqrt
-from random import randrange
+from random import randint
 
 from direction import direction
 from game import events
@@ -31,7 +31,7 @@ class WalkState(states.state.State):
         opponent = kwargs["opponents"][0]
         config = kwargs["config"]
 
-        self.__duration = randrange(config.walk_time.minimum, config.walk_time.maximum)
+        self.__duration = randint(config.walk_time.minimum, config.walk_time.maximum)
         self.__timer = 0
 
         owner.direction.moving = self.__get_direction_toward_opponent(owner, opponent)
