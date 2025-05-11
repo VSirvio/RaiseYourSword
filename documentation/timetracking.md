@@ -91,4 +91,6 @@
 | 9.5.  | 2.5          | dividing the .py files into further subdirectories                                |
 |       | 2.5          | fixing issues reported by pylint                                                  |
 |       | 3.5          | refactoring Game class                                                            |
-| total | 135.5        |                                                                                   |
+| 10.5. | 5            | refactoring config.py                                                             |
+|       | 4            | writing docstrings                                                                |
+| total | 144.5        |                                                                                   |
