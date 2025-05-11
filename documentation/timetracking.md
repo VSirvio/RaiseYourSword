@@ -84,4 +84,8 @@
 | 7.5.  | 1            | implementing spawning multiple enemies at a time                                  |
 |       | 3            | fixing the ending screen texts to be more legible                                 |
 |       | 1.5          | implementing intro texts                                                          |
-| total | 118.5        |                                                                                   |
+| 8.5.  | 5            | implementing intro texts                                                          |
+|       | 1            | making some minor quality of life improvements                                    |
+|       | 1.5          | implementing automatic disappearing of old enemy bodies                           |
+|       | 1            | implementing the support for a game configuration file                            |
+| total | 127          |                                                                                   |
