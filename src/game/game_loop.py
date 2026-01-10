@@ -35,11 +35,8 @@ class GameLoop:
             elif exit_action == "exit":
                 return False
 
-            self.__update()
+            self.__game.update(self.__dt)
 
             self.__renderer.render()
 
             self.__dt = self.__clock.tick(60)
-
-    def __update(self):
-        self.__game.update(self.__dt)
