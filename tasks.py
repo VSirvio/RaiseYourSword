@@ -1,23 +1,22 @@
 from invoke import task
+import sys
 
 @task
 def start(ctx):
-    # Setting 'PYGAME_HIDE_SUPPORT_PROMPT' hides the welcome message that
-    # pygame normally prints in the terminal when the application is started
-    ctx.run("PYGAME_HIDE_SUPPORT_PROMPT=1 python3 src/index.py", pty=True)
+    ctx.run(f'"{sys.executable}" src/index.py', env={"PYGAME_HIDE_SUPPORT_PROMPT": "1"})
 
 @task
 def test(ctx):
-    ctx.run("pytest src", pty=True)
+    ctx.run("pytest src")
 
 @task
 def coverage(ctx):
-    ctx.run("coverage run --branch -m pytest src", pty=True)
+    ctx.run("coverage run --branch -m pytest src")
 
 @task(coverage)
 def coverage_report(ctx):
-    ctx.run("coverage html", pty=True)
+    ctx.run("coverage html")
 
 @task
 def lint(ctx):
-    ctx.run("pylint src", pty=True)
+    ctx.run("pylint src")
