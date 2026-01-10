@@ -1,11 +1,12 @@
 class GameLoop:
-    """Calls the update methods of the game 60 times in a second."""
+    """Calls the update methods of the game at regular intervals."""
 
-    def __init__(self, game, renderer, event_queue, input_handler, clock):
+    def __init__(self, game, framerate, renderer, event_queue, input_handler, clock):
         """Creates a new game loop that utilizes the given services.
 
         Args:
             game: The game object.
+            framerate: The number of times the game loop should be run per second.
             renderer: A Renderer instance for rendering the game on the screen.
             event_queue: An EventQueue instance for reading user input.
             input_handler: An InputHandler instance for processing input events.
@@ -13,6 +14,7 @@ class GameLoop:
         """
 
         self.__game = game
+        self.__framerate = framerate
         self.__renderer = renderer
         self.__event_queue = event_queue
         self.__input_handler = input_handler
@@ -39,4 +41,4 @@ class GameLoop:
 
             self.__renderer.render()
 
-            self.__dt = self.__clock.tick(60)
+            self.__dt = self.__clock.tick(self.__framerate)

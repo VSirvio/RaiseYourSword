@@ -18,6 +18,9 @@ from utils import Range
 dirname = os.path.dirname(__file__)
 
 
+FRAMERATE = 60
+
+
 class StubClock:
     def tick(self, fps):
         return 1000 / fps
@@ -83,6 +86,7 @@ class TestGameLoop(unittest.TestCase):
 
         game_loop = GameLoop(
             game,
+            FRAMERATE,
             StubRenderer(),
             StubEventQueue([[], [StubEvent(pygame.QUIT)]]),
             InputHandler(game),
@@ -111,6 +115,7 @@ class TestGameLoop(unittest.TestCase):
 
         game_loop = GameLoop(
             game,
+            FRAMERATE,
             StubRenderer(),
             StubEventQueue(
                 [[StubEvent(pygame.KEYDOWN, pygame.K_x)]] + (10 * 60) * [[]] +
@@ -143,6 +148,7 @@ class TestGameLoop(unittest.TestCase):
 
         game_loop = GameLoop(
             game,
+            FRAMERATE,
             StubRenderer(),
             StubEventQueue((10 * 60) * [[]] + [[StubEvent(pygame.QUIT)]]),
             InputHandler(game),

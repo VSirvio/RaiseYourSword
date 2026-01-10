@@ -12,6 +12,8 @@ from services.renderer import Renderer
 
 dirname = os.path.dirname(__file__)
 
+FRAMERATE = 60
+
 def main():
     config = generate_configuration()
 
@@ -35,7 +37,7 @@ def main():
         event_queue = EventQueue()
         input_handler = InputHandler(game)
         clock = Clock()
-        game_loop = GameLoop(game, renderer, event_queue, input_handler, clock)
+        game_loop = GameLoop(game, FRAMERATE, renderer, event_queue, input_handler, clock)
 
         start_new_game = game_loop.start()
 
