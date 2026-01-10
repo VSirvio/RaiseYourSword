@@ -7,6 +7,7 @@ from game.game import Game
 from game.game_loop import GameLoop
 from services.clock import Clock
 from services.event_queue import EventQueue
+from services.input_handler import InputHandler
 from services.renderer import Renderer
 
 dirname = os.path.dirname(__file__)
@@ -32,8 +33,9 @@ def main():
         game = Game(config, skip_intro=not is_first_game)
         renderer = Renderer(display, game, config.graphics.scaling_factor)
         event_queue = EventQueue()
+        input_handler = InputHandler(game)
         clock = Clock()
-        game_loop = GameLoop(game, renderer, event_queue, clock)
+        game_loop = GameLoop(game, renderer, event_queue, input_handler, clock)
 
         start_new_game = game_loop.start()
 

@@ -12,6 +12,7 @@ from configuration.spawning_config import SpawningConfig
 from game.character_creation import create_enemy
 from game.game import Game
 from game.game_loop import GameLoop
+from services.input_handler import InputHandler
 from utils import Range
 
 dirname = os.path.dirname(__file__)
@@ -84,6 +85,7 @@ class TestGameLoop(unittest.TestCase):
             game,
             StubRenderer(),
             StubEventQueue([[], [StubEvent(pygame.QUIT)]]),
+            InputHandler(game),
             StubClock()
         )
 
@@ -114,6 +116,7 @@ class TestGameLoop(unittest.TestCase):
                 [[StubEvent(pygame.KEYDOWN, pygame.K_x)]] + (10 * 60) * [[]] +
                     [[StubEvent(pygame.QUIT)]]
             ),
+            InputHandler(game),
             StubClock()
         )
 
@@ -142,6 +145,7 @@ class TestGameLoop(unittest.TestCase):
             game,
             StubRenderer(),
             StubEventQueue((10 * 60) * [[]] + [[StubEvent(pygame.QUIT)]]),
+            InputHandler(game),
             StubClock()
         )
 

@@ -2,15 +2,15 @@
 
 ## Structure
 
-*GameLoop* class runs the game loop and utilizes the classes *Renderer*, *EventQueue*, *Clock*, *ArrowKeys* and *Game*. These relationships between the classes are depicted below:
+*GameLoop* class runs the game loop and utilizes the classes *Renderer*, *EventQueue*, *InputHandler*, *Clock* and *Game*. These relationships between the classes are depicted below:
 
 ```mermaid
 classDiagram
     GameLoop "1" -- "1" Game
     GameLoop "1" -- "1" Renderer
     GameLoop "1" -- "1" EventQueue
+    GameLoop "1" -- "1" InputHandler
     GameLoop "1" -- "1" Clock
-    GameLoop "1" -- "1" ArrowKeys
     class GameLoop{
         start()
     }
@@ -20,13 +20,11 @@ classDiagram
     class EventQueue{
         get()
     }
+    class InputHandler{
+        handle_events(event_queue)
+    }
     class Clock{
         tick()
-    }
-    class ArrowKeys{
-        current_direction
-        handle(event)
-        release_all()
     }
 ```
 
@@ -215,23 +213,27 @@ sequenceDiagram
     main->>renderer: Renderer(display, game, game_config.graphics.scaling_factor)
     create participant event_queue
     main->>event_queue: EventQueue()
+    create participant input_handler
+    main->>input_handler: InputHandler(game)
+    create participant arrow_keys
+    input_handler->>arrow_keys: ArrowKeys()
     create participant clock
     main->>clock: Clock()
     create participant game_loop
-    main->>game_loop: GameLoop(game, renderer, event_queue, clock)
-    create participant arrow_keys
-    game_loop->>arrow_keys: ArrowKeys()
+    main->>game_loop: GameLoop(game, renderer, event_queue, input_handler, clock)
     main->>game_loop: start()
-    game_loop->>event_queue: get()
-    event_queue-->>game_loop: event
-    game_loop->>arrow_keys: handle(event)
-    arrow_keys-->>game_loop: 
-    game_loop->>game: handle(event)
+    game_loop->>input_handler: handle_events(event_queue)
+    input_handler->>event_queue: get()
+    event_queue-->>input_handler: event
+    input_handler->>arrow_keys: handle(event)
+    arrow_keys-->>input_handler: 
+    input_handler->>game: handle(event)
     game->>player: handle_event(event, enemies)
     player-->>game: 
     game->>enemy: handle_event(event, [player], ai_config)
     enemy-->>game: 
-    game-->>game_loop: 
+    game-->>input_handler: 
+    input_handler-->>game_loop: "continue" OR "restart" OR "exit"
     game_loop->>game: update(dt)
     game->>player: update(dt, enemies, [])
     player-->>game: 
